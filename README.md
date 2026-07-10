@@ -10,10 +10,10 @@ This project is a digital version of the game, allowing you to play with friends
 
 ## ✨ Features
 
--   **🎲 Multiple Game Levels:** Includes different card decks for varying difficulty.
--   **🔄 Round-based Gameplay:** Supports the classic three-round structure of Monikers.
--   **💻 Interactive UI:** Components for game setup, card selection, gameplay, and scoring.
--   **🔊 Sound Effects:** Includes sounds for game events.
+- **🎲 Multiple Game Levels:** Includes different card decks for varying difficulty.
+- **🔄 Round-based Gameplay:** Supports the classic three-round structure of Monikers.
+- **💻 Interactive UI:** Components for game setup, card selection, gameplay, and scoring.
+- **🔊 Sound Effects:** Includes sounds for game events.
 
 ## 🚀 Getting Started
 
@@ -21,10 +21,10 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-You need to have Node.js and npm (or yarn/pnpm) installed on your machine.
+You need to have Node.js and pnpm installed on your machine.
 
--   [Node.js](https://nodejs.org/) (v20 or later recommended)
--   [npm](https://www.npmjs.com/)
+- [Node.js](https://nodejs.org/) (v20 or later recommended)
+- [pnpm](https://pnpm.io/installation) (v11)
 
 ### Installation
 
@@ -38,7 +38,7 @@ You need to have Node.js and npm (or yarn/pnpm) installed on your machine.
     ```
 3.  Install the dependencies:
     ```bash
-    npm install
+    pnpm install
     ```
 
 ### Running the Application
@@ -46,7 +46,7 @@ You need to have Node.js and npm (or yarn/pnpm) installed on your machine.
 To run the application in development mode with Turbopack:
 
 ```bash
-npm run dev
+pnpm dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
@@ -55,23 +55,23 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 In the project directory, you can run the following commands:
 
--   `npm run dev`: 🏃 Runs the app in development mode.
--   `npm run build`: 📦 Builds the app for production.
--   `npm run start`: 🚀 Starts the production server.
--   `npm run lint`: 🔍 Lints the source code.
--   `npm run lint:fix`: 🛠️ Lints and automatically fixes issues.
--   `npm run format`: 🎨 Formats the code with Prettier.
--   `npm run format:check`: ✅ Checks for formatting issues.
--   `npm run check`: 📋 Runs both linting and format checking.
+- `pnpm dev`: 🏃 Runs the app in development mode.
+- `pnpm build`: 📦 Builds the app for production.
+- `pnpm start`: 🚀 Starts the production server.
+- `pnpm lint`: 🔍 Lints the source code.
+- `pnpm lint:fix`: 🛠️ Lints and automatically fixes issues.
+- `pnpm format`: 🎨 Formats the code with Prettier.
+- `pnpm format:check`: ✅ Checks for formatting issues.
+- `pnpm check`: 📋 Runs both linting and format checking.
 
 ## 🛠️ Technologies Used
 
--   [Next.js](https://nextjs.org/) - React Framework
--   [React](https://reactjs.org/) - JavaScript Library
--   [TypeScript](https://www.typescriptlang.org/) - Typed JavaScript
--   [Tailwind CSS](https://tailwindcss.com/) - CSS Framework
--   [ESLint](https://eslint.org/) - Linter
--   [Prettier](https://prettier.io/) - Code Formatter
+- [Next.js](https://nextjs.org/) - React Framework
+- [React](https://reactjs.org/) - JavaScript Library
+- [TypeScript](https://www.typescriptlang.org/) - Typed JavaScript
+- [Tailwind CSS](https://tailwindcss.com/) - CSS Framework
+- [ESLint](https://eslint.org/) - Linter
+- [Prettier](https://prettier.io/) - Code Formatter
 
 ## 📁 Project Structure
 
@@ -98,5 +98,7 @@ In the project directory, you can run the following commands:
 │       └── utils.ts
 ├── next.config.ts
 ├── package.json
+├── pnpm-lock.yaml
+├── pnpm-workspace.yaml
 └── tsconfig.json
 ```
