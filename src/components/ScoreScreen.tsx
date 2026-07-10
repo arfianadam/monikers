@@ -1,6 +1,9 @@
 'use client';
 
-import { ScoresByRound } from './GameScreen';
+import { cn } from '@/lib/utils';
+
+import type { Card, ScoresByRound } from './GameScreen';
+import { Brand, GameShell, RoundPips } from './ui/GameChrome';
 
 interface Props {
   scores: ScoresByRound;
@@ -9,88 +12,175 @@ interface Props {
   isGameOver: boolean;
 }
 
+function getCardPoints(cards: Card[]) {
+  return cards.reduce((total, card) => total + card.level, 0);
+}
+
+function getTeamTotal(scores: ScoresByRound, team: string) {
+  return Object.values(scores[team] ?? {})
+    .flat()
+    .reduce((total, card) => total + card.level, 0);
+}
+
 export default function ScoreScreen({
   scores,
   onPlayAgain,
   onNextRound,
   isGameOver,
 }: Props) {
-  const team1Total = Object.values(scores.team1)
-    .flat()
-    .reduce((sum, card) => sum + card.level, 0);
-  const team2Total = Object.values(scores.team2)
-    .flat()
-    .reduce((sum, card) => sum + card.level, 0);
+  const team1Total = getTeamTotal(scores, 'team1');
+  const team2Total = getTeamTotal(scores, 'team2');
+  const isTie = team1Total === team2Total;
+  const leader = isTie ? null : team1Total > team2Total ? 1 : 2;
+  const rounds = Array.from(
+    new Set([
+      ...Object.keys(scores.team1 ?? {}),
+      ...Object.keys(scores.team2 ?? {}),
+    ])
+  )
+    .map(Number)
+    .sort((first, second) => first - second);
+  const latestRound = rounds.at(-1) ?? 1;
+
+  const title = isGameOver
+    ? isTie
+      ? 'A legendary tie.'
+      : `Team ${leader} takes the crown.`
+    : `Round ${latestRound} is in the books.`;
+
   return (
-    <div className="flex flex-col items-center justify-center min-h-svh p-6">
-      <h1 className="text-4xl font-bold mb-8">
-        {isGameOver ? 'Game Over' : 'Round Over'}
-      </h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-4xl">
-        <div className="border border-white p-6 rounded-lg shadow-lg flex flex-col">
-          <h2 className="text-3xl font-bold mb-2 text-center">Team 1</h2>
-          <p className="text-6xl font-bold text-yellow-400 mb-4 text-center">
-            {team1Total}
-          </p>
-          <div className="flex-grow overflow-y-auto">
-            {Object.entries(scores.team1).map(([round, cards]) => (
-              <div key={round} className="mb-4">
-                <h3 className="text-xl font-bold mb-4 border-b pb-2">
-                  Round {round}
-                </h3>
-                <ul>
-                  {cards.map((card) => (
-                    <li key={card.word} className="mb-2">
-                      <p>
-                        {card.word} - {card.level}
-                      </p>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
+    <GameShell
+      className={cn('game-shell--score', isGameOver && 'game-shell--final')}
+    >
+      <div className="screen-frame score-screen">
+        <header className="topbar">
+          <Brand compact />
+          <RoundPips round={latestRound} />
+        </header>
+
+        <main className="score-main">
+          <div className="score-heading">
+            <p className="eyebrow eyebrow--on-dark">
+              {isGameOver ? 'Final score' : 'Score check'}
+            </p>
+            <h1>{title}</h1>
+            <p>
+              {isGameOver
+                ? 'The clues were bold, the guesses were questionable, and the points are official.'
+                : 'Take a breath, review the damage, and get ready for a trickier round.'}
+            </p>
           </div>
-        </div>
-        <div className="border border-white p-6 rounded-lg shadow-lg flex flex-col">
-          <h2 className="text-3xl font-bold mb-2 text-center">Team 2</h2>
-          <p className="text-6xl font-bold text-yellow-400 mb-4 text-center">
-            {team2Total}
-          </p>
-          <div className="flex-grow overflow-y-auto">
-            {Object.entries(scores.team2).map(([round, cards]) => (
-              <div key={round} className="mb-4">
-                <h3 className="text-xl font-bold mb-4 border-b pb-2">
-                  Round {round}
-                </h3>
-                <ul>
-                  {cards.map((card) => (
-                    <li key={card.word} className="mb-2">
-                      <p>
-                        {card.word} - {card.level}
-                      </p>
-                    </li>
-                  ))}
-                </ul>
+
+          <section className="score-duel" aria-label="Team scores">
+            {[1, 2].map((team) => {
+              const total = team === 1 ? team1Total : team2Total;
+              const isLeader = leader === team;
+
+              return (
+                <article
+                  key={team}
+                  className={cn(
+                    'team-score-card',
+                    `team-score-card--team-${team}`,
+                    isLeader && 'team-score-card--leader'
+                  )}
+                >
+                  <div className="team-score-card__topline">
+                    <span>Team {team}</span>
+                    {isLeader && (
+                      <span className="leader-sticker">
+                        {isGameOver ? 'Winner' : 'Leading'}
+                      </span>
+                    )}
+                    {isTie && <span className="leader-sticker">Tied</span>}
+                  </div>
+                  <strong className="team-score-card__score">{total}</strong>
+                  <span className="team-score-card__label">total points</span>
+                </article>
+              );
+            })}
+            <span className="score-duel__versus" aria-hidden="true">
+              vs
+            </span>
+          </section>
+
+          <section className="paper-panel score-recap">
+            <div className="score-recap__header">
+              <div>
+                <p className="eyebrow">Round by round</p>
+                <h2>How the points landed</h2>
               </div>
-            ))}
+              <span>{rounds.length} / 3 complete</span>
+            </div>
+
+            <div className="score-recap__rounds">
+              {rounds.map((round) => (
+                <article className="round-recap" key={round}>
+                  <div className="round-recap__label">
+                    <span>0{round}</span>
+                    <strong>Round {round}</strong>
+                  </div>
+                  <div className="round-recap__teams">
+                    {[1, 2].map((team) => {
+                      const cards = scores[`team${team}`]?.[round] ?? [];
+                      const points = getCardPoints(cards);
+
+                      return (
+                        <details className="round-team-result" key={team}>
+                          <summary>
+                            <span className={`team-dot team-dot--${team}`} />
+                            <span>
+                              <strong>Team {team}</strong>
+                              {cards.length}{' '}
+                              {cards.length === 1 ? 'card' : 'cards'}
+                            </span>
+                            <strong>{points} pts</strong>
+                            <span
+                              className="round-team-result__toggle"
+                              aria-hidden="true"
+                            >
+                              +
+                            </span>
+                          </summary>
+                          <div className="card-chip-list">
+                            {cards.length > 0 ? (
+                              cards.map((card) => (
+                                <span key={card.word}>
+                                  {card.word}
+                                  <small>+{card.level}</small>
+                                </span>
+                              ))
+                            ) : (
+                              <span className="card-chip-list__empty">
+                                No cards this round
+                              </span>
+                            )}
+                          </div>
+                        </details>
+                      );
+                    })}
+                  </div>
+                </article>
+              ))}
+            </div>
+          </section>
+
+          <div className="score-action">
+            <p>
+              {isGameOver
+                ? 'Same crew, fresh deck?'
+                : `Next up: Round ${latestRound + 1}`}
+            </p>
+            <button
+              onClick={isGameOver ? onPlayAgain : onNextRound}
+              className="game-button game-button--primary"
+            >
+              {isGameOver ? 'Play again' : 'Start next round'}
+              <span aria-hidden="true">→</span>
+            </button>
           </div>
-        </div>
+        </main>
       </div>
-      {isGameOver ? (
-        <button
-          onClick={onPlayAgain}
-          className="mt-8 bg-blue-500 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-full text-2xl shadow-xl shadow-blue-500/20"
-        >
-          Play Again
-        </button>
-      ) : (
-        <button
-          onClick={onNextRound}
-          className="mt-8 bg-green-500 hover:bg-green-700 text-white font-bold py-4 px-8 rounded-full text-2xl shadow-xl shadow-green-500/20"
-        >
-          Next Round
-        </button>
-      )}
-    </div>
+    </GameShell>
   );
 }

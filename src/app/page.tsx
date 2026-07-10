@@ -1,13 +1,15 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import SetupScreen from '@/components/SetupScreen';
 import CardSelectionScreen from '@/components/CardSelectionScreen';
 import GameScreen, { Card, ScoresByRound } from '@/components/GameScreen';
 import ScoreScreen from '@/components/ScoreScreen';
 
 export default function Home() {
-  const [stage, setStage] = useState('setup');
+  const [stage, setStage] = useState<
+    'setup' | 'card-selection' | 'game' | 'round-score' | 'score'
+  >('setup');
   const [players, setPlayers] = useState(0);
   const [cardsPerPlayer, setCardsPerPlayer] = useState(0);
   const [allCards, setAllCards] = useState<Card[]>([]);
@@ -16,6 +18,27 @@ export default function Home() {
     team2: {},
   });
   const [round, setRound] = useState(1);
+  const stageContainerRef = useRef<HTMLDivElement>(null);
+  const isInitialStage = useRef(true);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+
+    if (isInitialStage.current) {
+      isInitialStage.current = false;
+      return;
+    }
+
+    const focusFrame = window.requestAnimationFrame(() => {
+      const heading = stageContainerRef.current?.querySelector('h1');
+      if (heading instanceof HTMLElement) {
+        heading.tabIndex = -1;
+        heading.focus({ preventScroll: true });
+      }
+    });
+
+    return () => window.cancelAnimationFrame(focusFrame);
+  }, [stage]);
 
   const handleGameStart = (playerCount: number, cardCount: number) => {
     setPlayers(playerCount);
@@ -56,7 +79,7 @@ export default function Home() {
   };
 
   return (
-    <main className="bg-gray-900">
+    <div ref={stageContainerRef}>
       {stage === 'setup' && <SetupScreen onStartGame={handleGameStart} />}
       {stage === 'card-selection' && (
         <CardSelectionScreen
@@ -82,6 +105,6 @@ export default function Home() {
           isGameOver={stage === 'score'}
         />
       )}
-    </main>
+    </div>
   );
 }

@@ -1,6 +1,11 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import type { CSSProperties } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+
+import { cn } from '@/lib/utils';
+
+import { Brand, GameShell, RoundPips } from './ui/GameChrome';
 
 export interface Card {
   level: number;
@@ -20,6 +25,39 @@ interface Props {
 
 const ROUND_DURATION = 60;
 
+const ROUND_DETAILS: Record<
+  number,
+  { name: string; shortName: string; instruction: string; example: string }
+> = {
+  1: {
+    name: 'Free talking',
+    shortName: 'Say anything',
+    instruction:
+      'Use any words you like—just don’t say the name written on the card.',
+    example: 'Stories, clues, impressions... it all works.',
+  },
+  2: {
+    name: 'One word',
+    shortName: 'One word only',
+    instruction:
+      'Give exactly one word as your clue. Your team can keep guessing.',
+    example: 'Choose that one word very carefully.',
+  },
+  3: {
+    name: 'Expressions',
+    shortName: 'Act it out',
+    instruction:
+      'No words or sounds. Use charades, gestures, and your finest acting.',
+    example: 'Commit to the bit. Dignity is optional.',
+  },
+};
+
+function getTeamTotal(scores: ScoresByRound, team: string) {
+  return Object.values(scores[team] ?? {})
+    .flat()
+    .reduce((total, card) => total + card.level, 0);
+}
+
 export default function GameScreen({
   initialCards,
   onGameEnd,
@@ -37,24 +75,44 @@ export default function GameScreen({
   const [isRoundActive, setIsRoundActive] = useState(false);
   const [canSkip, setCanSkip] = useState(true);
   const [isGuessButtonDisabled, setIsGuessButtonDisabled] = useState(false);
+  const viewContainerRef = useRef<HTMLDivElement>(null);
+  const isInitialView = useRef(true);
   const sounds = useRef<{
     bell: HTMLAudioElement;
     ring: HTMLAudioElement;
   } | null>(null);
 
-  const roundDescription = `Round ${round}: ${
-    round === 1 ? 'Free Talking' : round === 2 ? 'One Word' : 'Expressions'
-  }`;
+  const roundDetails = ROUND_DETAILS[round] ?? ROUND_DETAILS[3];
+  const currentTeamNumber = currentTeam === 'team1' ? 1 : 2;
+  const currentTeamScore = getTeamTotal(scores, currentTeam);
 
   useEffect(() => {
-    // Initialize sounds
+    window.scrollTo(0, 0);
+
+    if (isInitialView.current) {
+      isInitialView.current = false;
+      return;
+    }
+
+    const focusFrame = window.requestAnimationFrame(() => {
+      const heading = viewContainerRef.current?.querySelector('h1');
+      const focusTarget = heading ?? viewContainerRef.current;
+      if (focusTarget instanceof HTMLElement) {
+        focusTarget.tabIndex = -1;
+        focusTarget.focus({ preventScroll: true });
+      }
+    });
+
+    return () => window.cancelAnimationFrame(focusFrame);
+  }, [currentTeam, isRoundActive]);
+
+  useEffect(() => {
     sounds.current = {
       bell: new Audio('/sounds/bell.wav'),
       ring: new Audio('/sounds/ring.wav'),
     };
   }, []);
 
-  // Keep refs in sync with state
   useEffect(() => {
     cardsRef.current = cards;
   }, [cards]);
@@ -64,19 +122,19 @@ export default function GameScreen({
   }, [guessedCards]);
 
   useEffect(() => {
-    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      e.preventDefault();
-      e.returnValue = '';
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      event.returnValue = '';
       return '';
     };
 
-    const handlePopState = (e: PopStateEvent) => {
+    const handlePopState = (event: PopStateEvent) => {
       window.history.pushState(null, '', window.location.href);
       const shouldLeave = window.confirm(
         'Are you sure you want to leave the game?'
       );
       if (!shouldLeave) {
-        e.preventDefault();
+        event.preventDefault();
       }
     };
 
@@ -133,7 +191,7 @@ export default function GameScreen({
     let interval: NodeJS.Timeout;
     if (isRoundActive && timer > 0) {
       interval = setInterval(() => {
-        setTimer((prev) => prev - 1);
+        setTimer((previousTimer) => previousTimer - 1);
       }, 1000);
     } else if (isRoundActive && timer === 0) {
       const currentCards = cardsRef.current;
@@ -176,7 +234,6 @@ export default function GameScreen({
     setCards(remainingCards);
     setCanSkip(true);
 
-    // Re-enable the button after 1 second
     setTimeout(() => {
       setIsGuessButtonDisabled(false);
     }, 1000);
@@ -193,7 +250,7 @@ export default function GameScreen({
     if (!isRoundActive || !canSkip || cards.length <= 1) return;
     setCanSkip(false);
     const [currentCard, ...remainingCards] = cards;
-    setCards([...remainingCards, currentCard]); // Move to the back of the deck
+    setCards([...remainingCards, currentCard]);
   };
 
   const handleEndRound = () => {
@@ -205,62 +262,178 @@ export default function GameScreen({
   };
 
   const activeCard = cards[0];
+  const timerStyle = {
+    '--timer-progress': `${(timer / ROUND_DURATION) * 360}deg`,
+  } as CSSProperties;
 
   if (!isRoundActive) {
     return (
-      <div className="flex flex-col items-center justify-center h-svh">
-        <h2 className="text-2xl font-bold mb-2">{roundDescription}</h2>
-        <h1 className="text-4xl font-bold mb-8">
-          Team {currentTeam === 'team1' ? 1 : 2}&apos;s Turn
-        </h1>
-        <button
-          onClick={startRound}
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-full text-2xl cursor-pointer shadow-xl shadow-blue-500/20"
+      <GameShell
+        className={cn(
+          'game-shell--turn',
+          `game-shell--team-${currentTeamNumber}`
+        )}
+      >
+        <div
+          className="screen-frame turn-screen"
+          ref={viewContainerRef}
+          tabIndex={-1}
         >
-          Start Round
-        </button>
-      </div>
+          <header className="topbar">
+            <Brand compact />
+            <RoundPips round={round} />
+          </header>
+
+          <main className="turn-layout">
+            <section className="turn-intro">
+              <p className="eyebrow eyebrow--on-dark">
+                Round {round} · {roundDetails.name}
+              </p>
+              <h1>
+                Team {currentTeamNumber},<span>you&apos;re up.</span>
+              </h1>
+              <p className="turn-intro__lede">{roundDetails.instruction}</p>
+
+              <div className="turn-rule">
+                <span className="turn-rule__number">0{round}</span>
+                <span>
+                  <strong>{roundDetails.shortName}</strong>
+                  {roundDetails.example}
+                </span>
+              </div>
+            </section>
+
+            <section className="paper-panel turn-ticket">
+              <div className="turn-ticket__team">
+                <span>Team</span>
+                <strong>{currentTeamNumber}</strong>
+              </div>
+              <div className="turn-ticket__stats">
+                <span>
+                  <strong>{cards.length || initialCards.length}</strong>
+                  cards left
+                </span>
+                <span>
+                  <strong>{currentTeamScore}</strong>
+                  total points
+                </span>
+                <span>
+                  <strong>60</strong>
+                  seconds
+                </span>
+              </div>
+              <div className="turn-ticket__divider" />
+              <p>Hand the device to your clue giver, then start the clock.</p>
+              <button
+                onClick={startRound}
+                className="game-button game-button--primary"
+              >
+                Start 60-second turn
+                <span aria-hidden="true">→</span>
+              </button>
+            </section>
+          </main>
+        </div>
+      </GameShell>
     );
   }
 
   return (
-    <div className="flex flex-col items-center justify-center h-svh p-6">
-      <div className="text-4xl font-bold mb-4">{timer}</div>
-      {activeCard && (
-        <div className="p-8 rounded-lg shadow-lg text-center mb-8 border border-gray-100">
-          <h2 className="text-3xl font-bold mb-2">{activeCard.word}</h2>
-          <p className="text-xl">{activeCard.description}</p>
+    <GameShell
+      className={cn(
+        'game-shell--play',
+        `game-shell--team-${currentTeamNumber}`
+      )}
+    >
+      <div
+        className="screen-frame play-screen"
+        ref={viewContainerRef}
+        tabIndex={-1}
+      >
+        <header className="topbar play-topbar">
+          <Brand compact />
+          <RoundPips round={round} />
+        </header>
+
+        <div className="play-hud">
+          <div className="team-chip">
+            <span className="team-chip__dot" />
+            Team {currentTeamNumber}
+          </div>
+          <div className="timer-block">
+            <div
+              className={cn('timer-dial', timer <= 10 && 'timer-dial--urgent')}
+              style={timerStyle}
+              aria-label={`${timer} seconds remaining`}
+            >
+              <span>{timer}</span>
+            </div>
+            <span className="timer-block__label">seconds</span>
+          </div>
+          <div className="deck-chip">
+            <strong>{cards.length}</strong>
+            <span>cards left</span>
+          </div>
         </div>
-      )}
-      <div className="w-full sm:w-3xl flex justify-between">
-        <button
-          onClick={handleSkip}
-          disabled={!canSkip}
-          className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-full disabled:opacity-50"
-        >
-          Skip
-        </button>
-        <button
-          onClick={handleGuess}
-          disabled={isGuessButtonDisabled}
-          className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full shadow-xl shadow-green-500/20 disabled:opacity-50"
-        >
-          Guessed
-        </button>
+
+        <main className="play-stage">
+          {activeCard && (
+            <article
+              key={activeCard.word}
+              className="active-card paper-panel"
+              data-level={activeCard.level}
+              aria-live="polite"
+            >
+              <div className="active-card__topline">
+                <span className="level-badge">Level {activeCard.level}</span>
+                <span className="active-card__serial">
+                  {String(cards.length).padStart(2, '0')} /{' '}
+                  {String(initialCards.length).padStart(2, '0')}
+                </span>
+              </div>
+              <div className="active-card__copy">
+                <p>Get your team to guess</p>
+                <h1>{activeCard.word}</h1>
+                <span>{activeCard.description}</span>
+              </div>
+              <div className="active-card__footer">
+                <span>Monikers</span>
+                <span>Round 0{round}</span>
+              </div>
+            </article>
+          )}
+        </main>
+
+        <div className="play-actions">
+          <div className="play-actions__row">
+            <button
+              onClick={handleSkip}
+              disabled={!canSkip || cards.length <= 1}
+              className="game-button game-button--secondary skip-button"
+            >
+              <span aria-hidden="true">↻</span>
+              {canSkip ? 'Skip' : 'Skip used'}
+            </button>
+            <button
+              onClick={handleGuess}
+              disabled={isGuessButtonDisabled}
+              className="game-button game-button--success guess-button"
+            >
+              Got it!
+              <span aria-hidden="true">✓</span>
+            </button>
+          </div>
+          <div className="play-actions__meta">
+            <span>
+              {guessedCards.length} guessed this turn
+              {!canSkip && ' · Guess correctly to unlock skip'}
+            </span>
+            <button onClick={handleEndRound} className="end-turn-button">
+              End turn early
+            </button>
+          </div>
+        </div>
       </div>
-      <div className="fixed bottom-12 flex justify-center w-full">
-        <button
-          onClick={handleEndRound}
-          className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full"
-        >
-          End Round
-        </button>
-      </div>
-      {!canSkip && (
-        <p className="text-sm text-gray-500 mt-4">
-          Skip again after guessing a word correctly.
-        </p>
-      )}
-    </div>
+    </GameShell>
   );
 }
