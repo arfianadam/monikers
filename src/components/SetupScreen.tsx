@@ -58,7 +58,7 @@ function NumberControl({
           type="button"
           onClick={() => updateValue(value - 1)}
           disabled={value <= min}
-          aria-label={`Decrease ${label.toLowerCase()}`}
+          aria-label={`Kurangi ${label.toLowerCase()}`}
         >
           −
         </button>
@@ -92,7 +92,7 @@ function NumberControl({
           type="button"
           onClick={() => updateValue(value + 1)}
           disabled={value >= max}
-          aria-label={`Increase ${label.toLowerCase()}`}
+          aria-label={`Tambah ${label.toLowerCase()}`}
         >
           +
         </button>
@@ -111,45 +111,50 @@ export default function SetupScreen({ onStartGame }: Props) {
       <div className="screen-frame setup-screen">
         <header className="topbar">
           <Brand />
-          <p className="topbar__note">Pass-and-play · No login required</p>
+          <p className="topbar__note">
+            Bergantian di satu perangkat · Tanpa perlu masuk
+          </p>
         </header>
 
         <main className="setup-layout">
           <section className="setup-intro" aria-labelledby="setup-title">
             <p className="eyebrow eyebrow--on-dark">
               <span className="eyebrow__dot" />
-              Your next game-night obsession
+              Calon permainan favorit di acara kumpulmu
             </p>
             <h1 id="setup-title" className="display-title">
-              Guess the name.
-              <span>Lose your cool.</span>
+              Tebak namanya.
+              <span>Lupakan jaimnya.</span>
             </h1>
             <p className="setup-intro__lede">
-              Three rounds. Two teams. One deck of famous names that gets
-              funnier every time around.
+              Tiga babak. Dua tim. Satu deck nama terkenal yang makin lucu
+              setiap kali dimainkan.
             </p>
 
-            <div className="round-stack" aria-label="The three game rounds">
+            <div className="round-stack" aria-label="Tiga babak permainan">
               <div className="round-stack__card round-stack__card--one">
                 <span>01</span>
-                Say anything
+                Bebas bicara
               </div>
               <div className="round-stack__card round-stack__card--two">
                 <span>02</span>
-                One word only
+                Satu kata saja
               </div>
               <div className="round-stack__card round-stack__card--three">
                 <span>03</span>
-                Act it out
+                Peragakan
               </div>
             </div>
           </section>
 
-          <section className="paper-panel setup-ticket" aria-label="Game setup">
+          <section
+            className="paper-panel setup-ticket"
+            aria-label="Pengaturan permainan"
+          >
             <div className="setup-ticket__header">
               <div>
-                <p className="eyebrow">Game setup</p>
-                <h2>Build your deck</h2>
+                <p className="eyebrow">Pengaturan permainan</p>
+                <h2>Susun deck-mu</h2>
               </div>
               <span className="setup-ticket__number">№ 001</span>
             </div>
@@ -162,8 +167,8 @@ export default function SetupScreen({ onStartGame }: Props) {
             >
               <NumberControl
                 id="players"
-                label="Players"
-                hint="2–20 people, split into two teams"
+                label="Pemain"
+                hint="2–20 orang, dibagi menjadi dua tim"
                 value={players}
                 min={2}
                 max={20}
@@ -171,8 +176,8 @@ export default function SetupScreen({ onStartGame }: Props) {
               />
               <NumberControl
                 id="cards"
-                label="Cards each"
-                hint="1–10, picked privately by every player"
+                label="Kartu per pemain"
+                hint="1–10 kartu, dipilih diam-diam oleh tiap pemain"
                 value={cards}
                 min={1}
                 max={10}
@@ -186,8 +191,8 @@ export default function SetupScreen({ onStartGame }: Props) {
                   <span />
                 </span>
                 <span>
-                  <strong>{totalCards} card deck</strong>
-                  {players} players · 3 rounds · about 30 minutes
+                  <strong>{totalCards} kartu dalam deck</strong>
+                  {players} pemain · 3 babak · sekitar 30 menit
                 </span>
               </div>
 
@@ -195,7 +200,7 @@ export default function SetupScreen({ onStartGame }: Props) {
                 className="game-button game-button--primary"
                 type="submit"
               >
-                Start the game
+                Mulai bermain
                 <span aria-hidden="true">→</span>
               </button>
             </form>
@@ -203,7 +208,7 @@ export default function SetupScreen({ onStartGame }: Props) {
         </main>
 
         <footer className="setup-footer">
-          <span>Made for loud rooms and questionable clues.</span>
+          <span>Dibuat untuk suasana ramai dan petunjuk yang absurd.</span>
           <span>© arfianadam</span>
         </footer>
       </div>

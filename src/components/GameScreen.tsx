@@ -30,25 +30,25 @@ const ROUND_DETAILS: Record<
   { name: string; shortName: string; instruction: string; example: string }
 > = {
   1: {
-    name: 'Free talking',
-    shortName: 'Say anything',
+    name: 'Bicara bebas',
+    shortName: 'Bebas bicara',
     instruction:
-      'Use any words you like—just don’t say the name written on the card.',
-    example: 'Stories, clues, impressions... it all works.',
+      'Gunakan kata apa pun—asal jangan menyebut nama yang tertulis di kartu.',
+    example: 'Cerita, petunjuk, tiruan... semuanya boleh.',
   },
   2: {
-    name: 'One word',
-    shortName: 'One word only',
+    name: 'Satu kata',
+    shortName: 'Satu kata saja',
     instruction:
-      'Give exactly one word as your clue. Your team can keep guessing.',
-    example: 'Choose that one word very carefully.',
+      'Berikan tepat satu kata sebagai petunjuk. Timmu boleh terus menebak.',
+    example: 'Pilih satu kata itu dengan sangat hati-hati.',
   },
   3: {
-    name: 'Expressions',
-    shortName: 'Act it out',
+    name: 'Peragaan',
+    shortName: 'Peragakan',
     instruction:
-      'No words or sounds. Use charades, gestures, and your finest acting.',
-    example: 'Commit to the bit. Dignity is optional.',
+      'Tanpa kata atau suara. Gunakan pantomim, gerakan, dan akting terbaikmu.',
+    example: 'Totalitaslah. Gengsi tidak wajib.',
   },
 };
 
@@ -130,9 +130,7 @@ export default function GameScreen({
 
     const handlePopState = (event: PopStateEvent) => {
       window.history.pushState(null, '', window.location.href);
-      const shouldLeave = window.confirm(
-        'Are you sure you want to leave the game?'
-      );
+      const shouldLeave = window.confirm('Yakin ingin meninggalkan permainan?');
       if (!shouldLeave) {
         event.preventDefault();
       }
@@ -287,10 +285,10 @@ export default function GameScreen({
           <main className="turn-layout">
             <section className="turn-intro">
               <p className="eyebrow eyebrow--on-dark">
-                Round {round} · {roundDetails.name}
+                Babak {round} · {roundDetails.name}
               </p>
               <h1>
-                Team {currentTeamNumber},<span>you&apos;re up.</span>
+                Tim {currentTeamNumber},<span>giliranmu.</span>
               </h1>
               <p className="turn-intro__lede">{roundDetails.instruction}</p>
 
@@ -305,30 +303,33 @@ export default function GameScreen({
 
             <section className="paper-panel turn-ticket">
               <div className="turn-ticket__team">
-                <span>Team</span>
+                <span>Tim</span>
                 <strong>{currentTeamNumber}</strong>
               </div>
               <div className="turn-ticket__stats">
                 <span>
                   <strong>{cards.length || initialCards.length}</strong>
-                  cards left
+                  kartu tersisa
                 </span>
                 <span>
                   <strong>{currentTeamScore}</strong>
-                  total points
+                  total poin
                 </span>
                 <span>
                   <strong>60</strong>
-                  seconds
+                  detik
                 </span>
               </div>
               <div className="turn-ticket__divider" />
-              <p>Hand the device to your clue giver, then start the clock.</p>
+              <p>
+                Serahkan perangkat kepada pemberi petunjuk, lalu mulai
+                penghitung waktunya.
+              </p>
               <button
                 onClick={startRound}
                 className="game-button game-button--primary"
               >
-                Start 60-second turn
+                Mulai giliran 60 detik
                 <span aria-hidden="true">→</span>
               </button>
             </section>
@@ -358,21 +359,21 @@ export default function GameScreen({
         <div className="play-hud">
           <div className="team-chip">
             <span className="team-chip__dot" />
-            Team {currentTeamNumber}
+            Tim {currentTeamNumber}
           </div>
           <div className="timer-block">
             <div
               className={cn('timer-dial', timer <= 10 && 'timer-dial--urgent')}
               style={timerStyle}
-              aria-label={`${timer} seconds remaining`}
+              aria-label={`${timer} detik tersisa`}
             >
               <span>{timer}</span>
             </div>
-            <span className="timer-block__label">seconds</span>
+            <span className="timer-block__label">detik</span>
           </div>
           <div className="deck-chip">
             <strong>{cards.length}</strong>
-            <span>cards left</span>
+            <span>kartu tersisa</span>
           </div>
         </div>
 
@@ -385,20 +386,20 @@ export default function GameScreen({
               aria-live="polite"
             >
               <div className="active-card__topline">
-                <span className="level-badge">Level {activeCard.level}</span>
+                <span className="level-badge">Tingkat {activeCard.level}</span>
                 <span className="active-card__serial">
                   {String(cards.length).padStart(2, '0')} /{' '}
                   {String(initialCards.length).padStart(2, '0')}
                 </span>
               </div>
               <div className="active-card__copy">
-                <p>Get your team to guess</p>
+                <p>Buat timmu menebak</p>
                 <h1>{activeCard.word}</h1>
                 <span>{activeCard.description}</span>
               </div>
               <div className="active-card__footer">
                 <span>Monikers</span>
-                <span>Round 0{round}</span>
+                <span>Babak 0{round}</span>
               </div>
             </article>
           )}
@@ -412,24 +413,24 @@ export default function GameScreen({
               className="game-button game-button--secondary skip-button"
             >
               <span aria-hidden="true">↻</span>
-              {canSkip ? 'Skip' : 'Skip used'}
+              {canSkip ? 'Lewati' : 'Sudah digunakan'}
             </button>
             <button
               onClick={handleGuess}
               disabled={isGuessButtonDisabled}
               className="game-button game-button--success guess-button"
             >
-              Got it!
+              Benar!
               <span aria-hidden="true">✓</span>
             </button>
           </div>
           <div className="play-actions__meta">
             <span>
-              {guessedCards.length} guessed this turn
-              {!canSkip && ' · Guess correctly to unlock skip'}
+              {guessedCards.length} kartu berhasil ditebak pada giliran ini
+              {!canSkip && ' · Tebak dengan benar agar bisa melewati lagi'}
             </span>
             <button onClick={handleEndRound} className="end-turn-button">
-              End turn early
+              Akhiri giliran lebih awal
             </button>
           </div>
         </div>

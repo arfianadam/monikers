@@ -122,10 +122,10 @@ export default function CardSelectionScreen({
             <Brand compact />
             <div
               className="handoff-progress"
-              aria-label={`Card selection progress: player ${currentPlayer} of ${players}`}
+              aria-label={`Progres pemilihan kartu: pemain ${currentPlayer} dari ${players}`}
             >
               <span>
-                Player {currentPlayer} of {players}
+                Pemain {currentPlayer} dari {players}
               </span>
               <span className="handoff-progress__track">
                 <span style={{ width: `${playerProgress}%` }} />
@@ -135,38 +135,39 @@ export default function CardSelectionScreen({
 
           <main className="handoff-layout">
             <section className="handoff-card paper-panel">
-              <p className="eyebrow">Private card pick</p>
+              <p className="eyebrow">Pemilihan kartu rahasia</p>
               <div className="handoff-card__number" aria-hidden="true">
                 {String(currentPlayer).padStart(2, '0')}
               </div>
-              <h1>Pass the device</h1>
+              <h1>Serahkan perangkatnya</h1>
               <p className="handoff-card__lede">
-                Player {currentPlayer}, your choices are secret. Make sure no
-                one else is peeking before you reveal the cards.
+                Pemain {currentPlayer}, pilihanmu rahasia. Pastikan tidak ada
+                yang mengintip sebelum kamu membuka kartunya.
               </p>
               <div className="privacy-note">
                 <span className="privacy-note__icon" aria-hidden="true">
                   ◉
                 </span>
                 <span>
-                  <strong>For your eyes only</strong>
-                  You&apos;ll pick {cardsPerPlayer} from {cardsPerPlayer + 2}{' '}
-                  cards
+                  <strong>Hanya untukmu</strong>
+                  Pilih {cardsPerPlayer} dari {cardsPerPlayer + 2} kartu
                 </span>
               </div>
               <button
                 className="game-button game-button--primary"
                 onClick={() => setIsReady(true)}
               >
-                Reveal my cards
+                Buka kartuku
                 <span aria-hidden="true">→</span>
               </button>
             </section>
 
             <aside className="handoff-aside" aria-hidden="true">
-              <span className="handoff-aside__label">Next up</span>
-              <strong>Player {currentPlayer}</strong>
-              <span>Choose wisely. Everyone plays with this deck.</span>
+              <span className="handoff-aside__label">Giliran berikutnya</span>
+              <strong>Pemain {currentPlayer}</strong>
+              <span>
+                Pilih dengan bijak. Semua pemain akan memakai deck ini.
+              </span>
               <div className="handoff-aside__cards">
                 <span />
                 <span />
@@ -190,11 +191,10 @@ export default function CardSelectionScreen({
           <Brand compact />
           <div className="selection-status">
             <span className="selection-status__player">
-              Player {currentPlayer} of {players}
+              Pemain {currentPlayer} dari {players}
             </span>
             <span className="selection-status__count">
-              <strong>{selectedCards.length}</strong> / {cardsPerPlayer}{' '}
-              selected
+              <strong>{selectedCards.length}</strong> / {cardsPerPlayer} dipilih
             </span>
           </div>
         </header>
@@ -202,12 +202,12 @@ export default function CardSelectionScreen({
         <main className="selection-main">
           <div className="selection-heading">
             <div>
-              <p className="eyebrow eyebrow--on-dark">Build the shared deck</p>
-              <h1>Pick your favorites</h1>
+              <p className="eyebrow eyebrow--on-dark">Susun deck bersama</p>
+              <h1>Pilih favoritmu</h1>
             </div>
             <p>
-              Choose the names you know—or the ones that will be funniest to
-              describe later.
+              Pilih nama yang kamu kenal—atau yang paling lucu untuk dijelaskan
+              nanti.
             </p>
           </div>
 
@@ -234,7 +234,7 @@ export default function CardSelectionScreen({
                   onClick={() => handleCardSelect(card)}
                 >
                   <span className="selection-card__topline">
-                    <span className="level-badge">Level {card.level}</span>
+                    <span className="level-badge">Tingkat {card.level}</span>
                     <span className="selection-card__check" aria-hidden="true">
                       ✓
                     </span>
@@ -244,7 +244,7 @@ export default function CardSelectionScreen({
                     {card.description}
                   </span>
                   <span className="selection-card__action" aria-hidden="true">
-                    {isSelected ? 'In your deck' : 'Tap to choose'}
+                    {isSelected ? 'Sudah dipilih' : 'Ketuk untuk memilih'}
                     <span>{isSelected ? '✓' : '+'}</span>
                   </span>
                 </button>
@@ -257,17 +257,17 @@ export default function CardSelectionScreen({
       <div className="selection-dock">
         <div className="selection-dock__inner">
           <div className="selection-dock__count" aria-live="polite">
-            <span aria-label={`${selectedCards.length} cards selected`}>
+            <span aria-label={`${selectedCards.length} kartu dipilih`}>
               {selectedCards.length}
             </span>
             <p>
               <strong>
                 {cardsLeftToPick === 0
-                  ? 'All picked'
-                  : `${cardsLeftToPick} ${cardsLeftToPick === 1 ? 'card' : 'cards'} left`}
+                  ? 'Semua sudah dipilih'
+                  : `${cardsLeftToPick} kartu lagi`}
               </strong>
               <span>
-                {selectedCards.length} of {cardsPerPlayer} selected
+                {selectedCards.length} dari {cardsPerPlayer} dipilih
               </span>
             </p>
           </div>
@@ -278,8 +278,8 @@ export default function CardSelectionScreen({
             disabled={selectedCards.length !== cardsPerPlayer}
           >
             {currentPlayer < players
-              ? 'Pass to next player'
-              : 'Finish the deck'}
+              ? 'Serahkan ke pemain berikutnya'
+              : 'Selesai'}
             <span aria-hidden="true">→</span>
           </button>
         </div>

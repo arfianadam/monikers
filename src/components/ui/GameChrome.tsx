@@ -33,7 +33,7 @@ export function Brand({ compact = false }: { compact?: boolean }) {
       <span className="brand-lockup__copy">
         <span className="brand-lockup__name">Monikers</span>
         {!compact && (
-          <span className="brand-lockup__tagline">The guessing game</span>
+          <span className="brand-lockup__tagline">Permainan tebak nama</span>
         )}
       </span>
     </div>
@@ -47,8 +47,8 @@ interface RoundPipsProps {
 
 export function RoundPips({ round, label = true }: RoundPipsProps) {
   return (
-    <div className="round-pips" aria-label={`Round ${round} of 3`}>
-      {label && <span className="round-pips__label">Round</span>}
+    <div className="round-pips" aria-label={`Babak ${round} dari 3`}>
+      {label && <span className="round-pips__label">Babak</span>}
       {[1, 2, 3].map((step) => (
         <span
           key={step}

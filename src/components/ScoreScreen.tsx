@@ -44,9 +44,9 @@ export default function ScoreScreen({
 
   const title = isGameOver
     ? isTie
-      ? 'A legendary tie.'
-      : `Team ${leader} takes the crown.`
-    : `Round ${latestRound} is in the books.`;
+      ? 'Hasil seri yang legendaris.'
+      : `Tim ${leader} merebut mahkota.`
+    : `Babak ${latestRound} telah usai.`;
 
   return (
     <GameShell
@@ -61,17 +61,17 @@ export default function ScoreScreen({
         <main className="score-main">
           <div className="score-heading">
             <p className="eyebrow eyebrow--on-dark">
-              {isGameOver ? 'Final score' : 'Score check'}
+              {isGameOver ? 'Skor akhir' : 'Cek skor'}
             </p>
             <h1>{title}</h1>
             <p>
               {isGameOver
-                ? 'The clues were bold, the guesses were questionable, and the points are official.'
-                : 'Take a breath, review the damage, and get ready for a trickier round.'}
+                ? 'Petunjuknya berani, tebakannya meragukan, dan perolehan poinnya sudah sah.'
+                : 'Tarik napas, lihat hasilnya, lalu bersiap untuk babak yang lebih menantang.'}
             </p>
           </div>
 
-          <section className="score-duel" aria-label="Team scores">
+          <section className="score-duel" aria-label="Skor tim">
             {[1, 2].map((team) => {
               const total = team === 1 ? team1Total : team2Total;
               const isLeader = leader === team;
@@ -86,31 +86,31 @@ export default function ScoreScreen({
                   )}
                 >
                   <div className="team-score-card__topline">
-                    <span>Team {team}</span>
+                    <span>Tim {team}</span>
                     {isLeader && (
                       <span className="leader-sticker">
-                        {isGameOver ? 'Winner' : 'Leading'}
+                        {isGameOver ? 'Pemenang' : 'Unggul'}
                       </span>
                     )}
-                    {isTie && <span className="leader-sticker">Tied</span>}
+                    {isTie && <span className="leader-sticker">Seri</span>}
                   </div>
                   <strong className="team-score-card__score">{total}</strong>
-                  <span className="team-score-card__label">total points</span>
+                  <span className="team-score-card__label">total poin</span>
                 </article>
               );
             })}
             <span className="score-duel__versus" aria-hidden="true">
-              vs
+              lawan
             </span>
           </section>
 
           <section className="paper-panel score-recap">
             <div className="score-recap__header">
               <div>
-                <p className="eyebrow">Round by round</p>
-                <h2>How the points landed</h2>
+                <p className="eyebrow">Babak demi babak</p>
+                <h2>Perolehan poin</h2>
               </div>
-              <span>{rounds.length} / 3 complete</span>
+              <span>{rounds.length} / 3 selesai</span>
             </div>
 
             <div className="score-recap__rounds">
@@ -118,7 +118,7 @@ export default function ScoreScreen({
                 <article className="round-recap" key={round}>
                   <div className="round-recap__label">
                     <span>0{round}</span>
-                    <strong>Round {round}</strong>
+                    <strong>Babak {round}</strong>
                   </div>
                   <div className="round-recap__teams">
                     {[1, 2].map((team) => {
@@ -130,11 +130,10 @@ export default function ScoreScreen({
                           <summary>
                             <span className={`team-dot team-dot--${team}`} />
                             <span>
-                              <strong>Team {team}</strong>
-                              {cards.length}{' '}
-                              {cards.length === 1 ? 'card' : 'cards'}
+                              <strong>Tim {team}</strong>
+                              {cards.length} kartu
                             </span>
-                            <strong>{points} pts</strong>
+                            <strong>{points} poin</strong>
                             <span
                               className="round-team-result__toggle"
                               aria-hidden="true"
@@ -152,7 +151,7 @@ export default function ScoreScreen({
                               ))
                             ) : (
                               <span className="card-chip-list__empty">
-                                No cards this round
+                                Tidak ada kartu di babak ini
                               </span>
                             )}
                           </div>
@@ -168,14 +167,14 @@ export default function ScoreScreen({
           <div className="score-action">
             <p>
               {isGameOver
-                ? 'Same crew, fresh deck?'
-                : `Next up: Round ${latestRound + 1}`}
+                ? 'Pemain yang sama, deck baru?'
+                : `Berikutnya: Babak ${latestRound + 1}`}
             </p>
             <button
               onClick={isGameOver ? onPlayAgain : onNextRound}
               className="game-button game-button--primary"
             >
-              {isGameOver ? 'Play again' : 'Start next round'}
+              {isGameOver ? 'Main lagi' : 'Mulai babak berikutnya'}
               <span aria-hidden="true">→</span>
             </button>
           </div>

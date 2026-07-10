@@ -13,9 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Monikers — The Guessing Game',
+  title: 'Monikers — Permainan Tebak Nama',
   description:
-    'A fast, funny party game about famous names, one-word clues, and questionable impressions.',
+    'Permainan pesta yang cepat dan seru tentang nama-nama terkenal, petunjuk satu kata, dan aksi kocak.',
 };
 
 export default function RootLayout({
@@ -24,7 +24,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="id" className="dark">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
