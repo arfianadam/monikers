@@ -146,7 +146,14 @@ export default function CardSelectionScreen({
               </p>
               <div className="privacy-note">
                 <span className="privacy-note__icon" aria-hidden="true">
-                  ◉
+                  <svg viewBox="0 0 24 24" fill="none">
+                    <path
+                      d="M12 3.25 19 6v5.16c0 4.45-2.75 7.8-7 9.59-4.25-1.79-7-5.14-7-9.59V6l7-2.75Z"
+                      className="privacy-note__shield"
+                    />
+                    <circle cx="12" cy="11" r="1.65" />
+                    <path d="M12 12.55v2.7" />
+                  </svg>
                 </span>
                 <span>
                   <strong>Hanya untukmu</strong>

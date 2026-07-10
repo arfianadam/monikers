@@ -808,14 +808,30 @@ summary:focus-visible {
 .privacy-note__icon {
   align-items: center;
   background: var(--cyan);
-  border: 1.5px solid var(--ink);
-  border-radius: 50%;
+  border: 2px solid var(--ink);
+  border-radius: 11px 13px 10px 14px;
+  box-shadow: 3px 3px 0 var(--ink);
+  color: var(--ink);
   display: flex;
   flex: 0 0 auto;
-  font-size: 0.8rem;
-  height: 34px;
+  height: 38px;
   justify-content: center;
-  width: 34px;
+  transform: rotate(-3deg);
+  width: 38px;
+}
+
+.privacy-note__icon svg {
+  height: 25px;
+  overflow: visible;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+  width: 25px;
+}
+
+.privacy-note__shield {
+  fill: var(--paper-bright);
 }
 
 .privacy-note > span:last-child {
