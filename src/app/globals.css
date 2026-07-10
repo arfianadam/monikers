@@ -864,6 +864,12 @@ summary:focus-visible {
   font-size: 0.86rem;
   line-height: 1.4;
   max-width: 210px;
+  display: block;
+  z-index: 1;
+  background: var(--paper);
+  padding: 12px;
+  border-radius: 12px;
+  border: 1.5px solid var(--ink);
 }
 
 .handoff-aside__cards span {
