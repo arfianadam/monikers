@@ -1,0 +1,16 @@
+.frame {
+  margin: 0 auto;
+  min-height: 100svh;
+  padding: 26px clamp(20px, 4vw, 56px) calc(30px + env(safe-area-inset-bottom));
+  position: relative;
+  width: min(100%, 1240px);
+  z-index: 1;
+}
+
+@media (max-width: 700px) {
+  .frame {
+    padding-left: 18px;
+    padding-right: 18px;
+    padding-top: 18px;
+  }
+}

@@ -1,6 +1,7 @@
 # 🃏 Monikers
 
-This is a web-based implementation of the party game Monikers, built with Next.js and TypeScript.
+This is a local, pass-and-play implementation of the party game Monikers. The
+interface is written in Bahasa Indonesia and runs entirely in the browser.
 
 ## 📝 Description
 
@@ -12,8 +13,9 @@ This project is a digital version of the game, allowing you to play with friends
 
 - **🎲 Multiple Game Levels:** Includes different card decks for varying difficulty.
 - **🔄 Round-based Gameplay:** Supports the classic three-round structure of Monikers.
-- **💻 Interactive UI:** Components for game setup, card selection, gameplay, and scoring.
+- **💻 Interactive UI:** Private card selection, timed turns, and round-by-round scoring.
 - **🔊 Sound Effects:** Includes sounds for game events.
+- **📱 Responsive Play:** Supports phone portrait, short portrait, and landscape layouts.
 
 ## 🚀 Getting Started
 
@@ -23,8 +25,8 @@ These instructions will get you a copy of the project up and running on your loc
 
 You need to have Node.js and pnpm installed on your machine.
 
-- [Node.js](https://nodejs.org/) (v20 or later recommended)
-- [pnpm](https://pnpm.io/installation) (v11)
+- [Node.js](https://nodejs.org/) v20 or later
+- [pnpm](https://pnpm.io/installation) v11.5.2
 
 ### Installation
 
@@ -38,7 +40,7 @@ You need to have Node.js and pnpm installed on your machine.
     ```
 3.  Install the dependencies:
     ```bash
-    pnpm install
+    pnpm install --frozen-lockfile
     ```
 
 ### Running the Application
@@ -55,21 +57,36 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 In the project directory, you can run the following commands:
 
-- `pnpm dev`: 🏃 Runs the app in development mode.
-- `pnpm build`: 📦 Builds the app for production.
-- `pnpm start`: 🚀 Starts the production server.
-- `pnpm lint`: 🔍 Lints the source code.
-- `pnpm lint:fix`: 🛠️ Lints and automatically fixes issues.
-- `pnpm format`: 🎨 Formats the code with Prettier.
-- `pnpm format:check`: ✅ Checks for formatting issues.
-- `pnpm check`: 📋 Runs both linting and format checking.
+- `pnpm dev`: Runs the app in development mode.
+- `pnpm build`: Builds the app for production.
+- `pnpm start`: Starts the production server.
+- `pnpm lint`: Lints the repository with ESLint.
+- `pnpm lint:fix`: Applies safe ESLint fixes.
+- `pnpm format`: Formats the repository with Prettier.
+- `pnpm format:check`: Checks formatting without changing files.
+- `pnpm typecheck`: Runs strict TypeScript checking.
+- `pnpm test`: Runs the Vitest unit suite once.
+- `pnpm test:watch`: Runs Vitest in watch mode.
+- `pnpm test:e2e`: Builds the app and runs the Playwright flow and visual suite.
+- `pnpm test:e2e:update`: Rebuilds intentional Playwright screenshot baselines.
+- `pnpm check`: Runs formatting, linting, type checking, and unit tests.
+
+Install Playwright's pinned Chromium browser before the first browser test:
+
+```bash
+pnpm exec playwright install chromium
+```
 
 ## 🛠️ Technologies Used
 
 - [Next.js](https://nextjs.org/) - React Framework
 - [React](https://reactjs.org/) - JavaScript Library
 - [TypeScript](https://www.typescriptlang.org/) - Typed JavaScript
-- [Tailwind CSS](https://tailwindcss.com/) - CSS Framework
+- [Zustand](https://zustand.docs.pmnd.rs/) - Game State Management
+- [CSS Modules](https://nextjs.org/docs/app/getting-started/css) - Component Styles
+- [Tailwind CSS](https://tailwindcss.com/) - CSS Foundation and PostCSS Tooling
+- [Vitest](https://vitest.dev/) - Unit Tests
+- [Playwright](https://playwright.dev/) - Browser and Visual Tests
 - [ESLint](https://eslint.org/) - Linter
 - [Prettier](https://prettier.io/) - Code Formatter
 
@@ -85,17 +102,25 @@ In the project directory, you can run the following commands:
 │   │   ├── globals.css
 │   │   ├── layout.tsx
 │   │   └── page.tsx
-│   ├── components/
-│   │   ├── ui/
-│   │   ├── CardSelectionScreen.tsx
-│   │   ├── GameScreen.tsx
-│   │   ├── ScoreScreen.tsx
-│   │   └── SetupScreen.tsx
-│   ├── data/
-│   │   ├── cards-level1.json
-│   │   └── ...
+│   ├── features/game/
+│   │   ├── card-selection/
+│   │   ├── cards/
+│   │   ├── domain/
+│   │   ├── score/
+│   │   ├── session/
+│   │   ├── setup/
+│   │   ├── store/
+│   │   └── turn/
+│   ├── shared/
+│   │   ├── hooks/
+│   │   └── ui/
 │   └── lib/
 │       └── utils.ts
+├── tests/e2e/
+│   ├── __screenshots__/
+│   └── game-flow.spec.ts
+├── playwright.config.ts
+├── vitest.config.ts
 ├── next.config.ts
 ├── package.json
 ├── pnpm-lock.yaml

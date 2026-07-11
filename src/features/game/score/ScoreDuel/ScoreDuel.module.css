@@ -1,0 +1,153 @@
+.duel {
+  display: grid;
+  gap: clamp(18px, 4vw, 50px);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 0 auto 70px;
+  max-width: 980px;
+  position: relative;
+}
+
+.teamCard {
+  background: var(--paper);
+  border: var(--border);
+  border-radius: 26px;
+  box-shadow: var(--hard-shadow);
+  color: var(--ink);
+  display: flex;
+  flex-direction: column;
+  min-height: 245px;
+  overflow: hidden;
+  padding: clamp(24px, 4vw, 38px);
+  position: relative;
+  transition: transform 180ms ease;
+}
+
+.teamCard::before {
+  background: var(--team-1);
+  border-bottom: var(--border);
+  content: '';
+  height: 12px;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.teamTwo::before {
+  background: var(--team-2);
+}
+
+.leader {
+  transform: translateY(-12px);
+}
+
+.leader.teamTwo {
+  transform: translateY(-12px);
+}
+
+.topline {
+  align-items: center;
+  display: flex;
+  font-size: 1.05rem;
+  font-weight: 850;
+  justify-content: space-between;
+  margin-top: 5px;
+}
+
+.leaderSticker {
+  background: var(--lime);
+  border: 1.5px solid var(--ink);
+  border-radius: 999px;
+  box-shadow: 2px 2px 0 var(--ink);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  padding: 9px 14px;
+  text-transform: uppercase;
+}
+
+.score {
+  font-family: var(--font-geist-mono), monospace;
+  font-size: clamp(5rem, 10vw, 8.3rem);
+  letter-spacing: -0.12em;
+  line-height: 0.77;
+  margin: auto 0 9px -7px;
+}
+
+.label {
+  color: var(--ink-soft);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.versus {
+  align-items: center;
+  background: var(--yellow);
+  border: var(--border);
+  border-radius: 50%;
+  color: var(--ink);
+  display: flex;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.64rem;
+  font-weight: 900;
+  height: 48px;
+  justify-content: center;
+  left: 50%;
+  position: absolute;
+  text-transform: uppercase;
+  top: 50%;
+  transform: translate(-50%, -50%) rotate(-8deg);
+  width: 48px;
+  z-index: 2;
+}
+
+@media (max-width: 700px) {
+  .duel {
+    gap: 12px;
+    margin-bottom: 56px;
+  }
+
+  .teamCard {
+    border-radius: 19px;
+    min-height: 190px;
+    padding: 22px 17px;
+  }
+
+  .topline {
+    align-items: center;
+    flex-direction: row;
+    font-size: 0.84rem;
+    gap: 10px;
+  }
+
+  .leaderSticker {
+    font-size: 0.625rem;
+    padding: 7px 11px;
+  }
+
+  .score {
+    font-size: clamp(4.1rem, 19vw, 6.5rem);
+  }
+
+  .versus {
+    height: 39px;
+    width: 39px;
+  }
+}
+
+@media (max-width: 430px) {
+  .duel {
+    grid-template-columns: 1fr;
+  }
+
+  .versus {
+    top: 50%;
+  }
+
+  .leader,
+  .leader.teamTwo {
+    transform: translateX(-4px);
+  }
+}

@@ -1,0 +1,79 @@
+.lockup {
+  align-items: center;
+  color: var(--on-dark);
+  display: inline-flex;
+  gap: 14px;
+}
+
+.copy {
+  display: flex;
+  flex-direction: column;
+}
+
+.name {
+  font-size: 1.35rem;
+  font-weight: 850;
+  letter-spacing: -0.055em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.tagline {
+  color: var(--muted);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.11em;
+  margin-top: 5px;
+  text-transform: uppercase;
+}
+
+.mark {
+  display: inline-block;
+  height: 45px;
+  position: relative;
+  width: 43px;
+}
+
+.card {
+  align-items: center;
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  display: flex;
+  font-size: 1rem;
+  font-weight: 900;
+  height: 36px;
+  justify-content: center;
+  left: 3px;
+  position: absolute;
+  top: 4px;
+  width: 29px;
+}
+
+.backCard {
+  background: var(--coral);
+  left: 10px;
+  top: 6px;
+  transform: rotate(12deg);
+}
+
+.frontCard {
+  background: var(--paper);
+  color: var(--ink);
+  transform: rotate(-7deg);
+}
+
+.compactMark {
+  transform: scale(0.88);
+  transform-origin: left center;
+  width: 38px;
+}
+
+.compactName {
+  font-size: 1.15rem;
+}
+
+@media (max-width: 700px) {
+  .tagline {
+    display: none;
+  }
+}

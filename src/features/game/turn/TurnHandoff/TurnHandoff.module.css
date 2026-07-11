@@ -1,0 +1,202 @@
+.screen {
+  display: flex;
+  flex-direction: column;
+}
+
+.layout {
+  align-items: center;
+  display: grid;
+  flex: 1;
+  gap: clamp(48px, 8vw, 120px);
+  grid-template-columns: minmax(0, 1fr) minmax(340px, 0.72fr);
+  padding: 65px 4vw 75px;
+}
+
+.intro h1 {
+  font-size: clamp(4rem, 8vw, 7.7rem);
+  font-weight: 900;
+  letter-spacing: -0.09em;
+  line-height: 0.83;
+  margin: 0;
+}
+
+.intro h1 span {
+  background: var(--team-current);
+  border: var(--border);
+  border-radius: 0.12em;
+  box-shadow: 0.065em 0.065em 0 var(--ink);
+  color: var(--ink);
+  display: block;
+  margin-left: -0.1em;
+  margin-top: 0.18em;
+  max-width: 100%;
+  padding: 0.025em 0.12em 0.08em;
+  transform: rotate(-0.6deg);
+  width: fit-content;
+}
+
+.lede {
+  color: #d4d0c8;
+  font-size: 1.05rem;
+  line-height: 1.55;
+  margin: 30px 0;
+  max-width: 575px;
+}
+
+.rule {
+  align-items: center;
+  border-top: 1px solid rgba(248, 242, 227, 0.18);
+  display: flex;
+  gap: 18px;
+  max-width: 560px;
+  padding-top: 22px;
+}
+
+.ruleNumber {
+  align-items: center;
+  background: var(--team-current);
+  border: var(--border);
+  border-radius: 13px;
+  color: var(--ink);
+  display: flex;
+  flex: 0 0 auto;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 1rem;
+  font-weight: 900;
+  height: 52px;
+  justify-content: center;
+  transform: rotate(-5deg);
+  width: 52px;
+}
+
+.rule > span:last-child {
+  color: var(--muted);
+  display: flex;
+  flex-direction: column;
+  font-size: 0.78rem;
+  gap: 4px;
+}
+
+.rule strong {
+  color: var(--on-dark);
+  font-size: 0.9rem;
+}
+
+.ticket {
+  overflow: hidden;
+  padding: clamp(28px, 4vw, 42px);
+  position: relative;
+}
+
+.ticket::before {
+  background: var(--team-current);
+  border-bottom: var(--border);
+  content: '';
+  height: 13px;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.ticketTeam {
+  align-items: flex-end;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 28px;
+}
+
+.ticketTeam > span {
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.ticketTeam strong {
+  color: var(--team-current);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 6rem;
+  letter-spacing: -0.1em;
+  line-height: 0.7;
+  -webkit-text-stroke: 2px var(--ink);
+}
+
+.ticketStats {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.ticketStats > span {
+  background: rgba(23, 24, 30, 0.06);
+  border-radius: 12px;
+  color: var(--ink-soft);
+  display: flex;
+  flex-direction: column;
+  font-size: 0.62rem;
+  gap: 3px;
+  padding: 11px 9px;
+  text-align: center;
+}
+
+.ticketStats strong {
+  color: var(--ink);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 1.15rem;
+}
+
+.ticketDivider {
+  border-top: 2px dashed rgba(23, 24, 30, 0.2);
+  margin: 27px -42px 25px;
+}
+
+.ticket > p {
+  color: var(--ink-soft);
+  font-size: 0.83rem;
+  line-height: 1.45;
+  margin: 0 0 20px;
+}
+
+.startButton {
+  width: 100%;
+}
+
+@media (max-width: 960px) {
+  .layout {
+    gap: 60px;
+    grid-template-columns: 1fr;
+    padding-left: 7vw;
+    padding-right: 7vw;
+  }
+
+  .intro {
+    max-width: 700px;
+  }
+
+  .ticket {
+    justify-self: center;
+    max-width: 500px;
+    width: 100%;
+  }
+}
+
+@media (max-width: 700px) {
+  .layout {
+    gap: 48px;
+    padding: 58px 0 50px;
+  }
+
+  .intro h1 {
+    font-size: clamp(3.7rem, 18vw, 5.8rem);
+  }
+
+  .ticket {
+    padding: 30px 24px;
+  }
+
+  .ticketDivider {
+    margin-left: -24px;
+    margin-right: -24px;
+  }
+}

@@ -1,0 +1,7 @@
+.panel {
+  background: var(--paper);
+  border: var(--border);
+  border-radius: var(--soft-radius);
+  box-shadow: var(--hard-shadow);
+  color: var(--ink);
+}

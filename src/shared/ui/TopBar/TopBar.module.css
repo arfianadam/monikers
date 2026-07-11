@@ -1,0 +1,27 @@
+.topBar {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  min-height: 58px;
+  position: relative;
+  z-index: 10;
+}
+
+.note {
+  color: var(--muted);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+@media (max-width: 700px) {
+  .topBar {
+    min-height: 50px;
+  }
+
+  .note {
+    display: none;
+  }
+}

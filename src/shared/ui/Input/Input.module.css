@@ -1,0 +1,16 @@
+.input {
+  background: var(--paper-bright);
+  border: 1.5px solid var(--ink);
+  border-radius: 10px;
+  color: var(--ink);
+  font: inherit;
+  min-height: 44px;
+  padding: 8px 12px;
+  width: 100%;
+}
+
+.input:focus-visible {
+  box-shadow: 0 0 0 6px var(--lime);
+  outline: 3px solid var(--ink);
+  outline-offset: 4px;
+}

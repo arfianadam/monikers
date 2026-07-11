@@ -1,0 +1,240 @@
+.screen {
+  display: flex;
+  flex-direction: column;
+}
+
+.progress {
+  align-items: flex-end;
+  color: var(--muted);
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.66rem;
+  gap: 7px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  width: 180px;
+}
+
+.progressTrack {
+  background: rgba(248, 242, 227, 0.14);
+  border-radius: 99px;
+  display: block;
+  height: 5px;
+  overflow: hidden;
+  width: 100%;
+}
+
+.progressTrack > span {
+  background: var(--lime);
+  border-radius: inherit;
+  display: block;
+  height: 100%;
+  transition: width 300ms ease;
+}
+
+.layout {
+  align-items: center;
+  display: grid;
+  flex: 1;
+  gap: clamp(36px, 6vw, 88px);
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 0.52fr);
+  padding: 60px 6vw 70px;
+}
+
+.card {
+  max-width: 630px;
+  overflow: hidden;
+  padding: clamp(30px, 5vw, 58px);
+  position: relative;
+}
+
+.card::after {
+  border: 2px dashed rgba(23, 24, 30, 0.13);
+  border-radius: 50%;
+  content: '';
+  height: 250px;
+  position: absolute;
+  right: -105px;
+  top: -105px;
+  width: 250px;
+}
+
+.cardNumber {
+  color: var(--coral);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: clamp(6.5rem, 13vw, 10rem);
+  font-weight: 900;
+  letter-spacing: -0.12em;
+  line-height: 0.8;
+  margin: 30px 0 28px -10px;
+}
+
+.card h1 {
+  font-size: clamp(2.6rem, 5vw, 4.5rem);
+  letter-spacing: -0.075em;
+  line-height: 0.9;
+  margin: 0;
+}
+
+.cardLede {
+  color: var(--ink-soft);
+  font-size: 1rem;
+  line-height: 1.55;
+  margin: 22px 0;
+  max-width: 470px;
+}
+
+.privacyNote {
+  align-items: center;
+  background: rgba(100, 216, 255, 0.24);
+  border: 1.5px solid rgba(23, 24, 30, 0.3);
+  border-radius: 16px;
+  display: flex;
+  gap: 13px;
+  margin-bottom: 28px;
+  padding: 13px 15px;
+}
+
+.privacyIcon {
+  align-items: center;
+  background: var(--cyan);
+  border: 2px solid var(--ink);
+  border-radius: 11px 13px 10px 14px;
+  box-shadow: 3px 3px 0 var(--ink);
+  color: var(--ink);
+  display: flex;
+  flex: 0 0 auto;
+  height: 38px;
+  justify-content: center;
+  transform: rotate(-3deg);
+  width: 38px;
+}
+
+.privacyIcon svg {
+  height: 25px;
+  overflow: visible;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+  width: 25px;
+}
+
+.privacyShield {
+  fill: var(--paper-bright);
+}
+
+.privacyNote > span:last-child {
+  color: var(--ink-soft);
+  display: flex;
+  flex-direction: column;
+  font-size: 0.72rem;
+  gap: 2px;
+}
+
+.privacyNote strong {
+  color: var(--ink);
+  font-size: 0.82rem;
+}
+
+.aside {
+  background: var(--cyan);
+  border: var(--border);
+  border-radius: 24px;
+  box-shadow: var(--hard-shadow);
+  color: var(--ink);
+  display: flex;
+  flex-direction: column;
+  min-height: 340px;
+  overflow: hidden;
+  padding: 28px;
+  position: relative;
+  transform: rotate(3deg);
+}
+
+.asideLabel {
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.66rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.aside strong {
+  font-size: clamp(2.4rem, 4vw, 4rem);
+  letter-spacing: -0.07em;
+  line-height: 0.95;
+  margin: auto 0 12px;
+}
+
+.aside > span:nth-child(3) {
+  background: var(--paper);
+  border: 1.5px solid var(--ink);
+  border-radius: 12px;
+  display: block;
+  font-size: 0.86rem;
+  line-height: 1.4;
+  max-width: 210px;
+  padding: 12px;
+  z-index: 1;
+}
+
+.asideCards span {
+  background: var(--paper);
+  border: 1.5px solid var(--ink);
+  border-radius: 7px;
+  bottom: -35px;
+  height: 112px;
+  position: absolute;
+  right: 15px;
+  transform: rotate(-8deg);
+  width: 77px;
+}
+
+.asideCards span:nth-child(2) {
+  background: var(--yellow);
+  right: 52px;
+  transform: rotate(4deg);
+}
+
+.asideCards span:nth-child(3) {
+  background: var(--coral);
+  right: 91px;
+  transform: rotate(-1deg);
+}
+
+@media (max-width: 960px) {
+  .layout {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+@media (max-width: 700px) {
+  .layout {
+    display: flex;
+    padding: 52px 0 50px;
+  }
+
+  .aside {
+    display: none;
+  }
+
+  .card {
+    border-radius: 22px;
+    max-width: none;
+    padding: 29px 24px;
+  }
+
+  .cardNumber {
+    font-size: 7rem;
+  }
+
+  .card h1 {
+    font-size: 3rem;
+  }
+
+  .progress {
+    width: 130px;
+  }
+}

@@ -1,0 +1,68 @@
+.button {
+  align-items: center;
+  border: var(--border);
+  border-radius: 999px;
+  box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.72);
+  color: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  font: inherit;
+  font-size: 0.98rem;
+  font-weight: 800;
+  gap: 16px;
+  justify-content: center;
+  letter-spacing: -0.02em;
+  min-height: 58px;
+  padding: 14px 24px;
+  transition:
+    box-shadow 160ms ease,
+    transform 160ms ease,
+    background 160ms ease;
+}
+
+.button:focus-visible {
+  box-shadow: 0 0 0 6px var(--lime);
+  outline: 3px solid var(--ink);
+  outline-offset: 4px;
+}
+
+.button > span:last-child {
+  font-size: 1.25em;
+  line-height: 1;
+}
+
+.button:hover:not(:disabled) {
+  box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.72);
+  transform: translate(-2px, -2px);
+}
+
+.button:active:not(:disabled) {
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.72);
+  transform: translate(3px, 3px);
+}
+
+.button:disabled {
+  box-shadow: none;
+  cursor: not-allowed;
+  filter: saturate(0.15);
+  opacity: 0.48;
+}
+
+.primary {
+  background: var(--lime);
+  color: var(--ink);
+}
+
+.primary:hover:not(:disabled) {
+  background: #d8ff72;
+}
+
+.secondary {
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.success {
+  background: var(--lime);
+  color: var(--ink);
+}
