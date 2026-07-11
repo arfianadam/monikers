@@ -393,7 +393,7 @@
     padding: 10px 12px 8px;
   }
 
-  .topBar {
+  header.topBar {
     display: none;
   }
 
@@ -482,7 +482,7 @@
     padding: 8px 12px;
   }
 
-  .topBar {
+  header.topBar {
     display: none;
   }
 

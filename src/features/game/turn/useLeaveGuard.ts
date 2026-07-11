@@ -10,10 +10,15 @@ export function useLeaveGuard() {
       return '';
     };
 
-    const handlePopState = (event: PopStateEvent) => {
-      window.history.pushState(null, '', window.location.href);
+    const handlePopState = () => {
       const shouldLeave = window.confirm('Yakin ingin meninggalkan permainan?');
-      if (!shouldLeave) event.preventDefault();
+      if (shouldLeave) {
+        window.removeEventListener('popstate', handlePopState);
+        window.history.back();
+        return;
+      }
+
+      window.history.pushState(null, '', window.location.href);
     };
 
     window.addEventListener('beforeunload', handleBeforeUnload);

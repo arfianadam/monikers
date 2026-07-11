@@ -17,11 +17,13 @@ export interface ActiveTurnProps {
   round: RoundNumber;
   currentTeamNumber: 1 | 2;
   timer: number;
-  remainingCards: readonly Card[];
+  activeCard: Card | null;
+  remainingCardCount: number;
   initialCardCount: number;
   guessedCardCount: number;
   canSkip: boolean;
   isGuessDisabled: boolean;
+  actionsDisabled?: boolean;
   onSkip: () => void;
   onGuess: () => void;
   onEndTurn: () => void;
@@ -32,17 +34,18 @@ export function ActiveTurn({
   round,
   currentTeamNumber,
   timer,
-  remainingCards,
+  activeCard,
+  remainingCardCount,
   initialCardCount,
   guessedCardCount,
   canSkip,
   isGuessDisabled,
+  actionsDisabled = false,
   onSkip,
   onGuess,
   onEndTurn,
   containerRef,
 }: ActiveTurnProps) {
-  const activeCard = remainingCards[0];
   const timerStyle = {
     '--timer-progress': `${(timer / ROUND_DURATION_SECONDS) * 360}deg`,
   } as CSSProperties;
@@ -74,7 +77,7 @@ export function ActiveTurn({
             <span className={styles.timerLabel}>detik</span>
           </div>
           <div className={styles.deckChip}>
-            <strong>{remainingCards.length}</strong>
+            <strong>{remainingCardCount}</strong>
             <span>kartu tersisa</span>
           </div>
         </div>
@@ -93,7 +96,7 @@ export function ActiveTurn({
                   Tingkat {activeCard.level}
                 </span>
                 <span className={styles.cardSerial}>
-                  {String(remainingCards.length).padStart(2, '0')} /{' '}
+                  {String(remainingCardCount).padStart(2, '0')} /{' '}
                   {String(initialCardCount).padStart(2, '0')}
                 </span>
               </div>
@@ -115,7 +118,7 @@ export function ActiveTurn({
             <GameButton
               variant="secondary"
               onClick={onSkip}
-              disabled={!canSkip || remainingCards.length <= 1}
+              disabled={actionsDisabled || !canSkip || remainingCardCount <= 1}
               className={cn(styles.actionButton, styles.skipButton)}
             >
               <span aria-hidden="true">↻</span>
@@ -124,7 +127,7 @@ export function ActiveTurn({
             <GameButton
               variant="success"
               onClick={onGuess}
-              disabled={isGuessDisabled}
+              disabled={actionsDisabled || isGuessDisabled}
               className={cn(styles.actionButton, styles.guessButton)}
             >
               Benar!
@@ -136,7 +139,11 @@ export function ActiveTurn({
               {guessedCardCount} kartu berhasil ditebak pada giliran ini
               {!canSkip && ' · Tebak dengan benar agar bisa melewati lagi'}
             </span>
-            <button onClick={onEndTurn} className={styles.endTurnButton}>
+            <button
+              onClick={onEndTurn}
+              className={styles.endTurnButton}
+              disabled={actionsDisabled}
+            >
               Akhiri giliran lebih awal
             </button>
           </div>

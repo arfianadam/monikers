@@ -1,0 +1,70 @@
+.status {
+  align-items: center;
+  color: var(--muted);
+  display: inline-flex;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.67rem;
+  font-weight: 700;
+  gap: 8px;
+  letter-spacing: 0.05em;
+  min-height: 44px;
+  white-space: nowrap;
+}
+
+.dot {
+  background: #47d16c;
+  border: 1px solid rgba(23, 24, 30, 0.75);
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px rgba(71, 209, 108, 0.13);
+  height: 10px;
+  width: 10px;
+}
+
+.connecting .dot,
+.disconnected .dot {
+  animation: connectionPulse 1.8s ease-in-out infinite;
+}
+
+.retry {
+  background: var(--paper);
+  border: 1px solid var(--ink);
+  border-radius: 999px;
+  color: var(--ink);
+  font: inherit;
+  min-height: 44px;
+  padding: 6px 12px;
+}
+
+.connecting .dot {
+  background: var(--yellow);
+  box-shadow: 0 0 0 3px rgba(255, 203, 69, 0.13);
+}
+
+.disconnected {
+  color: #ffc0b7;
+}
+
+.disconnected .dot {
+  background: var(--coral);
+  box-shadow: 0 0 0 3px rgba(255, 98, 77, 0.16);
+}
+
+@keyframes connectionPulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.55;
+    transform: scale(1.22);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .connecting .dot,
+  .disconnected .dot {
+    animation: none;
+  }
+}

@@ -1,0 +1,187 @@
+.screen {
+  display: flex;
+  flex-direction: column;
+}
+
+.layout {
+  align-items: center;
+  display: grid;
+  flex: 1;
+  gap: clamp(40px, 7vw, 96px);
+  grid-template-columns: minmax(0, 1.05fr) minmax(360px, 0.78fr);
+  padding: clamp(44px, 8vh, 94px) 0;
+}
+
+.intro h1 {
+  font-size: clamp(3.6rem, 8vw, 7.6rem);
+  letter-spacing: -0.075em;
+  line-height: 0.84;
+  margin: 20px 0 28px;
+  max-width: 8ch;
+}
+
+.intro h1 span {
+  color: var(--lime);
+  display: block;
+}
+
+.intro > p {
+  color: var(--muted);
+  font-size: clamp(1.05rem, 1.5vw, 1.25rem);
+  line-height: 1.65;
+  margin: 0;
+  max-width: 52ch;
+}
+
+.rounds {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  list-style: none;
+  margin: 32px 0 0;
+  padding: 0;
+}
+
+.rounds li {
+  align-items: center;
+  border: 1px solid rgba(248, 242, 227, 0.24);
+  border-radius: 999px;
+  display: flex;
+  font-size: 0.82rem;
+  font-weight: 750;
+  gap: 8px;
+  padding: 8px 13px;
+}
+
+.rounds span {
+  color: var(--lime);
+  font-family: var(--font-geist-mono);
+}
+
+.actions {
+  padding: clamp(26px, 4vw, 40px);
+}
+
+.actionHeading {
+  margin-bottom: 24px;
+}
+
+.actionHeading h2 {
+  font-size: clamp(2rem, 4vw, 3rem);
+  letter-spacing: -0.055em;
+  margin: 8px 0 0;
+}
+
+.actionButton {
+  width: 100%;
+}
+
+.hint {
+  color: var(--ink-soft);
+  font-size: 0.84rem;
+  line-height: 1.45;
+  margin: 8px 8px 20px;
+}
+
+.divider {
+  align-items: center;
+  color: var(--ink-soft);
+  display: flex;
+  font-size: 0.78rem;
+  font-weight: 800;
+  gap: 12px;
+  margin: 26px 0 18px;
+  text-transform: uppercase;
+}
+
+.divider::before,
+.divider::after {
+  background: rgba(23, 24, 30, 0.22);
+  content: '';
+  flex: 1;
+  height: 1px;
+}
+
+.joinForm label {
+  color: var(--ink);
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.joinForm > div {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 1fr auto;
+}
+
+.joinForm input {
+  font-family: var(--font-geist-mono);
+  font-size: 1.1rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  min-height: 58px;
+  text-transform: uppercase;
+}
+
+.joinForm button {
+  min-height: 58px;
+}
+
+.joinForm small {
+  color: var(--ink-soft);
+  display: block;
+  margin-top: 8px;
+}
+
+.error {
+  background: rgba(255, 98, 77, 0.16);
+  border: 1px solid var(--coral);
+  border-radius: 10px;
+  color: var(--ink);
+  font-size: 0.9rem;
+  margin: 20px 0 0;
+  padding: 12px;
+}
+
+@media (max-width: 820px) {
+  .layout {
+    grid-template-columns: 1fr;
+    padding: 48px 0;
+  }
+
+  .intro h1 {
+    max-width: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .intro h1 {
+    font-size: clamp(3.25rem, 17vw, 5rem);
+  }
+
+  .joinForm > div {
+    grid-template-columns: 1fr;
+  }
+
+  .joinForm button {
+    width: 100%;
+  }
+}
+
+@media (orientation: landscape) and (max-height: 540px) {
+  .layout {
+    align-items: start;
+    grid-template-columns: minmax(0, 0.9fr) minmax(350px, 1fr);
+    padding: 24px 0;
+  }
+
+  .intro h1 {
+    font-size: clamp(3rem, 9vw, 5rem);
+  }
+
+  .rounds {
+    display: none;
+  }
+}

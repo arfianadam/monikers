@@ -17,6 +17,15 @@ export function useStageFocus(
     }
 
     const focusFrame = window.requestAnimationFrame(() => {
+      const activeElement = document.activeElement;
+      if (
+        activeElement instanceof HTMLElement &&
+        containerRef.current?.contains(activeElement) &&
+        activeElement.matches('button, input, select, textarea, [tabindex]')
+      ) {
+        return;
+      }
+
       const heading = containerRef.current?.querySelector('h1');
       const focusTarget = heading ?? containerRef.current;
 

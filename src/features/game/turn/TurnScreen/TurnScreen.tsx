@@ -88,7 +88,8 @@ export function TurnScreen() {
       round={round}
       currentTeamNumber={currentTeamNumber}
       timer={timer}
-      remainingCards={remainingCards}
+      activeCard={remainingCards[0] ?? null}
+      remainingCardCount={remainingCards.length}
       initialCardCount={initialCardCount}
       guessedCardCount={guessedCardCount}
       canSkip={canSkip}

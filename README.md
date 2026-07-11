@@ -1,7 +1,9 @@
 # 🃏 Monikers
 
-This is a local, pass-and-play implementation of the party game Monikers. The
-interface is written in Bahasa Indonesia and runs entirely in the browser.
+This is a local implementation of the party game Monikers. The interface is
+written in Bahasa Indonesia and supports pass-and-play on one screen or
+same-room play from each player's device. A custom Next.js server keeps live
+sessions authoritative in memory and synchronizes browsers over WebSockets.
 
 ## 📝 Description
 
@@ -14,6 +16,8 @@ This project is a digital version of the game, allowing you to play with friends
 - **🎲 Multiple Game Levels:** Includes different card decks for varying difficulty.
 - **🔄 Round-based Gameplay:** Supports the classic three-round structure of Monikers.
 - **💻 Interactive UI:** Private card selection, timed turns, and round-by-round scoring.
+- **📡 Own-device rooms:** Share a six-character code while each player's cards stay private on their own screen.
+- **🔁 Session recovery:** Refresh or reconnect without losing the current in-memory game.
 - **🔊 Sound Effects:** Includes sounds for game events.
 - **📱 Responsive Play:** Supports phone portrait, short portrait, and landscape layouts.
 
@@ -71,11 +75,15 @@ In the project directory, you can run the following commands:
 - `pnpm test:e2e:update`: Rebuilds intentional Playwright screenshot baselines.
 - `pnpm check`: Runs formatting, linting, type checking, and unit tests.
 
-Install Playwright's pinned Chromium browser before the first browser test:
+Install Playwright's pinned Chromium and WebKit browsers before the first
+browser test:
 
 ```bash
-pnpm exec playwright install chromium
+pnpm exec playwright install chromium webkit
 ```
+
+Sessions live only in the running Node process. Restarting the server clears
+all rooms; there is no account system or durable storage.
 
 ## 🛠️ Technologies Used
 
@@ -83,6 +91,8 @@ pnpm exec playwright install chromium
 - [React](https://reactjs.org/) - JavaScript Library
 - [TypeScript](https://www.typescriptlang.org/) - Typed JavaScript
 - [Zustand](https://zustand.docs.pmnd.rs/) - Game State Management
+- [ws](https://github.com/websockets/ws) - WebSocket session transport
+- [Zod](https://zod.dev/) - Shared protocol validation
 - [CSS Modules](https://nextjs.org/docs/app/getting-started/css) - Component Styles
 - [Tailwind CSS](https://tailwindcss.com/) - CSS Foundation and PostCSS Tooling
 - [Vitest](https://vitest.dev/) - Unit Tests
@@ -101,6 +111,8 @@ pnpm exec playwright install chromium
 │   ├── app/
 │   │   ├── globals.css
 │   │   ├── layout.tsx
+│   │   ├── join/[code]/
+│   │   ├── session/[id]/
 │   │   └── page.tsx
 │   ├── features/game/
 │   │   ├── card-selection/
@@ -116,6 +128,10 @@ pnpm exec playwright install chromium
 │   │   └── ui/
 │   └── lib/
 │       └── utils.ts
+├── src/server/
+│   ├── runtime/               # HTTP, WebSocket, repository, and timers
+│   └── session/               # Serializable aggregate and pure reducer
+├── server.ts                  # Next.js custom server entry point
 ├── tests/e2e/
 │   ├── __screenshots__/
 │   └── game-flow.spec.ts

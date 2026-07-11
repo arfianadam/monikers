@@ -2,10 +2,14 @@
 
 ## Project
 
-Monikers is a local, pass-and-play party game. It is a browser-only Next.js App
-Router application with no API, persistence, authentication, or environment
-configuration. User-facing copy, metadata, and accessibility labels are in
-Bahasa Indonesia.
+Monikers is a local party game supporting pass-and-play and same-room play on
+each player's device. It is a Next.js App Router application served by one
+long-lived custom Node process. That process owns a small HTTP lifecycle API,
+native-browser WebSocket connections through `ws`, and authoritative in-memory
+sessions. Sessions survive refresh/reconnect but not a Node restart. There is
+no durable persistence, account authentication, or horizontal scaling.
+
+User-facing copy, metadata, and accessibility labels are in Bahasa Indonesia.
 
 Default to behavior- and visual-preserving changes. Treat gameplay, content,
 card data, and design changes as separate product work.
@@ -16,18 +20,18 @@ card data, and design changes as separate product work.
 - pnpm 11.5.2, as pinned by `packageManager`.
 - Next.js 15, React 19, strict TypeScript, and Zustand 5.
 - CSS Modules for component styles.
-- Vitest for unit tests and Playwright Chromium for browser/visual tests.
+- Vitest for unit tests and Playwright Chromium/WebKit for browser tests.
 
 Install dependencies with:
 
 ```bash
 pnpm install --frozen-lockfile
-pnpm exec playwright install chromium
+pnpm exec playwright install chromium webkit
 ```
 
 ## Commands
 
-- `pnpm dev`: start the Turbopack development server on port 3000.
+- `pnpm dev`: start the typed custom server with Turbopack on port 3000.
 - `pnpm format`: format the repository.
 - `pnpm format:check`: check formatting without edits.
 - `pnpm lint`: lint source and configuration files with ESLint.
@@ -36,6 +40,7 @@ pnpm exec playwright install chromium
 - `pnpm test:watch`: run Vitest in watch mode.
 - `pnpm check`: run format, lint, typecheck, and unit checks.
 - `pnpm build`: create the production Next.js build.
+- `pnpm start`: run the production custom server; `PORT` defaults to 3000.
 - `pnpm test:e2e`: build and run the full Playwright flow and visual suite.
 - `pnpm test:e2e:update`: intentionally replace screenshot baselines.
 
@@ -50,20 +55,28 @@ src/features/game/cards/         Raw card data, catalog, and deck operations
 src/features/game/domain/        Framework-free types, rules, and scoring
 src/features/game/store/         Scoped Zustand store and provider
 src/features/game/session/       Stage composition and store lifetime
+src/features/game/session-entry/ Home and code-join flows
+src/features/game/session-client/ Projection-driven session client and hooks
+src/features/game/session-protocol/ Shared schemas and protocol unions
+src/features/game/own-device/    Own-device lobby/selection/turn/recovery UI
 src/features/game/setup/         Setup screen and numeric controls
 src/features/game/card-selection/ Private handoff and card picker
 src/features/game/turn/          Turn controller, browser effects, and views
 src/features/game/score/         Round/final score views
 src/shared/hooks/                Hooks used by more than one feature
 src/shared/ui/                   Feature-independent UI components
+src/server/session/              Serializable aggregate, reducer, projections
+src/server/runtime/              Repository, HTTP, WebSocket, deadlines
+server.ts                        Custom Next.js/HTTP/WebSocket process entry
 tests/e2e/                       Full game flow and committed screenshots
 ```
 
 Keep dependency direction explicit:
 
 ```text
-app -> game session -> feature screens/controllers -> game domain + shared UI
-store -> cards + domain
+app -> session client -> feature screens/controllers -> protocol + shared UI
+server runtime -> session reducer -> cards + game domain
+legacy store -> cards + domain
 cards catalog -> raw JSON data
 ```
 
@@ -74,18 +87,21 @@ cards catalog -> raw JSON data
 
 ## State
 
-`GameStoreProvider` creates one vanilla Zustand store for each mounted game.
-The store is global within that game tree but is not a process singleton and is
-not persisted. Refreshing the page starts a new game.
+The server session aggregate owns authoritative serializable game state. The
+client receives recipient-specific, versioned projections and sends typed
+commands with unique IDs. It must not submit whole state, replay commands after
+disconnect, or mutate gameplay optimistically. Server deadlines, rather than
+browser ticks, decide turn expiration.
 
-The store owns serializable game state: stage, setup, card selection, chosen
-deck, round, scores, remaining/guessed cards, current team, timer, active-turn
-state, and skip eligibility. Update it through named store actions.
+The scoped Zustand store remains for framework-free transition coverage and
+behavior comparison; canonical `/session/<id>` gameplay is server-authoritative.
 
 Feature-level screens/controllers may subscribe to narrow selectors.
-Presentational components remain prop-driven. Never put DOM refs, Audio
-instances, interval handles, focus mechanics, or temporary input drafts in the
-store. Browser concerns belong in focused hooks under the owning feature.
+Presentational components remain prop-driven. Never put sockets, heartbeat
+metadata, timeout handles, DOM refs, Audio instances, focus mechanics, or
+temporary input drafts in the serializable aggregate. Runtime metadata belongs
+under `src/server/runtime`; browser concerns belong in focused hooks under the
+owning feature.
 
 Pure deck, rule, scoring, and state-transition behavior must remain testable
 without rendering React.
@@ -107,7 +123,7 @@ without rendering React.
 - Ending a turn early banks its guessed cards and preserves remaining cards.
 - Card level is its point value. Scores accumulate by team and round.
 - A correct guess plays the bell; any turn ending plays the ring.
-- Leave/back protection is active while the turn feature is mounted.
+- Leave/back protection is active throughout every session phase.
 - Stage/view changes scroll to the top and move focus to the primary heading.
 
 ## Components And Styles
@@ -170,7 +186,8 @@ phone portrait, a short portrait, and a short landscape after related changes.
 - Keep refactors separate from fixes, content edits, and redesigns.
 - Preserve existing runtime algorithms unless the change is explicitly scoped
   and protected by new regression tests.
-- Do not add persistence, APIs, authentication, or server state implicitly.
+- Do not add durable persistence, accounts, or horizontally shared state
+  implicitly.
 - Avoid unrelated dependency upgrades and generated metadata churn.
 - Use Conventional Commit prefixes such as `feat:`, `fix:`, `refactor:`,
   `test:`, `docs:`, and `build:` when creating commits.

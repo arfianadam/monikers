@@ -22,6 +22,7 @@ export interface TurnHandoffProps {
   remainingCardCount: number;
   initialCardCount: number;
   currentTeamScore: number;
+  disabled?: boolean;
   onStart: () => void;
   containerRef?: Ref<HTMLDivElement>;
 }
@@ -32,6 +33,7 @@ export function TurnHandoff({
   remainingCardCount,
   initialCardCount,
   currentTeamScore,
+  disabled = false,
   onStart,
   containerRef,
 }: TurnHandoffProps) {
@@ -87,7 +89,11 @@ export function TurnHandoff({
               Serahkan perangkat kepada pemberi petunjuk, lalu mulai penghitung
               waktunya.
             </p>
-            <GameButton className={styles.startButton} onClick={onStart}>
+            <GameButton
+              className={styles.startButton}
+              onClick={onStart}
+              disabled={disabled}
+            >
               Mulai giliran {ROUND_DURATION_SECONDS} detik
               <span aria-hidden="true">→</span>
             </GameButton>

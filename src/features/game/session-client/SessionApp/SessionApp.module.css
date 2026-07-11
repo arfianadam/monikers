@@ -1,0 +1,61 @@
+.sessionMenu {
+  display: flex;
+  gap: 8px;
+  left: max(14px, env(safe-area-inset-left));
+  position: fixed;
+  top: max(72px, calc(58px + env(safe-area-inset-top)));
+  z-index: 35;
+}
+
+.sessionMenu button {
+  background: rgba(23, 24, 30, 0.92);
+  border: 1px solid rgba(248, 242, 227, 0.28);
+  border-radius: 999px;
+  color: var(--on-dark);
+  font-size: 0.78rem;
+  font-weight: 800;
+  min-height: 44px;
+  padding: 8px 15px;
+}
+
+.errorNotice {
+  background: var(--coral);
+  border: var(--border);
+  border-radius: 12px;
+  bottom: max(14px, env(safe-area-inset-bottom));
+  box-shadow: 4px 4px 0 var(--ink);
+  color: var(--ink);
+  font-size: 0.82rem;
+  font-weight: 780;
+  left: 50%;
+  max-width: min(90vw, 620px);
+  min-height: 44px;
+  padding: 10px 14px;
+  position: fixed;
+  transform: translateX(-50%);
+  z-index: 60;
+}
+
+.errorNotice span {
+  font-size: 1.15em;
+  margin-left: 8px;
+}
+
+@media (max-width: 520px) {
+  .sessionMenu {
+    align-items: flex-start;
+    flex-direction: column;
+    left: max(10px, env(safe-area-inset-left));
+    top: max(62px, calc(52px + env(safe-area-inset-top)));
+  }
+
+  .sessionMenu button {
+    font-size: 0.7rem;
+    min-height: 44px;
+    padding: 6px 11px;
+  }
+
+  .errorNotice {
+    bottom: calc(62px + env(safe-area-inset-bottom));
+  }
+}

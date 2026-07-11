@@ -1,5 +1,5 @@
-import { GameApp } from '@/features/game/session/GameApp/GameApp';
+import { HomeScreen } from '@/features/game/session-entry/HomeScreen/HomeScreen';
 
 export default function Home() {
-  return <GameApp />;
+  return <HomeScreen />;
 }

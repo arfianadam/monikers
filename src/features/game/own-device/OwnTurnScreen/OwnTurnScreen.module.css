@@ -1,0 +1,771 @@
+.topMeta {
+  align-items: center;
+  display: flex;
+  gap: 20px;
+}
+
+.handoffScreen,
+.watchingScreen,
+.activeScreen {
+  display: flex;
+  flex-direction: column;
+}
+
+.handoffMain {
+  align-items: center;
+  display: grid;
+  flex: 1;
+  gap: clamp(48px, 8vw, 115px);
+  grid-template-columns: minmax(0, 1fr) minmax(340px, 0.66fr);
+  padding: clamp(52px, 9vh, 100px) 3vw;
+}
+
+.handoffIntro h1 {
+  font-size: clamp(3.8rem, 7.5vw, 7rem);
+  letter-spacing: -0.09em;
+  line-height: 0.84;
+  margin: 14px 0 28px;
+}
+
+.handoffIntro h1 span {
+  background: var(--team-current);
+  border: var(--border);
+  border-radius: 0.13em;
+  box-shadow: 0.06em 0.06em 0 var(--ink);
+  color: var(--ink);
+  display: block;
+  margin-top: 0.17em;
+  padding: 0.025em 0.12em 0.075em;
+  transform: rotate(-0.7deg);
+  width: fit-content;
+}
+
+.handoffIntro > p {
+  color: #d4d0c8;
+  line-height: 1.55;
+  margin: 0;
+  max-width: 580px;
+}
+
+.ruleNote {
+  align-items: center;
+  border-top: 1px solid rgba(248, 242, 227, 0.18);
+  display: flex;
+  gap: 16px;
+  margin-top: 27px;
+  max-width: 570px;
+  padding-top: 20px;
+}
+
+.ruleNote > span {
+  align-items: center;
+  background: var(--team-current);
+  border: var(--border);
+  border-radius: 11px;
+  color: var(--ink);
+  display: flex;
+  flex: 0 0 auto;
+  font-family: var(--font-geist-mono), monospace;
+  font-weight: 900;
+  height: 50px;
+  justify-content: center;
+  transform: rotate(-5deg);
+  width: 50px;
+}
+
+.ruleNote p {
+  color: var(--muted);
+  display: flex;
+  flex-direction: column;
+  font-size: 0.75rem;
+  gap: 4px;
+  margin: 0;
+}
+
+.ruleNote strong {
+  color: var(--on-dark);
+  font-size: 0.85rem;
+}
+
+.handoffTicket {
+  overflow: hidden;
+  padding: clamp(29px, 4vw, 42px);
+  position: relative;
+}
+
+.handoffTicket::before {
+  background: var(--team-current);
+  border-bottom: var(--border);
+  content: '';
+  height: 12px;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.privateLabel {
+  color: var(--ink-soft);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.61rem;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.handoffTicket h2 {
+  font-size: clamp(2rem, 4vw, 3rem);
+  letter-spacing: -0.06em;
+  line-height: 0.95;
+  margin: 18px 0 15px;
+}
+
+.handoffTicket > p {
+  color: var(--ink-soft);
+  font-size: 0.8rem;
+  line-height: 1.5;
+  margin: 0 0 24px;
+}
+
+.handoffTicket dl {
+  display: grid;
+  gap: 7px;
+  grid-template-columns: repeat(3, 1fr);
+  margin: 0 0 22px;
+}
+
+.handoffTicket dl > div {
+  background: rgba(23, 24, 30, 0.06);
+  border-radius: 11px;
+  padding: 10px;
+  text-align: center;
+}
+
+.handoffTicket dt {
+  color: var(--ink-soft);
+  font-size: 0.57rem;
+  text-transform: uppercase;
+}
+
+.handoffTicket dd {
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 1.15rem;
+  font-weight: 850;
+  margin: 3px 0 0;
+}
+
+.handoffTicket button {
+  width: 100%;
+}
+
+.watchingMain {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 32px 2vw 50px;
+}
+
+.publicHud {
+  background: var(--canvas-raised);
+  border: 1px solid rgba(248, 242, 227, 0.17);
+  border-radius: 18px;
+  display: grid;
+  gap: 1px;
+  grid-template-columns: 0.7fr 1.3fr 0.7fr 0.7fr;
+  margin: 0 auto;
+  max-width: 960px;
+  overflow: hidden;
+  width: 100%;
+}
+
+.publicHud > div {
+  align-items: center;
+  background: rgba(248, 242, 227, 0.025);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 73px;
+  padding: 10px 13px;
+  text-align: center;
+}
+
+.publicHud dt {
+  color: var(--muted);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.56rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.publicHud dd {
+  align-items: center;
+  display: flex;
+  font-size: 0.82rem;
+  font-weight: 800;
+  gap: 7px;
+  margin: 6px 0 0;
+  overflow-wrap: anywhere;
+}
+
+.publicHud dd span:not(.teamDot) {
+  color: var(--muted);
+}
+
+.teamDot {
+  background: var(--team-current);
+  border: 1px solid var(--ink);
+  border-radius: 50%;
+  display: inline-block;
+  flex: 0 0 auto;
+  height: 11px;
+  width: 11px;
+}
+
+.watchingCopy {
+  align-items: center;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  margin: 0 auto;
+  max-width: 830px;
+  padding: clamp(48px, 9vh, 105px) 0;
+  text-align: center;
+}
+
+.watchingCopy h1 {
+  font-size: clamp(3.6rem, 8vw, 7.2rem);
+  letter-spacing: -0.09em;
+  line-height: 0.86;
+  margin: 12px 0 25px;
+  text-wrap: balance;
+}
+
+.watchingCopy > p {
+  color: var(--muted);
+  line-height: 1.55;
+  margin: 0;
+  max-width: 590px;
+}
+
+.waitingIcon {
+  align-items: center;
+  background: var(--team-current);
+  border: var(--border);
+  border-radius: 50%;
+  box-shadow: 5px 5px 0 var(--ink);
+  color: var(--ink);
+  display: flex;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 1.4rem;
+  font-weight: 900;
+  height: 66px;
+  justify-content: center;
+  margin-bottom: 30px;
+  transform: rotate(-5deg);
+  width: 66px;
+}
+
+.publicTimer {
+  align-items: center;
+  background: var(--team-current);
+  border: var(--border);
+  border-radius: 50%;
+  box-shadow: 6px 6px 0 var(--ink);
+  color: var(--ink);
+  display: flex;
+  flex-direction: column;
+  height: 112px;
+  justify-content: center;
+  margin-bottom: 32px;
+  width: 112px;
+}
+
+.publicTimer strong {
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 2.25rem;
+  letter-spacing: -0.07em;
+  line-height: 1;
+}
+
+.publicTimer span {
+  font-size: 0.56rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  margin-top: 4px;
+  text-transform: uppercase;
+}
+
+.privacyNote {
+  align-items: center;
+  color: var(--muted);
+  display: flex;
+  font-size: 0.67rem;
+  gap: 8px;
+  justify-content: center;
+  margin: 0;
+}
+
+.privacyNote span {
+  color: var(--lime);
+}
+
+.activeScreen {
+  height: 100svh;
+  min-height: 600px;
+  overflow: hidden;
+}
+
+.activeHud {
+  align-items: center;
+  display: grid;
+  flex: 0 0 auto;
+  grid-template-columns: 1fr auto 1fr;
+  min-height: 116px;
+}
+
+.activeTeam,
+.cardsLeft {
+  align-items: center;
+  background: var(--canvas-raised);
+  border: 1px solid rgba(248, 242, 227, 0.17);
+  border-radius: 999px;
+  display: flex;
+  font-size: 0.74rem;
+  gap: 9px;
+  padding: 9px 13px;
+  width: fit-content;
+}
+
+.activeTeam > span:last-child {
+  display: flex;
+  flex-direction: column;
+}
+
+.activeTeam small {
+  color: var(--muted);
+  font-size: 0.58rem;
+  margin-top: 2px;
+}
+
+.cardsLeft {
+  justify-self: end;
+}
+
+.cardsLeft strong {
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.92rem;
+}
+
+.cardsLeft span {
+  color: var(--muted);
+}
+
+.timerDial {
+  align-items: center;
+  background: conic-gradient(
+    var(--lime) 0 var(--timer-progress),
+    rgba(248, 242, 227, 0.13) var(--timer-progress) 360deg
+  );
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  height: 96px;
+  justify-content: center;
+  position: relative;
+  width: 96px;
+}
+
+.timerDial::before {
+  background: var(--canvas);
+  border: 1.5px solid rgba(248, 242, 227, 0.18);
+  border-radius: 50%;
+  content: '';
+  inset: 7px;
+  position: absolute;
+}
+
+.timerDial strong,
+.timerDial span {
+  position: relative;
+  z-index: 1;
+}
+
+.timerDial strong {
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 2.15rem;
+  letter-spacing: -0.08em;
+  line-height: 1;
+}
+
+.timerDial span {
+  color: var(--muted);
+  font-size: 0.53rem;
+  letter-spacing: 0.08em;
+  margin-top: 4px;
+  text-transform: uppercase;
+}
+
+.urgentTimer {
+  animation: urgentPulse 1s ease-in-out infinite;
+}
+
+.timerDial.urgentTimer {
+  background: conic-gradient(
+    var(--coral) 0 var(--timer-progress),
+    rgba(248, 242, 227, 0.13) var(--timer-progress) 360deg
+  );
+}
+
+.urgentTimer strong {
+  color: var(--coral);
+}
+
+.publicTimer.urgentTimer {
+  background: var(--coral);
+}
+
+.publicTimer.urgentTimer strong {
+  color: var(--ink);
+}
+
+.cardStage {
+  align-items: center;
+  display: flex;
+  flex: 1 1 auto;
+  justify-content: center;
+  min-height: 0;
+  padding: 17px 0 22px;
+}
+
+.activeCard {
+  display: flex;
+  flex-direction: column;
+  height: min(100%, 390px);
+  min-height: 290px;
+  overflow: hidden;
+  padding: clamp(25px, 4vw, 38px);
+  position: relative;
+  width: min(100%, 740px);
+}
+
+.activeCard::before {
+  background: var(--violet);
+  content: '';
+  height: 10px;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.activeCard[data-level='1']::before {
+  background: var(--lime);
+}
+
+.activeCard[data-level='2']::before {
+  background: var(--cyan);
+}
+
+.activeCard[data-level='3']::before {
+  background: var(--yellow);
+}
+
+.activeCard[data-level='4']::before {
+  background: var(--coral);
+}
+
+.cardTopline,
+.cardFooter {
+  align-items: center;
+  color: var(--ink-soft);
+  display: flex;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.58rem;
+  justify-content: space-between;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.cardTopline span:first-child {
+  background: rgba(23, 24, 30, 0.08);
+  border: 1px solid rgba(23, 24, 30, 0.22);
+  border-radius: 999px;
+  padding: 6px 8px;
+}
+
+.cardCopy {
+  align-items: center;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  padding: 20px 0;
+  text-align: center;
+}
+
+.cardCopy p {
+  color: var(--ink-soft);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.59rem;
+  letter-spacing: 0.1em;
+  margin: 0 0 13px;
+  text-transform: uppercase;
+}
+
+.cardCopy h1 {
+  font-size: clamp(2.6rem, 6.5vw, 5.8rem);
+  letter-spacing: -0.085em;
+  line-height: 0.88;
+  margin: 0;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+
+.cardCopy > span {
+  color: var(--ink-soft);
+  font-size: 0.82rem;
+  line-height: 1.45;
+  margin-top: 18px;
+  max-width: 590px;
+  overflow-wrap: anywhere;
+}
+
+.cardFooter {
+  border-top: 1px solid rgba(23, 24, 30, 0.15);
+  padding-top: 13px;
+}
+
+.activeActions {
+  flex: 0 0 auto;
+  margin: 0 auto;
+  padding-bottom: env(safe-area-inset-bottom);
+  width: min(100%, 800px);
+}
+
+.activeActions > div {
+  display: grid;
+  gap: 13px;
+  grid-template-columns: minmax(150px, 0.4fr) minmax(210px, 0.6fr);
+}
+
+.activeActions > div button {
+  min-height: 62px;
+  width: 100%;
+}
+
+.endTurn {
+  background: transparent;
+  border: 0;
+  color: #c7c3bb;
+  display: block;
+  font-size: 0.68rem;
+  margin: 4px auto 0;
+  min-height: 44px;
+  padding: 8px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.endTurn:disabled {
+  opacity: 0.42;
+}
+
+@keyframes urgentPulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.045);
+  }
+}
+
+@media (max-width: 900px) {
+  .handoffMain {
+    grid-template-columns: 1fr;
+  }
+
+  .handoffTicket {
+    justify-self: center;
+    max-width: 540px;
+    width: 100%;
+  }
+}
+
+@media (max-width: 700px) {
+  .topMeta {
+    gap: 8px;
+  }
+
+  .topMeta > :first-child {
+    display: none;
+  }
+
+  .handoffMain {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .handoffIntro h1 {
+    font-size: clamp(3.5rem, 17vw, 5.6rem);
+  }
+
+  .publicHud {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .publicHud > div {
+    min-height: 64px;
+  }
+
+  .watchingMain {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .watchingCopy h1 {
+    font-size: clamp(3.3rem, 16vw, 5.4rem);
+  }
+
+  .activeScreen {
+    min-height: 560px;
+  }
+
+  .activeHud {
+    min-height: 98px;
+  }
+
+  .activeTeam,
+  .cardsLeft {
+    background: transparent;
+    border: 0;
+    flex-direction: column;
+    gap: 3px;
+    padding: 4px;
+    text-align: center;
+  }
+
+  .activeTeam .teamDot {
+    display: none;
+  }
+
+  .activeTeam small {
+    display: none;
+  }
+
+  .timerDial {
+    height: 80px;
+    width: 80px;
+  }
+
+  .timerDial strong {
+    font-size: 1.8rem;
+  }
+
+  .activeCard {
+    min-height: 260px;
+    padding-left: 21px;
+    padding-right: 21px;
+  }
+
+  .activeActions > div {
+    gap: 9px;
+    grid-template-columns: minmax(115px, 0.42fr) minmax(155px, 0.58fr);
+  }
+
+  .activeActions > div button {
+    font-size: 0.82rem;
+    gap: 7px;
+    min-height: 56px;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+}
+
+@media (orientation: landscape) and (max-height: 570px) {
+  .handoffMain {
+    align-items: start;
+    gap: 38px;
+    grid-template-columns: minmax(0, 1fr) minmax(330px, 0.9fr);
+    padding: 24px 0 36px;
+  }
+
+  .handoffIntro h1 {
+    font-size: clamp(3rem, 8vw, 4.7rem);
+  }
+
+  .watchingMain {
+    padding-top: 18px;
+  }
+
+  .watchingCopy {
+    padding: 26px 0;
+  }
+
+  .watchingCopy h1 {
+    font-size: clamp(3rem, 8vw, 4.6rem);
+  }
+
+  .waitingIcon,
+  .publicTimer {
+    height: 62px;
+    margin-bottom: 18px;
+    width: 62px;
+  }
+
+  .publicTimer strong {
+    font-size: 1.5rem;
+  }
+
+  .activeScreen {
+    min-height: 480px;
+  }
+
+  .activeHud {
+    min-height: 78px;
+  }
+
+  .timerDial {
+    height: 68px;
+    width: 68px;
+  }
+
+  .timerDial strong {
+    font-size: 1.5rem;
+  }
+
+  .cardStage {
+    padding: 8px 0 11px;
+  }
+
+  .activeCard {
+    min-height: 205px;
+    padding-bottom: 18px;
+    padding-top: 22px;
+  }
+
+  .cardCopy {
+    padding: 10px 0;
+  }
+
+  .cardCopy h1 {
+    font-size: clamp(2.35rem, 8vw, 4.2rem);
+  }
+
+  .cardCopy > span {
+    font-size: 0.7rem;
+    margin-top: 9px;
+  }
+
+  .activeActions > div button {
+    min-height: 48px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .urgentTimer {
+    animation: none;
+  }
+}

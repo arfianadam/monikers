@@ -5,6 +5,7 @@ const baseURL = 'http://127.0.0.1:3100';
 export default defineConfig({
   testDir: './tests/e2e',
   fullyParallel: true,
+  workers: 1,
   forbidOnly: Boolean(process.env.CI),
   retries: process.env.CI ? 1 : 0,
   reporter: 'list',
@@ -103,11 +104,33 @@ export default defineConfig({
         viewport: { width: 1024, height: 700 },
       },
     },
+    {
+      name: 'own-device-webkit',
+      testMatch: /own-device-webkit\.spec\.ts/,
+      use: {
+        browserName: 'webkit',
+        deviceScaleFactor: 1,
+        hasTouch: true,
+        isMobile: true,
+        viewport: { width: 360, height: 800 },
+      },
+    },
+    {
+      name: 'own-device-chromium',
+      testMatch: /own-device\.spec\.ts/,
+      use: {
+        browserName: 'chromium',
+        deviceScaleFactor: 1,
+        viewport: { width: 1280, height: 900 },
+      },
+    },
   ],
   webServer: {
-    command: 'pnpm start -p 3100',
+    command: 'pnpm start',
+    env: { MONIKERS_TEST_SEED: 'playwright-monikers', PORT: '3100' },
     url: baseURL,
-    reuseExistingServer: true,
+    reuseExistingServer: false,
     timeout: 120_000,
+    gracefulShutdown: { signal: 'SIGTERM', timeout: 5_000 },
   },
 });

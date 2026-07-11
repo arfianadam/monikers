@@ -14,6 +14,7 @@ export interface PrivateHandoffProps {
   currentPlayer: number;
   players: number;
   cardsPerPlayer: number;
+  disabled?: boolean;
   onReady: () => void;
   containerRef?: Ref<HTMLDivElement>;
 }
@@ -22,6 +23,7 @@ export function PrivateHandoff({
   currentPlayer,
   players,
   cardsPerPlayer,
+  disabled = false,
   onReady,
   containerRef,
 }: PrivateHandoffProps) {
@@ -71,7 +73,7 @@ export function PrivateHandoff({
                 Pilih {cardsPerPlayer} dari {cardsPerPlayer + 2} kartu
               </span>
             </div>
-            <GameButton onClick={onReady}>
+            <GameButton onClick={onReady} disabled={disabled}>
               Buka kartuku
               <span aria-hidden="true">→</span>
             </GameButton>

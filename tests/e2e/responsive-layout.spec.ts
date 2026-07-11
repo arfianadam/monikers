@@ -6,8 +6,16 @@ async function chooseCard(page: Page) {
 }
 
 async function reachActiveTurn(page: Page) {
+  await page.getByRole('button', { name: 'Main di satu perangkat' }).click();
+  await expect(page).toHaveURL(/\/session\/[A-Za-z0-9_-]+$/);
+
   await page.getByRole('spinbutton', { name: 'Pemain', exact: true }).fill('2');
-  await page.getByRole('spinbutton', { name: 'Kartu per pemain' }).fill('1');
+  await expect(
+    page.getByRole('spinbutton', { name: 'Kartu per pemain', exact: true })
+  ).toBeEnabled();
+  await page
+    .getByRole('spinbutton', { name: 'Kartu per pemain', exact: true })
+    .fill('1');
   await page.getByRole('button', { name: 'Mulai bermain' }).click();
 
   await page.getByRole('button', { name: 'Buka kartuku' }).click();
@@ -19,14 +27,10 @@ async function reachActiveTurn(page: Page) {
   await chooseCard(page);
   await page.getByRole('button', { name: 'Selesai' }).click();
   await page.getByRole('button', { name: 'Mulai giliran 60 detik' }).click();
-  await expect(page.getByLabel('60 detik tersisa')).toBeVisible();
+  await expect(page.getByLabel(/\d+ detik tersisa/)).toBeVisible();
 }
 
 test('layout khusus tetap terbaca dan stabil', async ({ page }, testInfo) => {
-  await page.addInitScript(() => {
-    Math.random = () => 0.5;
-  });
-  await page.clock.install({ time: new Date('2026-01-01T00:00:00Z') });
   await page.goto('/');
   await page.evaluate(async () => document.fonts.ready);
 

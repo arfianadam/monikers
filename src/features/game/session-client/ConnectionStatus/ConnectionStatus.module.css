@@ -1,0 +1,88 @@
+.status {
+  align-items: center;
+  backdrop-filter: blur(12px);
+  background: rgba(23, 24, 30, 0.9);
+  border: 1px solid rgba(248, 242, 227, 0.24);
+  border-radius: 999px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.28);
+  color: var(--on-dark);
+  display: flex;
+  font-size: 0.78rem;
+  font-weight: 800;
+  gap: 8px;
+  min-height: 36px;
+  padding: 7px 12px;
+  position: fixed;
+  right: max(12px, env(safe-area-inset-right));
+  top: max(12px, env(safe-area-inset-top));
+  z-index: 40;
+}
+
+.dot {
+  background: #42d37a;
+  border-radius: 50%;
+  height: 9px;
+  width: 9px;
+}
+
+.connecting .dot {
+  animation: pulse 1.8s ease-in-out infinite;
+  background: var(--yellow);
+}
+
+.disconnected .dot {
+  animation: pulse 1.4s ease-in-out infinite;
+  background: var(--coral);
+}
+
+.retry {
+  box-shadow: none;
+  font-size: 0.74rem;
+  min-height: 28px;
+  padding: 3px 10px;
+}
+
+.retry:hover:not(:disabled) {
+  box-shadow: none;
+  transform: none;
+}
+
+@keyframes pulse {
+  50% {
+    box-shadow: 0 0 0 6px rgba(255, 203, 69, 0.18);
+    transform: scale(1.08);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .connecting .dot,
+  .disconnected .dot {
+    animation: none;
+  }
+}
+
+@media (max-width: 520px) {
+  .status {
+    bottom: auto;
+    top: max(64px, calc(54px + env(safe-area-inset-top)));
+  }
+}
+
+@media (orientation: portrait) and (max-height: 700px) and (max-width: 700px) {
+  .status[data-state='connected'] {
+    font-size: 0;
+    gap: 0;
+    min-height: 32px;
+    padding: 7px;
+    right: max(64px, env(safe-area-inset-right));
+    top: max(8px, env(safe-area-inset-top));
+  }
+
+  .status[data-state='connecting'],
+  .status[data-state='disconnected'] {
+    bottom: max(8px, env(safe-area-inset-bottom));
+    left: max(12px, env(safe-area-inset-left));
+    right: auto;
+    top: auto;
+  }
+}

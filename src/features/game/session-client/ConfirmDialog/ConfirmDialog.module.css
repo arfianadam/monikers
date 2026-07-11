@@ -1,0 +1,45 @@
+.dialog::backdrop {
+  background: rgba(10, 11, 15, 0.78);
+}
+
+.dialog {
+  background: var(--paper);
+  border: var(--border);
+  border-radius: 20px;
+  box-shadow: var(--hard-shadow);
+  color: var(--ink);
+  margin: auto;
+  max-height: calc(100svh - 40px);
+  padding: clamp(24px, 5vw, 38px);
+  width: min(100%, 520px);
+  z-index: 100;
+}
+
+.dialog h2 {
+  font-size: clamp(1.7rem, 5vw, 2.5rem);
+  letter-spacing: -0.04em;
+  margin: 0 0 12px;
+}
+
+.dialog p {
+  color: var(--ink-soft);
+  line-height: 1.55;
+  margin: 0;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 28px;
+}
+
+@media (max-width: 440px) {
+  .actions {
+    flex-direction: column-reverse;
+  }
+
+  .actions button {
+    width: 100%;
+  }
+}

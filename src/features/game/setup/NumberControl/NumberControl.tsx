@@ -13,6 +13,7 @@ interface NumberControlProps {
   value: number;
   min: number;
   max: number;
+  disabled?: boolean;
   onChange: (value: number) => void;
 }
 
@@ -23,6 +24,7 @@ export function NumberControl({
   value,
   min,
   max,
+  disabled = false,
   onChange,
 }: NumberControlProps) {
   const [draftValue, setDraftValue] = useState(String(value));
@@ -53,7 +55,7 @@ export function NumberControl({
         <button
           type="button"
           onClick={() => updateValue(value - 1)}
-          disabled={value <= min}
+          disabled={disabled || value <= min}
           aria-label={`Kurangi ${label.toLowerCase()}`}
         >
           −
@@ -68,6 +70,7 @@ export function NumberControl({
           max={max}
           step={1}
           required
+          disabled={disabled}
           aria-describedby={`${id}-hint`}
           onChange={(event) => {
             const nextDraftValue = event.target.value;
@@ -87,7 +90,7 @@ export function NumberControl({
         <button
           type="button"
           onClick={() => updateValue(value + 1)}
-          disabled={value >= max}
+          disabled={disabled || value >= max}
           aria-label={`Tambah ${label.toLowerCase()}`}
         >
           +

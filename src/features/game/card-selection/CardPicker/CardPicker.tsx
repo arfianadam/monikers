@@ -17,6 +17,7 @@ export interface CardPickerProps {
   cardsPerPlayer: number;
   availableCards: readonly Card[];
   selectedCards: readonly Card[];
+  disabled?: boolean;
   onToggleCard: (card: Card) => void;
   onNextPlayer: () => void;
   containerRef?: Ref<HTMLDivElement>;
@@ -28,6 +29,7 @@ export function CardPicker({
   cardsPerPlayer,
   availableCards,
   selectedCards,
+  disabled = false,
   onToggleCard,
   onNextPlayer,
   containerRef,
@@ -83,6 +85,7 @@ export function CardPicker({
                   )}
                   data-level={card.level}
                   aria-pressed={isSelected}
+                  disabled={disabled}
                   onClick={() => onToggleCard(card)}
                 >
                   <span className={styles.cardTopline}>
@@ -129,7 +132,7 @@ export function CardPicker({
             type="button"
             className={styles.nextButton}
             onClick={onNextPlayer}
-            disabled={selectedCards.length !== cardsPerPlayer}
+            disabled={disabled || selectedCards.length !== cardsPerPlayer}
           >
             {currentPlayer < players
               ? 'Serahkan ke pemain berikutnya'
