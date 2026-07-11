@@ -34,6 +34,13 @@ test('layout khusus tetap terbaca dan stabil', async ({ page }, testInfo) => {
   await page.goto('/');
   await page.evaluate(async () => document.fonts.ready);
 
+  const eyebrowDot = page
+    .getByText('Tiga babak, dua tim, banyak jawaban ngawur', { exact: true })
+    .locator('span');
+  const eyebrowDotBox = await eyebrowDot.boundingBox();
+  expect(eyebrowDotBox).not.toBeNull();
+  expect(eyebrowDotBox?.width).toBe(eyebrowDotBox?.height);
+
   if (testInfo.project.name === 'narrow-mobile-chromium') {
     await expect(page).toHaveScreenshot('setup-360.png', { fullPage: true });
   }

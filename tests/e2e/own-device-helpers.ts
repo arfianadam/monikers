@@ -57,7 +57,7 @@ export async function createOwnDeviceSession(page: Page, creatorName: string) {
     name: /Mulai sebagai pemain pertama/,
   });
   await expect(activationHeading).toBeVisible();
-  await expect(activationHeading).toBeFocused();
+  await expect(activationHeading).not.toBeFocused();
 
   const nameInput = page.getByLabel('Nama pemain');
   await nameInput.fill(creatorName);

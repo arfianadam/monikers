@@ -3,7 +3,7 @@
 import { useRef } from 'react';
 
 import { useGameStore } from '@/features/game/store/GameStoreProvider';
-import { useStageFocus } from '@/shared/hooks/useStageFocus/useStageFocus';
+import { useStageScroll } from '@/shared/hooks/useStageScroll/useStageScroll';
 
 import { CardPicker } from '../CardPicker/CardPicker';
 import { PrivateHandoff } from '../PrivateHandoff/PrivateHandoff';
@@ -26,7 +26,7 @@ export function CardSelectionScreen() {
   );
   const viewContainerRef = useRef<HTMLDivElement>(null);
 
-  useStageFocus(viewContainerRef, `${currentPlayer}:${isReady}`);
+  useStageScroll(`${currentPlayer}:${isReady}`);
 
   if (!isReady) {
     return (

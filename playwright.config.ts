@@ -1,11 +1,11 @@
 import { defineConfig } from '@playwright/test';
 
-const baseURL = 'http://127.0.0.1:3100';
+const baseURL = 'http://127.0.0.1:3000';
 
 export default defineConfig({
   testDir: './tests/e2e',
   fullyParallel: true,
-  workers: 1,
+  workers: '50%',
   forbidOnly: Boolean(process.env.CI),
   retries: process.env.CI ? 1 : 0,
   reporter: 'list',
@@ -127,7 +127,7 @@ export default defineConfig({
   ],
   webServer: {
     command: 'pnpm start',
-    env: { MONIKERS_TEST_SEED: 'playwright-monikers', PORT: '3100' },
+    env: { MONIKERS_TEST_SEED: 'playwright-monikers', PORT: '3000' },
     url: baseURL,
     reuseExistingServer: false,
     timeout: 120_000,

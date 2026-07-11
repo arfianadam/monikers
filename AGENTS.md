@@ -124,7 +124,7 @@ without rendering React.
 - Card level is its point value. Scores accumulate by team and round.
 - A correct guess plays the bell; any turn ending plays the ring.
 - Leave/back protection is active throughout every session phase.
-- Stage/view changes scroll to the top and move focus to the primary heading.
+- Stage/view changes scroll to the top without moving keyboard focus.
 
 ## Components And Styles
 

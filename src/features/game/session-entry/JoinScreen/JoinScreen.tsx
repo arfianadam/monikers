@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 
-import { useStageFocus } from '@/shared/hooks/useStageFocus/useStageFocus';
+import { useStageScroll } from '@/shared/hooks/useStageScroll/useStageScroll';
 import { Brand } from '@/shared/ui/Brand/Brand';
 import { Eyebrow } from '@/shared/ui/Eyebrow/Eyebrow';
 import { GameButton } from '@/shared/ui/GameButton/GameButton';
@@ -73,7 +73,7 @@ export function JoinScreen({ initialCode }: { initialCode: string }) {
   const [error, setError] = useState('');
   const containerRef = useRef<HTMLDivElement>(null);
 
-  useStageFocus(containerRef, status);
+  useStageScroll(status);
 
   useEffect(() => {
     const controller = new AbortController();

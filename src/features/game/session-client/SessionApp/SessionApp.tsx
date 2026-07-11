@@ -27,7 +27,11 @@ import { CreatorActivationScreen } from '@/features/game/own-device/CreatorActiv
 import { OwnSelectionScreen } from '@/features/game/own-device/OwnSelectionScreen/OwnSelectionScreen';
 import { OwnTurnScreen } from '@/features/game/own-device/OwnTurnScreen/OwnTurnScreen';
 import { RecoveryScreen } from '@/features/game/own-device/RecoveryScreen/RecoveryScreen';
-import { useStageFocus } from '@/shared/hooks/useStageFocus/useStageFocus';
+import { useStageScroll } from '@/shared/hooks/useStageScroll/useStageScroll';
+import { Brand } from '@/shared/ui/Brand/Brand';
+import { GameShell } from '@/shared/ui/GameShell/GameShell';
+import { ScreenFrame } from '@/shared/ui/ScreenFrame/ScreenFrame';
+import { TopBar } from '@/shared/ui/TopBar/TopBar';
 
 import { ConfirmDialog } from '../ConfirmDialog/ConfirmDialog';
 import { ConnectionStatus } from '../ConnectionStatus/ConnectionStatus';
@@ -86,6 +90,25 @@ function ownConnectionState(
   status: 'connecting' | 'connected' | 'disconnected'
 ) {
   return status;
+}
+
+function SessionLoadingScreen({
+  containerRef,
+}: {
+  containerRef: React.RefObject<HTMLDivElement | null>;
+}) {
+  return (
+    <GameShell variant="handoff" aria-busy="true">
+      <ScreenFrame ref={containerRef} className={styles.loadingScreen}>
+        <TopBar>
+          <Brand compact />
+        </TopBar>
+        <main className={styles.loadingMain}>
+          <p role="status">Menyiapkan sesi…</p>
+        </main>
+      </ScreenFrame>
+    </GameShell>
+  );
 }
 
 async function copyText(value: string) {
@@ -349,6 +372,7 @@ export function SessionApp({ sessionId }: { sessionId: string }) {
   const [confirmation, setConfirmation] = useState<ConfirmationAction | null>(
     null
   );
+  const [endingSession, setEndingSession] = useState(false);
   const { playBell, playRing } = useGameSounds();
   const handleServerEvent = useCallback(
     (event: ServerEvent) => {
@@ -370,7 +394,7 @@ export function SessionApp({ sessionId }: { sessionId: string }) {
       : connection.status;
 
   useLeaveGuard();
-  useStageFocus(viewContainerRef, viewKey);
+  useStageScroll(viewKey);
   useWakeLock(
     projection?.mode === 'own-device' &&
       (projection.phase === 'selection' ||
@@ -394,9 +418,19 @@ export function SessionApp({ sessionId }: { sessionId: string }) {
   const executeConfirmation = () => {
     if (!confirmation || !projection) return;
     const action = confirmation;
-    setConfirmation(null);
 
-    if (action.type === 'leave' || action.type === 'end') {
+    if (action.type === 'end') {
+      setEndingSession(true);
+      void performHttpAction(action.type).catch(() => {
+        setEndingSession(false);
+        setConfirmation(null);
+        connection.retry();
+      });
+      return;
+    }
+
+    setConfirmation(null);
+    if (action.type === 'leave') {
       void performHttpAction(action.type).catch(() => connection.retry());
       return;
     }
@@ -422,7 +456,10 @@ export function SessionApp({ sessionId }: { sessionId: string }) {
     }
   };
 
-  if (connection.recoveryReason) {
+  if (
+    connection.recoveryReason &&
+    !(endingSession && connection.recoveryReason === 'ended')
+  ) {
     const reason =
       connection.recoveryReason === 'duplicate'
         ? 'duplicate-tab'
@@ -437,11 +474,13 @@ export function SessionApp({ sessionId }: { sessionId: string }) {
   }
 
   if (!projection) {
+    if (connection.status !== 'disconnected') {
+      return <SessionLoadingScreen containerRef={viewContainerRef} />;
+    }
+
     return (
       <RecoveryScreen
-        reason={
-          connection.status === 'connecting' ? 'connecting' : 'disconnected'
-        }
+        reason="disconnected"
         onRetry={connection.retry}
         onGoHome={() => router.replace('/')}
         detailMessage={connection.lastError || undefined}
@@ -765,8 +804,15 @@ export function SessionApp({ sessionId }: { sessionId: string }) {
               : copy.title
           }
           description={copy.description}
-          confirmLabel={copy.label}
-          onCancel={() => setConfirmation(null)}
+          confirmLabel={
+            endingSession && confirmation?.type === 'end'
+              ? 'Mengakhiri sesi…'
+              : copy.label
+          }
+          isSubmitting={endingSession && confirmation?.type === 'end'}
+          onCancel={() => {
+            if (!endingSession) setConfirmation(null);
+          }}
           onConfirm={executeConfirmation}
         />
       )}

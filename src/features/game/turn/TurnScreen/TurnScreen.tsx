@@ -4,7 +4,7 @@ import { useRef, useState } from 'react';
 
 import { getTeamTotal } from '@/features/game/domain/scoring';
 import { useGameStore } from '@/features/game/store/GameStoreProvider';
-import { useStageFocus } from '@/shared/hooks/useStageFocus/useStageFocus';
+import { useStageScroll } from '@/shared/hooks/useStageScroll/useStageScroll';
 
 import { ActiveTurn } from '../ActiveTurn/ActiveTurn';
 import { TurnHandoff } from '../TurnHandoff/TurnHandoff';
@@ -38,7 +38,7 @@ export function TurnScreen() {
   const currentTeamScore = getTeamTotal(scores, currentTeam);
 
   useLeaveGuard();
-  useStageFocus(viewContainerRef, `${currentTeam}:${isActive}`);
+  useStageScroll(`${currentTeam}:${isActive}`);
   useTurnTimer({
     isActive,
     timer,

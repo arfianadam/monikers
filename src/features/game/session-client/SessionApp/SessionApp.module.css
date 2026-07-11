@@ -1,3 +1,25 @@
+.loadingScreen {
+  display: flex;
+  flex-direction: column;
+}
+
+.loadingMain {
+  align-items: center;
+  display: flex;
+  flex: 1;
+  justify-content: center;
+}
+
+.loadingMain p {
+  color: var(--muted);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  margin: 0;
+  text-transform: uppercase;
+}
+
 .sessionMenu {
   display: flex;
   gap: 8px;

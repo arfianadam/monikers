@@ -11,6 +11,7 @@ export interface ConfirmDialogProps {
   title: string;
   description: string;
   confirmLabel: string;
+  isSubmitting?: boolean;
   onCancel: () => void;
   onConfirm: () => void;
 }
@@ -20,6 +21,7 @@ export function ConfirmDialog({
   title,
   description,
   confirmLabel,
+  isSubmitting = false,
   onCancel,
   onConfirm,
 }: ConfirmDialogProps) {
@@ -63,6 +65,7 @@ export function ConfirmDialog({
       className={styles.dialog}
       role="alertdialog"
       aria-modal="true"
+      aria-busy={isSubmitting}
       aria-labelledby="confirm-dialog-title"
       aria-describedby="confirm-dialog-description"
     >
@@ -74,10 +77,11 @@ export function ConfirmDialog({
           variant="secondary"
           type="button"
           onClick={onCancel}
+          disabled={isSubmitting}
         >
           Batal
         </GameButton>
-        <GameButton type="button" onClick={onConfirm}>
+        <GameButton type="button" onClick={onConfirm} disabled={isSubmitting}>
           {confirmLabel}
         </GameButton>
       </div>

@@ -2,6 +2,69 @@ import { expect, type Page, test } from '@playwright/test';
 
 const TOTAL_CARDS = 2;
 const SESSION_URL = /\/session\/[A-Za-z0-9_-]+$/;
+const RECOVERY_HEADINGS = [
+  'Sebentar, ya.',
+  'Kamu sedang luring.',
+  'Ruangan ini sudah hilang.',
+];
+
+async function recordHeadingChanges(page: Page) {
+  await page.evaluate(() => {
+    const history: string[] = [];
+    const recordHeading = () => {
+      const heading = document.querySelector('h1')?.textContent?.trim();
+      if (heading && history.at(-1) !== heading) history.push(heading);
+    };
+
+    Object.assign(window, { __sessionHeadingHistory: history });
+    new MutationObserver(recordHeading).observe(document.body, {
+      childList: true,
+      subtree: true,
+    });
+    recordHeading();
+  });
+}
+
+async function sessionHeadingHistory(page: Page) {
+  return page.evaluate(
+    () =>
+      (
+        window as typeof window & {
+          __sessionHeadingHistory: string[];
+        }
+      ).__sessionHeadingHistory
+  );
+}
+
+async function widenInitialProjectionRace(page: Page) {
+  await page.addInitScript(() => {
+    const addEventListener = WebSocket.prototype.addEventListener;
+
+    WebSocket.prototype.addEventListener = function (
+      this: WebSocket,
+      type: string,
+      listener: EventListenerOrEventListenerObject,
+      options?: boolean | AddEventListenerOptions
+    ) {
+      if (type !== 'message') {
+        addEventListener.call(this, type, listener, options);
+        return;
+      }
+
+      addEventListener.call(
+        this,
+        type,
+        (event: Event) => {
+          window.setTimeout(() => {
+            if (typeof listener === 'function') listener.call(this, event);
+            else listener.handleEvent(event);
+          }, 100);
+        },
+        options
+      );
+    } as typeof WebSocket.prototype.addEventListener;
+  });
+}
 
 async function captureStage(page: Page, name: string) {
   await page.evaluate(async () => {
@@ -28,6 +91,40 @@ async function createSingleDeviceSession(page: Page) {
 
   return new URL(page.url()).pathname;
 }
+
+test('pembuatan sesi tidak menampilkan layar pemulihan sementara', async ({
+  page,
+}) => {
+  await widenInitialProjectionRace(page);
+  const entryPaths = [
+    {
+      button: 'Main di satu perangkat',
+      destinationHeading: /Tebak namanya/,
+    },
+    {
+      button: 'Buat sesi perangkat masing-masing',
+      destinationHeading: /Mulai sebagai pemain pertama/,
+    },
+  ];
+
+  for (const entryPath of entryPaths) {
+    await page.goto('/');
+    await recordHeadingChanges(page);
+    await page.getByRole('button', { name: entryPath.button }).click();
+    await expect(
+      page.getByRole('heading', {
+        level: 1,
+        name: entryPath.destinationHeading,
+      })
+    ).toBeVisible();
+
+    expect(
+      (await sessionHeadingHistory(page)).filter((heading) =>
+        RECOVERY_HEADINGS.includes(heading)
+      )
+    ).toEqual([]);
+  }
+});
 
 async function configureGame(
   page: Page,

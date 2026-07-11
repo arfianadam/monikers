@@ -73,6 +73,52 @@ async function captureRegion(page: Page, region: Locator, name: string) {
   }
 }
 
+test('pengendali kembali ke beranda tanpa melihat layar sesi berakhir', async ({
+  page,
+}) => {
+  await createOwnDeviceSession(page, 'Pengendali');
+  await page.route('**/actions/end', async (route) => {
+    const response = await route.fetch();
+    await new Promise((resolve) => setTimeout(resolve, 150));
+    await route.fulfill({ response });
+  });
+  await page.evaluate(() => {
+    const storageKey = 'end-session-heading-history';
+    const history: string[] = [];
+    const recordHeading = () => {
+      const heading = document.querySelector('h1')?.textContent?.trim();
+      if (!heading || history.at(-1) === heading) return;
+      history.push(heading);
+      sessionStorage.setItem(storageKey, JSON.stringify(history));
+    };
+
+    new MutationObserver(recordHeading).observe(document.body, {
+      childList: true,
+      subtree: true,
+    });
+    recordHeading();
+  });
+
+  await page.getByRole('button', { name: 'Akhiri sesi untuk semua' }).click();
+  await page
+    .getByRole('alertdialog')
+    .getByRole('button', { name: 'Akhiri sesi' })
+    .click();
+  await expect(
+    page
+      .getByRole('alertdialog')
+      .getByRole('button', { name: 'Mengakhiri sesi…' })
+  ).toBeDisabled();
+  await expect(
+    page.getByRole('heading', { name: /Pilih cara mainmu/ })
+  ).toBeVisible();
+
+  const headingHistory = await page.evaluate(() =>
+    JSON.parse(sessionStorage.getItem('end-session-heading-history') ?? '[]')
+  );
+  expect(headingHistory).not.toContain('Permainan telah selesai.');
+});
+
 async function finishOwnDeviceRound(
   controllerPage: Page,
   joinerPage: Page,
