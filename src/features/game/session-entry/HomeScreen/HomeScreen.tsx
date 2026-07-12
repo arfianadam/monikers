@@ -69,15 +69,16 @@ export function HomeScreen() {
 
         <main className={styles.layout}>
           <section className={styles.intro} aria-labelledby="home-title">
-            <Eyebrow onDark dot>
-              Tiga babak, dua tim, banyak jawaban ngawur
+            <Eyebrow className={styles.introEyebrow} onDark dot>
+              Calon permainan favorit di acara kumpulmu
             </Eyebrow>
-            <h1 id="home-title">
-              Pilih cara <span>mainmu.</span>
+            <h1 id="home-title" className={styles.displayTitle}>
+              Tebak namanya.
+              <span>Lupakan jaimnya.</span>
             </h1>
-            <p>
-              Main bergantian di satu layar, atau pakai perangkat masing-masing
-              agar kartu dan giliran tetap rahasia.
+            <p className={styles.introCopy}>
+              Tiga babak. Dua tim. Satu deck nama terkenal yang makin lucu
+              setiap kali dimainkan.
             </p>
 
             <ol className={styles.rounds} aria-label="Tiga babak permainan">
@@ -85,7 +86,7 @@ export function HomeScreen() {
                 <span>01</span> Bebas bicara
               </li>
               <li>
-                <span>02</span> Satu kata
+                <span>02</span> Satu kata saja
               </li>
               <li>
                 <span>03</span> Peragakan
@@ -93,45 +94,77 @@ export function HomeScreen() {
             </ol>
           </section>
 
-          <Panel as="section" className={styles.actions} aria-label="Cara main">
+          <Panel
+            as="section"
+            className={styles.actions}
+            aria-labelledby="session-options-title"
+          >
             <div className={styles.actionHeading}>
               <Eyebrow>Mulai sesi</Eyebrow>
-              <h2>Semua siap?</h2>
+              <h2 id="session-options-title">Semua siap?</h2>
             </div>
 
-            <GameButton
-              type="button"
-              onClick={() => createSession('single-device')}
-              disabled={pendingMode !== null}
-              className={styles.actionButton}
-            >
-              {pendingMode === 'single-device'
-                ? 'Membuat sesi…'
-                : 'Main di satu perangkat'}
-              <span aria-hidden="true">→</span>
-            </GameButton>
-            <p className={styles.hint}>
-              Bergantian memegang satu ponsel atau laptop.
-            </p>
+            <div className={styles.modeOptions}>
+              <GameButton
+                type="button"
+                onClick={() => createSession('single-device')}
+                disabled={pendingMode !== null}
+                className={styles.actionButton}
+                aria-label={
+                  pendingMode === 'single-device'
+                    ? 'Membuat sesi…'
+                    : 'Main di satu perangkat'
+                }
+                aria-describedby="single-device-description"
+                aria-busy={pendingMode === 'single-device'}
+              >
+                <span className={styles.modeCopy}>
+                  <strong>
+                    {pendingMode === 'single-device'
+                      ? 'Membuat sesi…'
+                      : 'Satu perangkat'}
+                  </strong>
+                  <small id="single-device-description">
+                    Oper ponsel atau laptop setiap giliran.
+                  </small>
+                </span>
+                <span className={styles.modeIcon} aria-hidden="true">
+                  →
+                </span>
+              </GameButton>
 
-            <GameButton
-              type="button"
-              variant="secondary"
-              onClick={() => createSession('own-device')}
-              disabled={pendingMode !== null}
-              className={styles.actionButton}
-            >
-              {pendingMode === 'own-device'
-                ? 'Membuat ruangan…'
-                : 'Buat sesi perangkat masing-masing'}
-              <span aria-hidden="true">＋</span>
-            </GameButton>
-            <p className={styles.hint}>
-              Setiap pemain membuka kartu di perangkat sendiri.
-            </p>
+              <GameButton
+                type="button"
+                variant="secondary"
+                onClick={() => createSession('own-device')}
+                disabled={pendingMode !== null}
+                className={`${styles.actionButton} ${styles.secondaryAction}`}
+                aria-label={
+                  pendingMode === 'own-device'
+                    ? 'Membuat ruangan…'
+                    : 'Buat sesi perangkat masing-masing'
+                }
+                aria-describedby="own-device-description"
+                aria-busy={pendingMode === 'own-device'}
+              >
+                <span className={styles.modeCopy}>
+                  <strong>
+                    {pendingMode === 'own-device'
+                      ? 'Membuat ruangan…'
+                      : 'Perangkat masing-masing'}
+                  </strong>
+                  <small id="own-device-description">
+                    Bagikan kode agar kartu tetap rahasia.
+                  </small>
+                </span>
+                <span className={styles.modeIcon} aria-hidden="true">
+                  ＋
+                </span>
+              </GameButton>
+            </div>
 
             <div className={styles.divider}>
-              <span>atau gabung</span>
+              <span>Sudah punya kode?</span>
             </div>
 
             <form
@@ -162,7 +195,7 @@ export function HomeScreen() {
                 </GameButton>
               </div>
               <small id="join-code-hint">
-                Masukkan enam karakter dari pembuat sesi.
+                Masukkan 6 karakter dari pembuat sesi.
               </small>
             </form>
 

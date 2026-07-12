@@ -7,8 +7,8 @@
   align-items: center;
   display: grid;
   flex: 1;
-  gap: clamp(48px, 7vw, 100px);
-  grid-template-columns: minmax(0, 1.15fr) minmax(370px, 0.72fr);
+  gap: clamp(40px, 7vw, 96px);
+  grid-template-columns: minmax(0, 1.05fr) minmax(390px, 0.78fr);
   padding: clamp(54px, 7vh, 90px) 0 46px;
 }
 
@@ -16,140 +16,40 @@
   min-width: 0;
 }
 
-.displayTitle {
-  font-size: clamp(4.1rem, 7.3vw, 7rem);
-  font-weight: 900;
-  letter-spacing: -0.09em;
-  line-height: 0.85;
-  margin: 0;
-  max-width: 820px;
-  text-wrap: balance;
+.intro h1 {
+  font-size: clamp(3.5rem, 7.6vw, 7rem);
+  letter-spacing: -0.08em;
+  line-height: 0.86;
+  margin: 18px 0 28px;
+  max-width: 10ch;
 }
 
-.displayTitle span {
+.intro h1 span {
   color: var(--lime);
   display: block;
-  margin-top: 0.17em;
-  position: relative;
-  width: fit-content;
 }
 
-.displayTitle span::after {
-  background: var(--coral);
-  bottom: -0.08em;
-  content: '';
-  height: 0.085em;
-  left: 0.05em;
-  position: absolute;
-  transform: rotate(-1.5deg);
-  width: 95%;
-  z-index: -1;
-}
-
-.lede {
-  color: #d4d0c8;
-  font-size: clamp(1.02rem, 1.5vw, 1.24rem);
-  line-height: 1.55;
-  margin: 30px 0 0;
-  max-width: 590px;
-}
-
-.roundStack {
-  align-items: center;
-  display: flex;
-  margin-top: 48px;
-  padding-left: 5px;
-}
-
-.roundCard {
-  align-items: center;
-  border: var(--border);
-  border-radius: 13px;
-  box-shadow: 4px 4px 0 var(--ink);
-  color: var(--ink);
-  display: flex;
-  font-size: 0.78rem;
-  font-weight: 800;
-  gap: 8px;
-  min-height: 58px;
-  padding: 11px 14px;
-  width: 158px;
-}
-
-.roundCard + .roundCard {
-  margin-left: -16px;
-}
-
-.roundCard span {
-  font-family: var(--font-geist-mono), monospace;
-  font-size: 0.66rem;
-}
-
-.roundCardOne {
-  background: var(--coral);
-  transform: rotate(-4deg);
-}
-
-.roundCardTwo {
-  background: var(--cyan);
-  transform: translateY(4px) rotate(2deg);
-}
-
-.roundCardThree {
-  background: var(--yellow);
-  transform: rotate(-2deg);
-}
-
-.ticket {
-  overflow: hidden;
-  padding: clamp(25px, 4vw, 38px);
-  position: relative;
-}
-
-.ticket::before,
-.ticket::after {
-  background: var(--canvas);
-  border: var(--border);
-  border-radius: 50%;
-  content: '';
-  height: 25px;
-  position: absolute;
-  top: 129px;
-  width: 25px;
-}
-
-.ticket::before {
-  left: -14px;
-}
-
-.ticket::after {
-  right: -14px;
-}
-
-.ticketHeader {
-  align-items: flex-start;
-  border-bottom: 2px dashed rgba(23, 24, 30, 0.25);
-  display: flex;
-  justify-content: space-between;
-  margin: 0 -38px 26px;
-  padding: 0 38px 28px;
-}
-
-.ticketHeader h2 {
-  font-size: clamp(1.85rem, 3vw, 2.5rem);
-  letter-spacing: -0.06em;
-  line-height: 1;
+.intro > p {
+  color: var(--muted);
+  font-size: 1.02rem;
+  line-height: 1.6;
   margin: 0;
+  max-width: 52ch;
 }
 
-.ticketEyebrow {
-  margin-bottom: 9px;
+.settingsCard {
+  padding: clamp(28px, 3.5vw, 40px);
+  width: 100%;
 }
 
-.ticketNumber {
-  color: var(--ink-soft);
-  font-family: var(--font-geist-mono), monospace;
-  font-size: 0.72rem;
+.settingsHeading {
+  margin-bottom: 22px;
+}
+
+.settingsHeading h2 {
+  font-size: clamp(2rem, 4vw, 3rem);
+  letter-spacing: -0.055em;
+  margin: 8px 0 0;
 }
 
 .deckSummary {
@@ -220,26 +120,22 @@
   text-transform: uppercase;
 }
 
-@media (max-width: 960px) {
+@media (max-width: 820px) {
   .layout {
     gap: 60px;
     grid-template-columns: 1fr;
     padding-top: 75px;
   }
 
-  .intro {
-    max-width: 760px;
-  }
-
-  .ticket {
+  .intro,
+  .settingsCard {
     justify-self: center;
-    max-width: 520px;
-    width: 100%;
+    width: min(100%, 620px);
   }
 }
 
 @media (max-width: 700px) {
-  .displayTitle {
+  .intro h1 {
     font-size: clamp(3.45rem, 17vw, 5.5rem);
   }
 
@@ -249,37 +145,6 @@
     padding: 65px 0 50px;
   }
 
-  .roundStack {
-    margin-top: 38px;
-  }
-
-  .roundCard {
-    font-size: 0.67rem;
-    padding: 9px 10px;
-    width: 128px;
-  }
-
-  .roundCard + .roundCard {
-    margin-left: -23px;
-  }
-
-  .ticket {
-    border-radius: 22px;
-    padding: 26px 22px;
-  }
-
-  .ticketHeader {
-    margin-left: -22px;
-    margin-right: -22px;
-    padding-left: 22px;
-    padding-right: 22px;
-  }
-
-  .ticket::before,
-  .ticket::after {
-    top: 119px;
-  }
-
   .footer {
     align-items: flex-start;
     flex-direction: column;
@@ -287,14 +152,78 @@
   }
 }
 
-@media (max-width: 360px) {
-  .roundCard {
-    padding-left: 8px;
-    padding-right: 8px;
-    width: 110px;
+@media (max-width: 480px) {
+  .settingsCard {
+    padding: 20px 22px 24px;
   }
 
-  .roundCard + .roundCard {
-    margin-left: -22px;
+  .settingsHeading {
+    margin-bottom: 16px;
+  }
+
+  .settingsHeading h2 {
+    font-size: 1.9rem;
+  }
+}
+
+@media (orientation: landscape) and (min-width: 500px) and (max-width: 699px) and (max-height: 540px) {
+  .layout {
+    align-items: start;
+    gap: 16px;
+    grid-template-columns: minmax(140px, 0.6fr) minmax(300px, 1.2fr);
+    padding: 42px 0 32px;
+    position: relative;
+  }
+
+  .introEyebrow {
+    left: 0;
+    margin: 0;
+    position: absolute;
+    top: 18px;
+  }
+
+  .intro h1 {
+    font-size: clamp(2.25rem, 7.6vw, 2.8rem);
+    margin: 12px 0 0;
+  }
+
+  .intro > p {
+    display: none;
+  }
+
+  .settingsCard {
+    padding: 18px;
+    width: 100%;
+  }
+
+  .settingsHeading {
+    margin-bottom: 14px;
+  }
+
+  .settingsHeading h2 {
+    font-size: 1.75rem;
+  }
+}
+
+@media (orientation: landscape) and (min-width: 700px) and (max-height: 540px) {
+  .layout {
+    align-items: start;
+    gap: 32px;
+    grid-template-columns: minmax(0, 0.9fr) minmax(360px, 1fr);
+    padding: 20px 0 32px;
+  }
+
+  .intro h1 {
+    font-size: clamp(3rem, 7.2vw, 4.5rem);
+    margin: 14px 0 0;
+  }
+
+  .intro > p {
+    font-size: 0.86rem;
+  }
+
+  .settingsCard {
+    padding: 24px;
+    width: 100%;
   }
 }

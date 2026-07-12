@@ -76,7 +76,10 @@ async function captureStage(page: Page, name: string) {
 async function createSingleDeviceSession(page: Page) {
   await page.goto('/');
   await expect(
-    page.getByRole('heading', { level: 1, name: /Pilih cara mainmu/ })
+    page.getByRole('heading', {
+      level: 1,
+      name: 'Tebak namanya. Lupakan jaimnya.',
+    })
   ).toBeVisible();
   await expect(
     page.getByRole('button', { name: 'Buat sesi perangkat masing-masing' })
@@ -86,7 +89,10 @@ async function createSingleDeviceSession(page: Page) {
   await page.getByRole('button', { name: 'Main di satu perangkat' }).click();
   await expect(page).toHaveURL(SESSION_URL);
   await expect(
-    page.getByRole('heading', { level: 1, name: /Tebak namanya/ })
+    page.getByRole('heading', {
+      level: 1,
+      name: 'Atur, lalu main bergantian.',
+    })
   ).toBeVisible();
 
   return new URL(page.url()).pathname;
@@ -99,7 +105,7 @@ test('pembuatan sesi tidak menampilkan layar pemulihan sementara', async ({
   const entryPaths = [
     {
       button: 'Main di satu perangkat',
-      destinationHeading: /Tebak namanya/,
+      destinationHeading: /Atur, lalu main bergantian/,
     },
     {
       button: 'Buat sesi perangkat masing-masing',

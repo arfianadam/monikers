@@ -53,7 +53,9 @@ export function CreatorActivationScreen({
 
         <main className={styles.main}>
           <div className={styles.intro}>
-            <Eyebrow onDark>Buat sesi baru</Eyebrow>
+            <Eyebrow className={styles.introEyebrow} onDark>
+              Buat sesi baru
+            </Eyebrow>
             <h1>
               Mulai sebagai <span>pemain pertama.</span>
             </h1>
@@ -63,9 +65,13 @@ export function CreatorActivationScreen({
             </p>
           </div>
 
-          <Panel as="section" className={styles.formCard}>
+          <Panel
+            as="section"
+            className={styles.formCard}
+            aria-labelledby="creator-activation-title"
+          >
             <Eyebrow>Aktifkan ruangan</Eyebrow>
-            <h2>Siapa namamu?</h2>
+            <h2 id="creator-activation-title">Siapa namamu?</h2>
             <form onSubmit={handleSubmit} noValidate>
               <label htmlFor="creator-display-name">Nama pemain</label>
               <Input

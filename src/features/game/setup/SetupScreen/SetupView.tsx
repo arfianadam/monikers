@@ -1,6 +1,5 @@
 import type { Ref } from 'react';
 
-import { cn } from '@/lib/utils';
 import { Brand } from '@/shared/ui/Brand/Brand';
 import { Eyebrow } from '@/shared/ui/Eyebrow/Eyebrow';
 import { GameButton } from '@/shared/ui/GameButton/GameButton';
@@ -42,50 +41,27 @@ export function SetupView({
 
         <main className={styles.layout}>
           <section className={styles.intro} aria-labelledby="setup-title">
-            <Eyebrow onDark dot>
-              Calon permainan favorit di acara kumpulmu
+            <Eyebrow className={styles.introEyebrow} onDark>
+              Satu perangkat
             </Eyebrow>
-            <h1 id="setup-title" className={styles.displayTitle}>
-              Tebak namanya.
-              <span>Lupakan jaimnya.</span>
+            <h1 id="setup-title">
+              Atur, lalu <span>main bergantian.</span>
             </h1>
-            <p className={styles.lede}>
-              Tiga babak. Dua tim. Satu deck nama terkenal yang makin lucu
-              setiap kali dimainkan.
+            <p>
+              Tentukan jumlah pemain dan kartu. Setelah mulai, oper perangkat
+              kepada tiap pemain supaya mereka dapat memilih kartu secara
+              rahasia.
             </p>
-
-            <div
-              className={styles.roundStack}
-              aria-label="Tiga babak permainan"
-            >
-              <div className={cn(styles.roundCard, styles.roundCardOne)}>
-                <span>01</span>
-                Bebas bicara
-              </div>
-              <div className={cn(styles.roundCard, styles.roundCardTwo)}>
-                <span>02</span>
-                Satu kata saja
-              </div>
-              <div className={cn(styles.roundCard, styles.roundCardThree)}>
-                <span>03</span>
-                Peragakan
-              </div>
-            </div>
           </section>
 
           <Panel
             as="section"
-            className={styles.ticket}
+            className={styles.settingsCard}
             aria-label="Pengaturan permainan"
           >
-            <div className={styles.ticketHeader}>
-              <div>
-                <Eyebrow className={styles.ticketEyebrow}>
-                  Pengaturan permainan
-                </Eyebrow>
-                <h2>Susun deck-mu</h2>
-              </div>
-              <span className={styles.ticketNumber}>№ 001</span>
+            <div className={styles.settingsHeading}>
+              <Eyebrow>Pengaturan permainan</Eyebrow>
+              <h2>Susun deck-mu</h2>
             </div>
 
             <form

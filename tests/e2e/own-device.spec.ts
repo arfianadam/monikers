@@ -110,7 +110,9 @@ test('pengendali kembali ke beranda tanpa melihat layar sesi berakhir', async ({
       .getByRole('button', { name: 'Mengakhiri sesi…' })
   ).toBeDisabled();
   await expect(
-    page.getByRole('heading', { name: /Pilih cara mainmu/ })
+    page.getByRole('heading', {
+      name: 'Tebak namanya. Lupakan jaimnya.',
+    })
   ).toBeVisible();
 
   const headingHistory = await page.evaluate(() =>
@@ -394,7 +396,9 @@ test('sesi perangkat masing-masing menyelesaikan seluruh siklus dan pemulihan', 
       .getByRole('button', { name: 'Tinggalkan sesi' })
       .click();
     await expect(
-      returnedControllerPage.getByRole('heading', { name: /Pilih cara mainmu/ })
+      returnedControllerPage.getByRole('heading', {
+        name: 'Tebak namanya. Lupakan jaimnya.',
+      })
     ).toBeVisible();
     await expect(
       joinerPage.getByText(controllerName, { exact: true })
@@ -408,7 +412,9 @@ test('sesi perangkat masing-masing menyelesaikan seluruh siklus dan pemulihan', 
       .getByRole('button', { name: 'Akhiri sesi' })
       .click();
     await expect(
-      joinerPage.getByRole('heading', { name: /Pilih cara mainmu/ })
+      joinerPage.getByRole('heading', {
+        name: 'Tebak namanya. Lupakan jaimnya.',
+      })
     ).toBeVisible();
   } finally {
     await thirdContext.close();
