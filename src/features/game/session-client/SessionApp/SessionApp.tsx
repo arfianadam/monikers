@@ -29,12 +29,12 @@ import { OwnTurnScreen } from '@/features/game/own-device/OwnTurnScreen/OwnTurnS
 import { RecoveryScreen } from '@/features/game/own-device/RecoveryScreen/RecoveryScreen';
 import { useStageScroll } from '@/shared/hooks/useStageScroll/useStageScroll';
 import { Brand } from '@/shared/ui/Brand/Brand';
+import { ConnectionStatus } from '@/shared/ui/ConnectionStatus/ConnectionStatus';
 import { GameShell } from '@/shared/ui/GameShell/GameShell';
 import { ScreenFrame } from '@/shared/ui/ScreenFrame/ScreenFrame';
 import { TopBar } from '@/shared/ui/TopBar/TopBar';
 
 import { ConfirmDialog } from '../ConfirmDialog/ConfirmDialog';
-import { ConnectionStatus } from '../ConnectionStatus/ConnectionStatus';
 import { useServerCountdown } from '../useServerCountdown/useServerCountdown';
 import {
   useSessionSocket,
@@ -86,21 +86,23 @@ const confirmationCopy: Record<
   },
 };
 
-function ownConnectionState(
-  status: 'connecting' | 'connected' | 'disconnected'
-) {
-  return status;
-}
-
 function SessionLoadingScreen({
   containerRef,
+  connectionState,
+  onRetry,
 }: {
   containerRef: React.RefObject<HTMLDivElement | null>;
+  connectionState: 'connecting' | 'connected' | 'disconnected';
+  onRetry: () => void;
 }) {
   return (
     <GameShell variant="handoff" aria-busy="true">
       <ScreenFrame ref={containerRef} className={styles.loadingScreen}>
-        <TopBar>
+        <TopBar
+          trailing={
+            <ConnectionStatus state={connectionState} onRetry={onRetry} />
+          }
+        >
           <Brand compact />
         </TopBar>
         <main className={styles.loadingMain}>
@@ -181,11 +183,13 @@ function lobbyBlockers(projection: LobbyProjection) {
 function SingleTurnView({
   projection,
   disabled,
+  connectionStatus,
   sendCommand,
   containerRef,
 }: {
   projection: TurnProjection;
   disabled: boolean;
+  connectionStatus: React.ReactNode;
   sendCommand: (command: SessionCommandInput) => string | null;
   containerRef: React.RefObject<HTMLDivElement | null>;
 }) {
@@ -206,6 +210,7 @@ function SingleTurnView({
         initialCardCount={initialCardCount}
         currentTeamScore={projection.scores[projection.currentTeam].total}
         disabled={disabled}
+        connectionStatus={connectionStatus}
         containerRef={containerRef}
         onStart={() =>
           sendCommand({ type: 'start-turn', turnId: projection.turnId })
@@ -237,6 +242,7 @@ function SingleTurnView({
       canSkip={Boolean(controls?.canSkip)}
       isGuessDisabled={disabled || !controls?.canMarkCorrect}
       actionsDisabled={disabled}
+      connectionStatus={connectionStatus}
       containerRef={containerRef}
       onSkip={() =>
         sendCommand({
@@ -291,7 +297,7 @@ function OwnTurnView({
       team1: projection.scores.team1.total,
       team2: projection.scores.team2.total,
     },
-    connectionState: ownConnectionState(connectionState),
+    connectionState,
     actionsDisabled: disabled,
     containerRef,
     onRetry,
@@ -475,7 +481,13 @@ export function SessionApp({ sessionId }: { sessionId: string }) {
 
   if (!projection) {
     if (connection.status !== 'disconnected') {
-      return <SessionLoadingScreen containerRef={viewContainerRef} />;
+      return (
+        <SessionLoadingScreen
+          connectionState={connection.status}
+          onRetry={connection.retry}
+          containerRef={viewContainerRef}
+        />
+      );
     }
 
     return (
@@ -489,6 +501,9 @@ export function SessionApp({ sessionId }: { sessionId: string }) {
     );
   }
 
+  const connectionStatus = (
+    <ConnectionStatus state={connection.status} onRetry={connection.retry} />
+  );
   let content: React.ReactNode;
 
   if (projection.phase === 'pending') {
@@ -496,7 +511,7 @@ export function SessionApp({ sessionId }: { sessionId: string }) {
       <CreatorActivationScreen
         displayName={activationName}
         onDisplayNameChange={setActivationName}
-        connectionState={ownConnectionState(connection.status)}
+        connectionState={connection.status}
         onRetry={connection.retry}
         isSubmitting={activating}
         errorMessage={activationError || connection.lastError}
@@ -532,6 +547,7 @@ export function SessionApp({ sessionId }: { sessionId: string }) {
         players={projection.configuration.players}
         cardsPerPlayer={projection.configuration.cardsPerPlayer}
         disabled={controlsDisabled}
+        connectionStatus={connectionStatus}
         containerRef={viewContainerRef}
         onPlayersChange={(players) =>
           connection.sendCommand({ type: 'update-setup', players })
@@ -556,7 +572,7 @@ export function SessionApp({ sessionId }: { sessionId: string }) {
         canStart={projection.roomReady}
         isController={isController}
         controlsDisabled={controlsDisabled}
-        connectionState={ownConnectionState(connection.status)}
+        connectionState={connection.status}
         onRetry={connection.retry}
         codeCopyState={copyState}
         startBlockers={lobbyBlockers(projection)}
@@ -645,6 +661,7 @@ export function SessionApp({ sessionId }: { sessionId: string }) {
             players={projection.configuration.players}
             cardsPerPlayer={projection.configuration.cardsPerPlayer}
             disabled={controlsDisabled}
+            connectionStatus={connectionStatus}
             onReady={() =>
               connection.sendCommand({
                 type: 'reveal-single-offer',
@@ -661,6 +678,7 @@ export function SessionApp({ sessionId }: { sessionId: string }) {
             availableCards={projection.offer ?? []}
             selectedCards={projection.draft ?? []}
             disabled={controlsDisabled}
+            connectionStatus={connectionStatus}
             onToggleCard={(card) =>
               connection.sendCommand({
                 type: 'toggle-card',
@@ -694,6 +712,7 @@ export function SessionApp({ sessionId }: { sessionId: string }) {
         <SingleTurnView
           projection={projection}
           disabled={controlsDisabled}
+          connectionStatus={connectionStatus}
           sendCommand={connection.sendCommand}
           containerRef={viewContainerRef}
         />
@@ -717,6 +736,7 @@ export function SessionApp({ sessionId }: { sessionId: string }) {
         isGameOver={projection.phase === 'final-score'}
         canContinue={projection.canContinue}
         disabled={controlsDisabled}
+        connectionStatus={connectionStatus}
         containerRef={viewContainerRef}
         onContinue={() =>
           connection.sendCommand({
@@ -731,10 +751,6 @@ export function SessionApp({ sessionId }: { sessionId: string }) {
     );
   }
 
-  const showGlobalConnection =
-    projection.mode === 'single-device' ||
-    projection.phase === 'round-score' ||
-    projection.phase === 'final-score';
   const showOwnSessionMenu =
     projection.mode === 'own-device' &&
     projection.phase !== 'pending' &&
@@ -750,12 +766,6 @@ export function SessionApp({ sessionId }: { sessionId: string }) {
   return (
     <>
       {content}
-      {showGlobalConnection && (
-        <ConnectionStatus
-          status={connection.status}
-          onRetry={connection.retry}
-        />
-      )}
       {showOwnSessionMenu && (
         <div className={styles.sessionMenu} aria-label="Tindakan sesi">
           <button
@@ -785,7 +795,7 @@ export function SessionApp({ sessionId }: { sessionId: string }) {
           )}
         </div>
       )}
-      {connection.lastError && (
+      {connection.lastError && connection.status !== 'disconnected' && (
         <button
           type="button"
           className={styles.errorNotice}
@@ -851,7 +861,7 @@ function OwnSelectionView({
     playerName,
     cardsPerPlayer: projection.configuration.cardsPerPlayer,
     statuses,
-    connectionState: ownConnectionState(connectionState),
+    connectionState,
     actionsDisabled: disabled,
     cancellation:
       projection.canCancel && projection.blockedParticipantIds.length > 0

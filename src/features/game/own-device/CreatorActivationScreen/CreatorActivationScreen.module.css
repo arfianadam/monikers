@@ -76,6 +76,7 @@
 @media (max-width: 820px) {
   .main {
     grid-template-columns: 1fr;
+    align-content: start;
     padding-left: 0;
     padding-right: 0;
   }
@@ -97,7 +98,7 @@
   }
 
   .intro h1 {
-    font-size: clamp(3.2rem, 16vw, 5rem);
+    font-size: clamp(2.75rem, 13vw, 4rem);
   }
 }
 

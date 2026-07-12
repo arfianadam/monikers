@@ -13,6 +13,10 @@ import {
 } from '@/features/game/domain/rounds';
 import { cn } from '@/lib/utils';
 import { Brand } from '@/shared/ui/Brand/Brand';
+import {
+  ConnectionStatus,
+  type ConnectionStatusState,
+} from '@/shared/ui/ConnectionStatus/ConnectionStatus';
 import { Eyebrow } from '@/shared/ui/Eyebrow/Eyebrow';
 import { GameButton } from '@/shared/ui/GameButton/GameButton';
 import { GameShell } from '@/shared/ui/GameShell/GameShell';
@@ -21,10 +25,6 @@ import { RoundPips } from '@/shared/ui/RoundPips/RoundPips';
 import { ScreenFrame } from '@/shared/ui/ScreenFrame/ScreenFrame';
 import { TopBar } from '@/shared/ui/TopBar/TopBar';
 
-import {
-  ConnectionStatus,
-  type OwnDeviceConnectionState,
-} from '../ConnectionStatus/ConnectionStatus';
 import styles from './OwnTurnScreen.module.css';
 
 export interface OwnTurnScoresView {
@@ -38,7 +38,7 @@ interface OwnTurnBaseProps {
   clueGiverName: string | null;
   remainingCardCount: number;
   scores: OwnTurnScoresView;
-  connectionState?: OwnDeviceConnectionState;
+  connectionState?: ConnectionStatusState;
   onRetry?: () => void;
   actionsDisabled?: boolean;
   containerRef?: Ref<HTMLDivElement>;
@@ -88,16 +88,15 @@ function TurnTopBar({
   onRetry,
 }: {
   round: RoundNumber;
-  connectionState: OwnDeviceConnectionState;
+  connectionState: ConnectionStatusState;
   onRetry?: () => void;
 }) {
   return (
-    <TopBar>
+    <TopBar
+      meta={<RoundPips round={round} />}
+      trailing={<ConnectionStatus state={connectionState} onRetry={onRetry} />}
+    >
       <Brand compact />
-      <div className={styles.topMeta}>
-        <RoundPips round={round} />
-        <ConnectionStatus state={connectionState} onRetry={onRetry} />
-      </div>
     </TopBar>
   );
 }

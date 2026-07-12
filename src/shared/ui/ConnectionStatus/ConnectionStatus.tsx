@@ -4,24 +4,24 @@ import { cn } from '@/lib/utils';
 
 import styles from './ConnectionStatus.module.css';
 
-export type OwnDeviceConnectionState =
-  'connected' | 'connecting' | 'disconnected';
+export type ConnectionStatusState = 'connected' | 'connecting' | 'disconnected';
 
 export interface ConnectionStatusProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
   'children'
 > {
-  state: OwnDeviceConnectionState;
+  state: ConnectionStatusState;
   onRetry?: () => void;
 }
 
-const connectionLabels: Record<OwnDeviceConnectionState, string> = {
+const connectionLabels: Record<ConnectionStatusState, string> = {
   connected: 'Tersambung',
   connecting: 'Menyambungkan…',
   disconnected: 'Koneksi terputus',
 };
 
 export function ConnectionStatus({
+  'aria-label': ariaLabel,
   className,
   state,
   onRetry,
@@ -30,7 +30,9 @@ export function ConnectionStatus({
   return (
     <div
       {...props}
+      aria-label={ariaLabel ?? 'Status koneksi'}
       className={cn(styles.status, styles[state], className)}
+      data-state={state}
       role="status"
       aria-live="polite"
       aria-atomic="true"

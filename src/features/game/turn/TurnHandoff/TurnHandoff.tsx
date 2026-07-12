@@ -1,4 +1,4 @@
-import type { Ref } from 'react';
+import type { ReactNode, Ref } from 'react';
 
 import type { RoundNumber } from '@/features/game/domain/game-types';
 import {
@@ -23,6 +23,7 @@ export interface TurnHandoffProps {
   initialCardCount: number;
   currentTeamScore: number;
   disabled?: boolean;
+  connectionStatus?: ReactNode;
   onStart: () => void;
   containerRef?: Ref<HTMLDivElement>;
 }
@@ -34,6 +35,7 @@ export function TurnHandoff({
   initialCardCount,
   currentTeamScore,
   disabled = false,
+  connectionStatus,
   onStart,
   containerRef,
 }: TurnHandoffProps) {
@@ -41,9 +43,8 @@ export function TurnHandoff({
   return (
     <GameShell variant="turn" team={currentTeamNumber}>
       <ScreenFrame ref={containerRef} className={styles.screen} tabIndex={-1}>
-        <TopBar>
+        <TopBar meta={<RoundPips round={round} />} trailing={connectionStatus}>
           <Brand compact />
-          <RoundPips round={round} />
         </TopBar>
 
         <main className={styles.layout}>

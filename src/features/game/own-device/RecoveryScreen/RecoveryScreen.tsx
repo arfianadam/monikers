@@ -3,6 +3,7 @@
 import type { Ref } from 'react';
 
 import { Brand } from '@/shared/ui/Brand/Brand';
+import { ConnectionStatus } from '@/shared/ui/ConnectionStatus/ConnectionStatus';
 import { Eyebrow } from '@/shared/ui/Eyebrow/Eyebrow';
 import { GameButton } from '@/shared/ui/GameButton/GameButton';
 import { GameShell } from '@/shared/ui/GameShell/GameShell';
@@ -10,7 +11,6 @@ import { Panel } from '@/shared/ui/Panel/Panel';
 import { ScreenFrame } from '@/shared/ui/ScreenFrame/ScreenFrame';
 import { TopBar } from '@/shared/ui/TopBar/TopBar';
 
-import { ConnectionStatus } from '../ConnectionStatus/ConnectionStatus';
 import styles from './RecoveryScreen.module.css';
 
 export type TransientRecoveryReason = 'connecting' | 'disconnected';
@@ -84,15 +84,18 @@ export function RecoveryScreen(props: RecoveryScreenProps) {
         className={styles.screen}
         tabIndex={-1}
       >
-        <TopBar>
+        <TopBar
+          trailing={
+            isTransient ? (
+              <ConnectionStatus
+                state={
+                  props.reason === 'connecting' ? 'connecting' : 'disconnected'
+                }
+              />
+            ) : undefined
+          }
+        >
           <Brand compact />
-          {isTransient && (
-            <ConnectionStatus
-              state={
-                props.reason === 'connecting' ? 'connecting' : 'disconnected'
-              }
-            />
-          )}
         </TopBar>
 
         <main className={styles.main}>

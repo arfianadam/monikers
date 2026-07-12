@@ -5,6 +5,10 @@ import type { Ref } from 'react';
 import type { Card } from '@/features/game/domain/game-types';
 import { cn } from '@/lib/utils';
 import { Brand } from '@/shared/ui/Brand/Brand';
+import {
+  ConnectionStatus,
+  type ConnectionStatusState,
+} from '@/shared/ui/ConnectionStatus/ConnectionStatus';
 import { Eyebrow } from '@/shared/ui/Eyebrow/Eyebrow';
 import { GameButton } from '@/shared/ui/GameButton/GameButton';
 import { GameShell } from '@/shared/ui/GameShell/GameShell';
@@ -12,10 +16,6 @@ import { Panel } from '@/shared/ui/Panel/Panel';
 import { ScreenFrame } from '@/shared/ui/ScreenFrame/ScreenFrame';
 import { TopBar } from '@/shared/ui/TopBar/TopBar';
 
-import {
-  ConnectionStatus,
-  type OwnDeviceConnectionState,
-} from '../ConnectionStatus/ConnectionStatus';
 import styles from './OwnSelectionScreen.module.css';
 
 export type OwnSelectionPlayerState = 'selecting' | 'done';
@@ -37,7 +37,7 @@ interface OwnSelectionBaseProps {
   playerName: string;
   cardsPerPlayer: number;
   statuses: readonly OwnSelectionPlayerStatusView[];
-  connectionState?: OwnDeviceConnectionState;
+  connectionState?: ConnectionStatusState;
   onRetry?: () => void;
   actionsDisabled?: boolean;
   cancellation?: OwnSelectionCancellationView;
@@ -164,9 +164,12 @@ export function OwnSelectionScreen(props: OwnSelectionScreenProps) {
           className={styles.waitingScreen}
           tabIndex={-1}
         >
-          <TopBar>
+          <TopBar
+            trailing={
+              <ConnectionStatus state={connectionState} onRetry={onRetry} />
+            }
+          >
             <Brand compact />
-            <ConnectionStatus state={connectionState} onRetry={onRetry} />
           </TopBar>
 
           <main className={styles.waitingMain}>
@@ -213,14 +216,20 @@ export function OwnSelectionScreen(props: OwnSelectionScreenProps) {
         className={styles.editingScreen}
         tabIndex={-1}
       >
-        <TopBar className={styles.topBar}>
-          <Brand compact />
-          <div className={styles.topStatus}>
-            <span>
-              <strong>{props.draft.length}</strong> / {cardsPerPlayer} dipilih
-            </span>
+        <TopBar
+          className={styles.topBar}
+          meta={
+            <div className={styles.topStatus}>
+              <span>
+                <strong>{props.draft.length}</strong> / {cardsPerPlayer} dipilih
+              </span>
+            </div>
+          }
+          trailing={
             <ConnectionStatus state={connectionState} onRetry={onRetry} />
-          </div>
+          }
+        >
+          <Brand compact />
         </TopBar>
 
         <main className={styles.editingMain}>

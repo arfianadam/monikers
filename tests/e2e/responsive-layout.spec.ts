@@ -1,4 +1,10 @@
-import { expect, type Locator, type Page, test } from '@playwright/test';
+import {
+  expect,
+  type Locator,
+  type Page,
+  type WebSocketRoute,
+  test,
+} from '@playwright/test';
 
 interface HorizontalBounds {
   width: number;
@@ -59,11 +65,111 @@ async function chooseCard(page: Page) {
   await expect(page.getByRole('button', { pressed: true })).toHaveCount(1);
 }
 
+async function installSessionSocketGate(page: Page) {
+  let blocked = false;
+  let currentSocket: WebSocketRoute | null = null;
+
+  await page.routeWebSocket(/\/session\/[^/]+\/live$/, (socket) => {
+    if (blocked) {
+      void socket.close();
+      return;
+    }
+
+    currentSocket = socket;
+    socket.connectToServer();
+  });
+
+  return {
+    allow() {
+      blocked = false;
+    },
+    async block() {
+      blocked = true;
+      if (!currentSocket) throw new Error('Socket sesi belum tersambung.');
+      await currentSocket.close();
+    },
+  };
+}
+
+async function expectStaticConnectionLayout(
+  page: Page,
+  options: { activeTurn?: boolean; disconnected?: boolean } = {}
+) {
+  const allStatuses = page.getByRole('status', {
+    name: 'Status koneksi',
+    includeHidden: true,
+  });
+  const header = page.getByRole('banner');
+  const status = header.getByRole('status', { name: 'Status koneksi' });
+
+  await expect(allStatuses).toHaveCount(1);
+  await expect(status).toBeVisible();
+  await expect(status).toHaveCSS('position', 'static');
+  await expect(status).toBeInViewport({ ratio: 1 });
+  await expect
+    .poll(async () => {
+      const [headerBox, statusBox] = await Promise.all([
+        header.boundingBox(),
+        status.boundingBox(),
+      ]);
+      if (!headerBox || !statusBox) return Number.POSITIVE_INFINITY;
+      return Math.abs(
+        statusBox.x + statusBox.width - (headerBox.x + headerBox.width)
+      );
+    })
+    .toBeLessThanOrEqual(1);
+
+  const overflow = await page.evaluate(() => ({
+    body: document.body.scrollWidth - document.documentElement.clientWidth,
+    document:
+      document.documentElement.scrollWidth -
+      document.documentElement.clientWidth,
+  }));
+  expect(overflow.body).toBeLessThanOrEqual(0);
+  expect(overflow.document).toBeLessThanOrEqual(0);
+
+  const brand = header.getByText('Monikers', { exact: true });
+  if (await brand.isVisible()) {
+    const [brandBox, statusBox] = await Promise.all([
+      brand.boundingBox(),
+      status.boundingBox(),
+    ]);
+    expect(
+      brandBox &&
+        statusBox &&
+        brandBox.x < statusBox.x + statusBox.width &&
+        brandBox.x + brandBox.width > statusBox.x &&
+        brandBox.y < statusBox.y + statusBox.height &&
+        brandBox.y + brandBox.height > statusBox.y
+    ).toBe(false);
+  }
+
+  if (options.activeTurn) {
+    const [headerBox, cardBox] = await Promise.all([
+      header.boundingBox(),
+      page.getByRole('article').boundingBox(),
+    ]);
+    expect(headerBox).not.toBeNull();
+    expect(cardBox).not.toBeNull();
+    expect((headerBox?.y ?? 0) + (headerBox?.height ?? 0)).toBeLessThanOrEqual(
+      cardBox?.y ?? 0
+    );
+  }
+
+  if (options.disconnected) {
+    await expect(status).toContainText('Koneksi terputus');
+    await expect(
+      status.getByRole('button', { name: 'Coba lagi' })
+    ).toBeInViewport({ ratio: 1 });
+  }
+}
+
 async function reachActiveTurn(
   page: Page,
   expectedPanelBounds: HorizontalBounds,
   expectedPanelPadding: HorizontalPadding,
-  expectedHeadingTreatment: HeadingTreatment
+  expectedHeadingTreatment: HeadingTreatment,
+  onSetup?: () => Promise<void>
 ) {
   await page.getByRole('button', { name: 'Main di satu perangkat' }).click();
   await expect(page).toHaveURL(/\/session\/[A-Za-z0-9_-]+$/);
@@ -94,6 +200,7 @@ async function reachActiveTurn(
     )
   ).toEqual(expectedHeadingTreatment);
   await expect(page.getByText('№ 001', { exact: true })).toHaveCount(0);
+  await onSetup?.();
 
   await page.getByRole('spinbutton', { name: 'Pemain', exact: true }).fill('2');
   await expect(
@@ -117,6 +224,7 @@ async function reachActiveTurn(
 }
 
 test('layout khusus tetap terbaca dan stabil', async ({ page }, testInfo) => {
+  const socketGate = await installSessionSocketGate(page);
   await page.goto('/');
   await page.evaluate(async () => document.fonts.ready);
 
@@ -154,7 +262,26 @@ test('layout khusus tetap terbaca dan stabil', async ({ page }, testInfo) => {
     page,
     homePanelBounds,
     homePanelPadding,
-    homeHeadingTreatment
+    homeHeadingTreatment,
+    async () => {
+      await socketGate.block();
+      await expectStaticConnectionLayout(page, { disconnected: true });
+      socketGate.allow();
+      await page
+        .getByRole('status', { name: 'Status koneksi' })
+        .getByRole('button', { name: 'Coba lagi' })
+        .click();
+      await expect(
+        page.getByRole('status', { name: 'Status koneksi' })
+      ).toContainText('Tersambung');
+      await expectStaticConnectionLayout(page);
+    }
   );
   await expect(page).toHaveScreenshot('active-turn.png', { fullPage: true });
+  await expectStaticConnectionLayout(page, { activeTurn: true });
+  await socketGate.block();
+  await expectStaticConnectionLayout(page, {
+    activeTurn: true,
+    disconnected: true,
+  });
 });

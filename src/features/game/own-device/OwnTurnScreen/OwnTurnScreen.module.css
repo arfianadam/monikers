@@ -1,9 +1,3 @@
-.topMeta {
-  align-items: center;
-  display: flex;
-  gap: 20px;
-}
-
 .handoffScreen,
 .watchingScreen,
 .activeScreen {
@@ -595,14 +589,6 @@
 }
 
 @media (max-width: 700px) {
-  .topMeta {
-    gap: 8px;
-  }
-
-  .topMeta > :first-child {
-    display: none;
-  }
-
   .handoffMain {
     padding-left: 0;
     padding-right: 0;

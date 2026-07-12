@@ -1,10 +1,27 @@
 .topBar {
   align-items: center;
+  column-gap: 16px;
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   min-height: 58px;
   position: relative;
+  row-gap: 4px;
   z-index: 10;
+}
+
+.trailing {
+  align-items: center;
+  display: flex;
+  flex: 0 0 auto;
+  gap: clamp(16px, 2vw, 28px);
+  justify-content: flex-end;
+  margin-left: auto;
+  max-width: 100%;
+}
+
+.meta {
+  display: contents;
 }
 
 .note {
@@ -16,12 +33,22 @@
   text-transform: uppercase;
 }
 
+@media (max-width: 820px) {
+  .withTrailing .note {
+    display: none;
+  }
+}
+
 @media (max-width: 700px) {
   .topBar {
     min-height: 50px;
   }
 
   .note {
+    display: none;
+  }
+
+  .withTrailing .meta {
     display: none;
   }
 }

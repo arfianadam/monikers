@@ -1,4 +1,4 @@
-import type { Ref } from 'react';
+import type { ReactNode, Ref } from 'react';
 
 import { Brand } from '@/shared/ui/Brand/Brand';
 import { Eyebrow } from '@/shared/ui/Eyebrow/Eyebrow';
@@ -15,6 +15,7 @@ export interface SetupViewProps {
   players: number;
   cardsPerPlayer: number;
   disabled?: boolean;
+  connectionStatus?: ReactNode;
   containerRef?: Ref<HTMLDivElement>;
   onPlayersChange: (players: number) => void;
   onCardsPerPlayerChange: (cardsPerPlayer: number) => void;
@@ -25,6 +26,7 @@ export function SetupView({
   players,
   cardsPerPlayer,
   disabled = false,
+  connectionStatus,
   containerRef,
   onPlayersChange,
   onCardsPerPlayerChange,
@@ -35,7 +37,10 @@ export function SetupView({
   return (
     <GameShell variant="setup">
       <ScreenFrame ref={containerRef} className={styles.screen} tabIndex={-1}>
-        <TopBar note="Bergantian di satu perangkat · Tanpa perlu masuk">
+        <TopBar
+          note="Bergantian di satu perangkat · Tanpa perlu masuk"
+          trailing={connectionStatus}
+        >
           <Brand />
         </TopBar>
 

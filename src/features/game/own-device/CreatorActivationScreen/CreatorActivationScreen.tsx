@@ -3,6 +3,10 @@
 import type { FormEvent, Ref } from 'react';
 
 import { Brand } from '@/shared/ui/Brand/Brand';
+import {
+  ConnectionStatus,
+  type ConnectionStatusState,
+} from '@/shared/ui/ConnectionStatus/ConnectionStatus';
 import { Eyebrow } from '@/shared/ui/Eyebrow/Eyebrow';
 import { GameButton } from '@/shared/ui/GameButton/GameButton';
 import { GameShell } from '@/shared/ui/GameShell/GameShell';
@@ -11,17 +15,13 @@ import { Panel } from '@/shared/ui/Panel/Panel';
 import { ScreenFrame } from '@/shared/ui/ScreenFrame/ScreenFrame';
 import { TopBar } from '@/shared/ui/TopBar/TopBar';
 
-import {
-  ConnectionStatus,
-  type OwnDeviceConnectionState,
-} from '../ConnectionStatus/ConnectionStatus';
 import styles from './CreatorActivationScreen.module.css';
 
 export interface CreatorActivationScreenProps {
   displayName: string;
   onDisplayNameChange: (displayName: string) => void;
   onSubmit: () => void;
-  connectionState?: OwnDeviceConnectionState;
+  connectionState?: ConnectionStatusState;
   onRetry?: () => void;
   errorMessage?: string | null;
   isSubmitting?: boolean;
@@ -46,9 +46,13 @@ export function CreatorActivationScreen({
   return (
     <GameShell variant="handoff">
       <ScreenFrame ref={containerRef} className={styles.screen} tabIndex={-1}>
-        <TopBar note="Perangkat masing-masing · Satu ruangan bersama">
+        <TopBar
+          note="Perangkat masing-masing · Satu ruangan bersama"
+          trailing={
+            <ConnectionStatus state={connectionState} onRetry={onRetry} />
+          }
+        >
           <Brand compact />
-          <ConnectionStatus state={connectionState} onRetry={onRetry} />
         </TopBar>
 
         <main className={styles.main}>

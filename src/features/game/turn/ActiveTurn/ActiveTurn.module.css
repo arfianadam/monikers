@@ -8,6 +8,11 @@
   flex: 0 0 auto;
 }
 
+.topBrand,
+.roundPips {
+  flex: 0 0 auto;
+}
+
 .hud {
   align-items: center;
   display: grid;
@@ -397,6 +402,16 @@
     display: none;
   }
 
+  .withConnection header.hasConnection {
+    display: flex;
+    min-height: 44px;
+  }
+
+  .withConnection .topBrand,
+  .withConnection .roundPips {
+    display: none;
+  }
+
   .hud {
     margin: 0;
     min-height: 62px;
@@ -486,6 +501,28 @@
     display: none;
   }
 
+  .screen.withConnection {
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+
+  .withConnection header.hasConnection {
+    display: flex;
+    grid-column: 1 / -1;
+    grid-row: 1;
+    min-height: 44px;
+  }
+
+  .withConnection .topBrand,
+  .withConnection .roundPips {
+    display: none;
+  }
+
+  .withConnection .hud,
+  .withConnection .stage,
+  .withConnection .actions {
+    grid-row: 2;
+  }
+
   .hud {
     align-self: center;
     display: flex;
@@ -547,6 +584,11 @@
     height: calc(100svh - 16px);
     min-height: 0;
     padding: 18px;
+  }
+
+  .withConnection .activeCard {
+    height: 100%;
+    max-height: 100%;
   }
 
   .cardCopy {

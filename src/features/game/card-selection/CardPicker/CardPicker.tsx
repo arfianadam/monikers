@@ -1,4 +1,4 @@
-import type { Ref } from 'react';
+import type { ReactNode, Ref } from 'react';
 
 import type { Card } from '@/features/game/domain/game-types';
 import { cn } from '@/lib/utils';
@@ -18,6 +18,7 @@ export interface CardPickerProps {
   availableCards: readonly Card[];
   selectedCards: readonly Card[];
   disabled?: boolean;
+  connectionStatus?: ReactNode;
   onToggleCard: (card: Card) => void;
   onNextPlayer: () => void;
   containerRef?: Ref<HTMLDivElement>;
@@ -30,6 +31,7 @@ export function CardPicker({
   availableCards,
   selectedCards,
   disabled = false,
+  connectionStatus,
   onToggleCard,
   onNextPlayer,
   containerRef,
@@ -41,16 +43,22 @@ export function CardPicker({
   return (
     <GameShell variant="selection">
       <ScreenFrame ref={containerRef} className={styles.screen} tabIndex={-1}>
-        <TopBar className={styles.topBar}>
+        <TopBar
+          className={styles.topBar}
+          meta={
+            <div className={styles.status}>
+              <span className={styles.statusPlayer}>
+                Pemain {currentPlayer} dari {players}
+              </span>
+              <span className={styles.statusCount}>
+                <strong>{selectedCards.length}</strong> / {cardsPerPlayer}{' '}
+                dipilih
+              </span>
+            </div>
+          }
+          trailing={connectionStatus}
+        >
           <Brand compact />
-          <div className={styles.status}>
-            <span className={styles.statusPlayer}>
-              Pemain {currentPlayer} dari {players}
-            </span>
-            <span className={styles.statusCount}>
-              <strong>{selectedCards.length}</strong> / {cardsPerPlayer} dipilih
-            </span>
-          </div>
         </TopBar>
 
         <main className={styles.main}>

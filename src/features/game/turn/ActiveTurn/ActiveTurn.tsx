@@ -1,4 +1,4 @@
-import type { CSSProperties, Ref } from 'react';
+import type { CSSProperties, ReactNode, Ref } from 'react';
 
 import type { Card, RoundNumber } from '@/features/game/domain/game-types';
 import { ROUND_DURATION_SECONDS } from '@/features/game/domain/rounds';
@@ -24,6 +24,7 @@ export interface ActiveTurnProps {
   canSkip: boolean;
   isGuessDisabled: boolean;
   actionsDisabled?: boolean;
+  connectionStatus?: ReactNode;
   onSkip: () => void;
   onGuess: () => void;
   onEndTurn: () => void;
@@ -41,6 +42,7 @@ export function ActiveTurn({
   canSkip,
   isGuessDisabled,
   actionsDisabled = false,
+  connectionStatus,
   onSkip,
   onGuess,
   onEndTurn,
@@ -52,10 +54,20 @@ export function ActiveTurn({
 
   return (
     <GameShell variant="play" team={currentTeamNumber}>
-      <ScreenFrame ref={containerRef} className={styles.screen} tabIndex={-1}>
-        <TopBar className={styles.topBar}>
-          <Brand compact />
-          <RoundPips round={round} />
+      <ScreenFrame
+        ref={containerRef}
+        className={cn(styles.screen, connectionStatus && styles.withConnection)}
+        tabIndex={-1}
+      >
+        <TopBar
+          className={cn(
+            styles.topBar,
+            connectionStatus && styles.hasConnection
+          )}
+          meta={<RoundPips className={styles.roundPips} round={round} />}
+          trailing={connectionStatus}
+        >
+          <Brand compact className={styles.topBrand} />
         </TopBar>
 
         <div className={styles.hud}>

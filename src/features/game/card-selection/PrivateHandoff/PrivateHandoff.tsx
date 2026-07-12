@@ -1,4 +1,4 @@
-import type { Ref } from 'react';
+import type { ReactNode, Ref } from 'react';
 
 import { Brand } from '@/shared/ui/Brand/Brand';
 import { Eyebrow } from '@/shared/ui/Eyebrow/Eyebrow';
@@ -15,6 +15,7 @@ export interface PrivateHandoffProps {
   players: number;
   cardsPerPlayer: number;
   disabled?: boolean;
+  connectionStatus?: ReactNode;
   onReady: () => void;
   containerRef?: Ref<HTMLDivElement>;
 }
@@ -24,6 +25,7 @@ export function PrivateHandoff({
   players,
   cardsPerPlayer,
   disabled = false,
+  connectionStatus,
   onReady,
   containerRef,
 }: PrivateHandoffProps) {
@@ -31,19 +33,23 @@ export function PrivateHandoff({
   return (
     <GameShell variant="handoff">
       <ScreenFrame ref={containerRef} className={styles.screen} tabIndex={-1}>
-        <TopBar>
+        <TopBar
+          meta={
+            <div
+              className={styles.progress}
+              aria-label={`Progres pemilihan kartu: pemain ${currentPlayer} dari ${players}`}
+            >
+              <span>
+                Pemain {currentPlayer} dari {players}
+              </span>
+              <span className={styles.progressTrack}>
+                <span style={{ width: `${playerProgress}%` }} />
+              </span>
+            </div>
+          }
+          trailing={connectionStatus}
+        >
           <Brand compact />
-          <div
-            className={styles.progress}
-            aria-label={`Progres pemilihan kartu: pemain ${currentPlayer} dari ${players}`}
-          >
-            <span>
-              Pemain {currentPlayer} dari {players}
-            </span>
-            <span className={styles.progressTrack}>
-              <span style={{ width: `${playerProgress}%` }} />
-            </span>
-          </div>
         </TopBar>
 
         <main className={styles.layout}>

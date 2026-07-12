@@ -5,6 +5,10 @@ import type { Ref } from 'react';
 import type { TeamId } from '@/features/game/domain/game-types';
 import { cn } from '@/lib/utils';
 import { Brand } from '@/shared/ui/Brand/Brand';
+import {
+  ConnectionStatus,
+  type ConnectionStatusState,
+} from '@/shared/ui/ConnectionStatus/ConnectionStatus';
 import { Eyebrow } from '@/shared/ui/Eyebrow/Eyebrow';
 import { GameButton } from '@/shared/ui/GameButton/GameButton';
 import { GameShell } from '@/shared/ui/GameShell/GameShell';
@@ -13,10 +17,6 @@ import { Panel } from '@/shared/ui/Panel/Panel';
 import { ScreenFrame } from '@/shared/ui/ScreenFrame/ScreenFrame';
 import { TopBar } from '@/shared/ui/TopBar/TopBar';
 
-import {
-  ConnectionStatus,
-  type OwnDeviceConnectionState,
-} from '../ConnectionStatus/ConnectionStatus';
 import styles from './LobbyScreen.module.css';
 
 export type LobbyPlayerPresence = 'connected' | 'disconnected';
@@ -62,7 +62,7 @@ export interface LobbyScreenProps {
   ) => void;
   onRemovePlayer?: (playerId: string) => void;
   onEndSession?: () => void;
-  connectionState?: OwnDeviceConnectionState;
+  connectionState?: ConnectionStatusState;
   onRetry?: () => void;
   controlsDisabled?: boolean;
   codeCopyState?: LobbyCodeCopyState;
@@ -124,9 +124,13 @@ export function LobbyScreen({
   return (
     <GameShell variant="setup">
       <ScreenFrame ref={containerRef} className={styles.screen} tabIndex={-1}>
-        <TopBar className={styles.topBar}>
+        <TopBar
+          className={styles.topBar}
+          trailing={
+            <ConnectionStatus state={connectionState} onRetry={onRetry} />
+          }
+        >
           <Brand compact />
-          <ConnectionStatus state={connectionState} onRetry={onRetry} />
         </TopBar>
 
         <main className={styles.main}>

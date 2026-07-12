@@ -1,4 +1,10 @@
-import { expect, type Page, test } from '@playwright/test';
+import {
+  expect,
+  type Locator,
+  type Page,
+  type WebSocketRoute,
+  test,
+} from '@playwright/test';
 
 const TOTAL_CARDS = 2;
 const SESSION_URL = /\/session\/[A-Za-z0-9_-]+$/;
@@ -73,6 +79,70 @@ async function captureStage(page: Page, name: string) {
   await expect(page).toHaveScreenshot(`${name}.png`, { fullPage: true });
 }
 
+async function expectStaticConnectionInTopBar(
+  page: Page,
+  expectedText = 'Tersambung'
+) {
+  const header = page.getByRole('banner');
+  const connectionStatuses = page.getByRole('status', {
+    name: 'Status koneksi',
+    includeHidden: true,
+  });
+  const status = header.getByRole('status', { name: 'Status koneksi' });
+
+  await expect(connectionStatuses).toHaveCount(1);
+  await expect(status).toBeVisible();
+  await expect(status).toContainText(expectedText);
+  await expect(status).toHaveCSS('position', 'static');
+  await expect(status).toBeInViewport({ ratio: 1 });
+  await expect
+    .poll(async () => {
+      const [headerBox, statusBox] = await Promise.all([
+        header.boundingBox(),
+        status.boundingBox(),
+      ]);
+      if (!headerBox || !statusBox) return Number.POSITIVE_INFINITY;
+      return Math.abs(
+        statusBox.x + statusBox.width - (headerBox.x + headerBox.width)
+      );
+    })
+    .toBeLessThanOrEqual(1);
+
+  const overflow = await page.evaluate(() => ({
+    body: document.body.scrollWidth - document.documentElement.clientWidth,
+    document:
+      document.documentElement.scrollWidth -
+      document.documentElement.clientWidth,
+  }));
+  expect(overflow.body).toBeLessThanOrEqual(0);
+  expect(overflow.document).toBeLessThanOrEqual(0);
+
+  const brand = header.getByText('Monikers', { exact: true });
+  if (await brand.isVisible()) {
+    const [brandBox, statusBox] = await Promise.all([
+      brand.boundingBox(),
+      status.boundingBox(),
+    ]);
+    expect(
+      brandBox &&
+        statusBox &&
+        brandBox.x < statusBox.x + statusBox.width &&
+        brandBox.x + brandBox.width > statusBox.x &&
+        brandBox.y < statusBox.y + statusBox.height &&
+        brandBox.y + brandBox.height > statusBox.y
+    ).toBe(false);
+  }
+}
+
+async function expectResponsiveHeaderMeta(page: Page, meta: Locator) {
+  if ((page.viewportSize()?.width ?? Number.POSITIVE_INFINITY) <= 700) {
+    await expect(meta).toBeHidden();
+    return;
+  }
+
+  await expect(meta).toBeVisible();
+}
+
 async function createSingleDeviceSession(page: Page) {
   await page.goto('/');
   await expect(
@@ -130,6 +200,51 @@ test('pembuatan sesi tidak menampilkan layar pemulihan sementara', async ({
       )
     ).toEqual([]);
   }
+});
+
+test('status koneksi tetap statis saat memuat dan memulihkan sesi', async ({
+  page,
+}) => {
+  let rejectSessionSockets = false;
+  let resolveSessionSocket!: (socket: WebSocketRoute) => void;
+  const sessionSocket = new Promise<WebSocketRoute>((resolve) => {
+    resolveSessionSocket = resolve;
+  });
+
+  await page.routeWebSocket(/\/session\/[^/]+\/live$/, (socket) => {
+    if (rejectSessionSockets) {
+      void socket.close();
+      return;
+    }
+
+    const serverSocket = socket.connectToServer();
+    serverSocket.onMessage(() => undefined);
+    resolveSessionSocket(socket);
+  });
+
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Main di satu perangkat' }).click();
+  await expect(page.locator('[aria-busy="true"]')).toBeVisible();
+  await expectStaticConnectionInTopBar(page);
+
+  rejectSessionSockets = true;
+  await (await sessionSocket).close();
+
+  await expect(
+    page.getByRole('heading', { level: 1, name: 'Kamu sedang luring.' })
+  ).toBeVisible();
+  await expectStaticConnectionInTopBar(page, 'Koneksi terputus');
+
+  const status = page
+    .getByRole('banner')
+    .getByRole('status', { name: 'Status koneksi' });
+  await expect(status.getByRole('button', { name: 'Coba lagi' })).toHaveCount(
+    0
+  );
+  await expect(page.getByRole('button', { name: 'Coba lagi' })).toHaveCount(1);
+  await expect(
+    page.getByRole('main').getByRole('button', { name: 'Coba lagi' })
+  ).toBeInViewport({ ratio: 1 });
 });
 
 async function configureGame(
@@ -199,16 +314,21 @@ async function completeActiveTurn(page: Page) {
 }
 
 async function playRound(page: Page, round: number) {
-  await expect(page.getByLabel(`Babak ${round} dari 3`)).toBeVisible();
+  await expectResponsiveHeaderMeta(
+    page,
+    page.getByLabel(`Babak ${round} dari 3`)
+  );
   await expect(
     page.getByRole('heading', {
       level: 1,
       name: new RegExp(`Tim 1,\\s*giliranmu\\.`),
     })
   ).toBeVisible();
+  await expectStaticConnectionInTopBar(page);
 
   await page.getByRole('button', { name: 'Mulai giliran 60 detik' }).click();
   await expect(page.getByLabel(/\d+ detik tersisa/)).toBeVisible();
+  await expectStaticConnectionInTopBar(page);
   await completeActiveTurn(page);
 }
 
@@ -217,6 +337,7 @@ test('dua pemain menyelesaikan tiga babak dan sesi pulih setelah refresh', async
 }) => {
   const sessionPath = await createSingleDeviceSession(page);
   await configureGame(page, 2, 1);
+  await expectStaticConnectionInTopBar(page);
   await captureStage(page, '01-setup');
 
   page.on('dialog', (dialog) => void dialog.accept());
@@ -233,16 +354,19 @@ test('dua pemain menyelesaikan tiga babak dan sesi pulih setelah refresh', async
   await expect(
     page.getByRole('heading', { level: 1, name: 'Serahkan perangkatnya' })
   ).toBeVisible();
-  await expect(
+  await expectResponsiveHeaderMeta(
+    page,
     page.getByLabel('Progres pemilihan kartu: pemain 1 dari 2')
-  ).toBeVisible();
+  );
+  await expectStaticConnectionInTopBar(page);
   await captureStage(page, '02-private-handoff');
 
   await page.getByRole('button', { name: 'Buka kartuku' }).click();
   await expect(
     page.getByRole('heading', { level: 1, name: 'Pilih favoritmu' })
   ).toBeVisible();
-  await expect(page.getByText('0 / 1 dipilih')).toBeVisible();
+  await expectResponsiveHeaderMeta(page, page.getByText('0 / 1 dipilih'));
+  await expectStaticConnectionInTopBar(page);
   await captureStage(page, '03-card-picker');
 
   await chooseCards(page, 1);
@@ -262,12 +386,14 @@ test('dua pemain menyelesaikan tiga babak dan sesi pulih setelah refresh', async
       name: /Tim 1,\s*giliranmu\./,
     })
   ).toBeVisible();
-  await expect(page.getByLabel('Babak 1 dari 3')).toBeVisible();
+  await expectResponsiveHeaderMeta(page, page.getByLabel('Babak 1 dari 3'));
+  await expectStaticConnectionInTopBar(page);
   await captureStage(page, '04-turn-handoff');
 
   await page.getByRole('button', { name: 'Mulai giliran 60 detik' }).click();
   await expect(page.getByLabel(/\d+ detik tersisa/)).toBeVisible();
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+  await expectStaticConnectionInTopBar(page);
   await captureStage(page, '05-active-turn');
   await completeActiveTurn(page);
 
@@ -276,6 +402,7 @@ test('dua pemain menyelesaikan tiga babak dan sesi pulih setelah refresh', async
   ).toBeVisible();
   await expect(page.getByRole('region', { name: 'Skor tim' })).toBeVisible();
   await expect(page.getByText('1 / 3 selesai')).toBeVisible();
+  await expectStaticConnectionInTopBar(page);
   await captureStage(page, '06-round-score');
 
   await page.getByRole('button', { name: 'Mulai babak berikutnya' }).click();
@@ -297,6 +424,7 @@ test('dua pemain menyelesaikan tiga babak dan sesi pulih setelah refresh', async
   ).toBeVisible();
   await expect(page.getByText('3 / 3 selesai')).toBeVisible();
   await expect(page.getByRole('button', { name: 'Main lagi' })).toBeVisible();
+  await expectStaticConnectionInTopBar(page);
   await captureStage(page, '07-final-score');
 });
 

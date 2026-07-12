@@ -136,7 +136,7 @@
 
 @media (max-width: 700px) {
   .intro h1 {
-    font-size: clamp(3.45rem, 17vw, 5.5rem);
+    font-size: clamp(2.75rem, 13vw, 4rem);
   }
 
   .layout {

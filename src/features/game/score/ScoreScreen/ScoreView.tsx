@@ -1,4 +1,4 @@
-import type { Ref } from 'react';
+import type { ReactNode, Ref } from 'react';
 
 import type { ScoresByRound } from '@/features/game/domain/game-types';
 import { getScoredRounds, getTeamTotal } from '@/features/game/domain/scoring';
@@ -21,6 +21,7 @@ export interface ScoreViewProps {
   canContinue?: boolean;
   disabled?: boolean;
   waitingMessage?: string;
+  connectionStatus?: ReactNode;
   containerRef?: Ref<HTMLDivElement>;
   onContinue: () => void;
 }
@@ -31,6 +32,7 @@ export function ScoreView({
   canContinue = true,
   disabled = false,
   waitingMessage = 'Menunggu pengendali sesi melanjutkan permainan…',
+  connectionStatus,
   containerRef,
   onContinue,
 }: ScoreViewProps) {
@@ -46,13 +48,14 @@ export function ScoreView({
       ? 'Hasil seri yang legendaris.'
       : `Tim ${leader} merebut mahkota.`
     : `Babak ${latestRound} telah usai.`;
-
   return (
     <GameShell variant="score" final={isGameOver}>
       <ScreenFrame ref={containerRef} tabIndex={-1}>
-        <TopBar>
+        <TopBar
+          meta={<RoundPips round={latestRound} final={isGameOver} />}
+          trailing={connectionStatus}
+        >
           <Brand compact />
-          <RoundPips round={latestRound} final={isGameOver} />
         </TopBar>
 
         <main className={styles.main}>
