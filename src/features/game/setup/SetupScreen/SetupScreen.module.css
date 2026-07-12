@@ -37,6 +37,11 @@
   max-width: 52ch;
 }
 
+.settings {
+  min-width: 0;
+  width: 100%;
+}
+
 .settingsCard {
   padding: clamp(28px, 3.5vw, 40px);
   width: 100%;
@@ -110,6 +115,22 @@
   width: 100%;
 }
 
+.endSession {
+  background: transparent;
+  border: 0;
+  color: #ff9c8f;
+  display: block;
+  margin: 18px auto 0;
+  min-height: 44px;
+  padding: 8px 4px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.endSession:disabled {
+  opacity: 0.4;
+}
+
 .footer {
   color: var(--muted);
   display: flex;
@@ -128,7 +149,7 @@
   }
 
   .intro,
-  .settingsCard {
+  .settings {
     justify-self: center;
     width: min(100%, 620px);
   }

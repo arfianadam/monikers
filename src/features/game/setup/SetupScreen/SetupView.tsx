@@ -20,6 +20,7 @@ export interface SetupViewProps {
   onPlayersChange: (players: number) => void;
   onCardsPerPlayerChange: (cardsPerPlayer: number) => void;
   onStart: () => void;
+  onEndSession?: () => void;
 }
 
 export function SetupView({
@@ -31,6 +32,7 @@ export function SetupView({
   onPlayersChange,
   onCardsPerPlayerChange,
   onStart,
+  onEndSession,
 }: SetupViewProps) {
   const totalCards = players * cardsPerPlayer;
 
@@ -59,66 +61,79 @@ export function SetupView({
             </p>
           </section>
 
-          <Panel
-            as="section"
-            className={styles.settingsCard}
-            aria-label="Pengaturan permainan"
-          >
-            <div className={styles.settingsHeading}>
-              <Eyebrow>Pengaturan permainan</Eyebrow>
-              <h2>Susun deck-mu</h2>
-            </div>
-
-            <form
-              onSubmit={(event) => {
-                event.preventDefault();
-                onStart();
-              }}
+          <div className={styles.settings}>
+            <Panel
+              as="section"
+              className={styles.settingsCard}
+              aria-label="Pengaturan permainan"
             >
-              <NumberControl
-                id="players"
-                label="Pemain"
-                hint="2–20 orang, dibagi menjadi dua tim"
-                value={players}
-                min={2}
-                max={20}
-                disabled={disabled}
-                onChange={onPlayersChange}
-              />
-              <NumberControl
-                id="cards"
-                label="Kartu per pemain"
-                hint="1–10 kartu, dipilih diam-diam oleh tiap pemain"
-                value={cardsPerPlayer}
-                min={1}
-                max={10}
-                disabled={disabled}
-                onChange={onCardsPerPlayerChange}
-              />
-
-              <div className={styles.deckSummary} aria-live="polite">
-                <span className={styles.deckIcon} aria-hidden="true">
-                  <span />
-                  <span />
-                  <span />
-                </span>
-                <span>
-                  <strong>{totalCards} kartu dalam deck</strong>
-                  {players} pemain · 3 babak · sekitar 30 menit
-                </span>
+              <div className={styles.settingsHeading}>
+                <Eyebrow>Pengaturan permainan</Eyebrow>
+                <h2>Susun deck-mu</h2>
               </div>
 
-              <GameButton
-                variant="primary"
-                className={styles.submitButton}
-                type="submit"
+              <form
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  onStart();
+                }}
+              >
+                <NumberControl
+                  id="players"
+                  label="Pemain"
+                  hint="2–20 orang, dibagi menjadi dua tim"
+                  value={players}
+                  min={2}
+                  max={20}
+                  disabled={disabled}
+                  onChange={onPlayersChange}
+                />
+                <NumberControl
+                  id="cards"
+                  label="Kartu per pemain"
+                  hint="1–10 kartu, dipilih diam-diam oleh tiap pemain"
+                  value={cardsPerPlayer}
+                  min={1}
+                  max={10}
+                  disabled={disabled}
+                  onChange={onCardsPerPlayerChange}
+                />
+
+                <div className={styles.deckSummary} aria-live="polite">
+                  <span className={styles.deckIcon} aria-hidden="true">
+                    <span />
+                    <span />
+                    <span />
+                  </span>
+                  <span>
+                    <strong>{totalCards} kartu dalam deck</strong>
+                    {players} pemain · 3 babak · sekitar 30 menit
+                  </span>
+                </div>
+
+                <GameButton
+                  variant="primary"
+                  className={styles.submitButton}
+                  type="submit"
+                  disabled={disabled}
+                >
+                  Mulai bermain
+                  <span aria-hidden="true">→</span>
+                </GameButton>
+              </form>
+            </Panel>
+
+            {onEndSession && (
+              <button
+                type="button"
+                className={styles.endSession}
+                onClick={onEndSession}
                 disabled={disabled}
               >
-                Mulai bermain
-                <span aria-hidden="true">→</span>
-              </GameButton>
-            </form>
-          </Panel>
+                Akhiri sesi
+              </button>
+            )}
+          </div>
         </main>
 
         <footer className={styles.footer}>

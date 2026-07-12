@@ -202,6 +202,46 @@ test('pembuatan sesi tidak menampilkan layar pemulihan sementara', async ({
   }
 });
 
+test('sesi dapat diakhiri sebelum permainan dimulai', async ({ page }) => {
+  const entryPaths = [
+    {
+      button: 'Main di satu perangkat',
+      destinationHeading: /Atur, lalu main bergantian/,
+    },
+    {
+      button: 'Buat sesi perangkat masing-masing',
+      destinationHeading: /Mulai sebagai pemain pertama/,
+    },
+  ];
+
+  for (const entryPath of entryPaths) {
+    await page.goto('/');
+    await page.getByRole('button', { name: entryPath.button }).click();
+    await expect(page).toHaveURL(SESSION_URL);
+    await expect(
+      page.getByRole('heading', {
+        level: 1,
+        name: entryPath.destinationHeading,
+      })
+    ).toBeVisible();
+
+    await page
+      .getByRole('button', { name: 'Akhiri sesi', exact: true })
+      .click();
+    await page
+      .getByRole('alertdialog')
+      .getByRole('button', { name: 'Akhiri sesi', exact: true })
+      .click();
+
+    await expect(page).toHaveURL('/');
+    await expect(
+      page.getByRole('heading', {
+        name: 'Tebak namanya. Lupakan jaimnya.',
+      })
+    ).toBeVisible();
+  }
+});
+
 test('status koneksi tetap statis saat memuat dan memulihkan sesi', async ({
   page,
 }) => {

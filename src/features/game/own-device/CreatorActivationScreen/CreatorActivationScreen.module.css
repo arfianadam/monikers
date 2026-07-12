@@ -33,6 +33,11 @@
   max-width: 52ch;
 }
 
+.activation {
+  min-width: 0;
+  width: 100%;
+}
+
 .formCard {
   padding: clamp(28px, 4vw, 42px);
   width: 100%;
@@ -62,6 +67,22 @@
   width: 100%;
 }
 
+.endSession {
+  background: transparent;
+  border: 0;
+  color: #ff9c8f;
+  display: block;
+  margin: 18px auto 0;
+  min-height: 44px;
+  padding: 8px 4px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.endSession:disabled {
+  opacity: 0.4;
+}
+
 .error {
   background: rgba(255, 98, 77, 0.13);
   border: 1px solid var(--coral);
@@ -82,7 +103,7 @@
   }
 
   .intro,
-  .formCard {
+  .activation {
     justify-self: center;
     width: min(100%, 620px);
   }

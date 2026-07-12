@@ -516,6 +516,7 @@ export function SessionApp({ sessionId }: { sessionId: string }) {
         isSubmitting={activating}
         errorMessage={activationError || connection.lastError}
         containerRef={viewContainerRef}
+        onEndSession={() => setConfirmation({ type: 'end' })}
         onSubmit={() => {
           setActivating(true);
           setActivationError('');
@@ -556,6 +557,7 @@ export function SessionApp({ sessionId }: { sessionId: string }) {
           connection.sendCommand({ type: 'update-setup', cardsPerPlayer })
         }
         onStart={() => connection.sendCommand({ type: 'start-selection' })}
+        onEndSession={() => setConfirmation({ type: 'end' })}
       />
     );
   } else if (projection.phase === 'lobby') {

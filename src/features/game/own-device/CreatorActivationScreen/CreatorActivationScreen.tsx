@@ -21,6 +21,7 @@ export interface CreatorActivationScreenProps {
   displayName: string;
   onDisplayNameChange: (displayName: string) => void;
   onSubmit: () => void;
+  onEndSession?: () => void;
   connectionState?: ConnectionStatusState;
   onRetry?: () => void;
   errorMessage?: string | null;
@@ -32,6 +33,7 @@ export function CreatorActivationScreen({
   displayName,
   onDisplayNameChange,
   onSubmit,
+  onEndSession,
   connectionState = 'connected',
   onRetry,
   errorMessage,
@@ -69,57 +71,70 @@ export function CreatorActivationScreen({
             </p>
           </div>
 
-          <Panel
-            as="section"
-            className={styles.formCard}
-            aria-labelledby="creator-activation-title"
-          >
-            <Eyebrow>Aktifkan ruangan</Eyebrow>
-            <h2 id="creator-activation-title">Siapa namamu?</h2>
-            <form onSubmit={handleSubmit} noValidate>
-              <label htmlFor="creator-display-name">Nama pemain</label>
-              <Input
-                id="creator-display-name"
-                name="displayName"
-                value={displayName}
-                onChange={(event) => onDisplayNameChange(event.target.value)}
-                autoComplete="nickname"
-                placeholder="Contoh: Dinda"
-                required
-                aria-invalid={Boolean(errorMessage)}
-                aria-describedby={
-                  errorMessage
-                    ? 'creator-name-hint creator-name-error'
-                    : 'creator-name-hint'
-                }
-              />
-              <small id="creator-name-hint">
-                Gunakan nama unik sepanjang 1–24 karakter.
-              </small>
+          <div className={styles.activation}>
+            <Panel
+              as="section"
+              className={styles.formCard}
+              aria-labelledby="creator-activation-title"
+            >
+              <Eyebrow>Aktifkan ruangan</Eyebrow>
+              <h2 id="creator-activation-title">Siapa namamu?</h2>
+              <form onSubmit={handleSubmit} noValidate>
+                <label htmlFor="creator-display-name">Nama pemain</label>
+                <Input
+                  id="creator-display-name"
+                  name="displayName"
+                  value={displayName}
+                  onChange={(event) => onDisplayNameChange(event.target.value)}
+                  autoComplete="nickname"
+                  placeholder="Contoh: Dinda"
+                  required
+                  aria-invalid={Boolean(errorMessage)}
+                  aria-describedby={
+                    errorMessage
+                      ? 'creator-name-hint creator-name-error'
+                      : 'creator-name-hint'
+                  }
+                />
+                <small id="creator-name-hint">
+                  Gunakan nama unik sepanjang 1–24 karakter.
+                </small>
 
-              {errorMessage && (
-                <p
-                  id="creator-name-error"
-                  className={styles.error}
-                  role="alert"
+                {errorMessage && (
+                  <p
+                    id="creator-name-error"
+                    className={styles.error}
+                    role="alert"
+                  >
+                    {errorMessage}
+                  </p>
+                )}
+
+                <GameButton
+                  type="submit"
+                  disabled={
+                    isSubmitting ||
+                    connectionState !== 'connected' ||
+                    !displayName.trim()
+                  }
                 >
-                  {errorMessage}
-                </p>
-              )}
+                  {isSubmitting ? 'Membuat ruangan…' : 'Buat kode sesi'}
+                  <span aria-hidden="true">→</span>
+                </GameButton>
+              </form>
+            </Panel>
 
-              <GameButton
-                type="submit"
-                disabled={
-                  isSubmitting ||
-                  connectionState !== 'connected' ||
-                  !displayName.trim()
-                }
+            {onEndSession && (
+              <button
+                type="button"
+                className={styles.endSession}
+                onClick={onEndSession}
+                disabled={isSubmitting || connectionState !== 'connected'}
               >
-                {isSubmitting ? 'Membuat ruangan…' : 'Buat kode sesi'}
-                <span aria-hidden="true">→</span>
-              </GameButton>
-            </form>
-          </Panel>
+                Akhiri sesi
+              </button>
+            )}
+          </div>
         </main>
       </ScreenFrame>
     </GameShell>
