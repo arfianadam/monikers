@@ -410,6 +410,16 @@ export function SessionApp({ sessionId }: { sessionId: string }) {
 
   const controlsDisabled =
     connection.status !== 'connected' || connection.pendingCommandCount > 0;
+  const setupControlsDisabled =
+    connection.status !== 'connected' ||
+    connection.hasPendingCommand('start-selection');
+  const ownSelectionActionsDisabled =
+    connection.status !== 'connected' ||
+    connection.hasPendingCommand('confirm-selection') ||
+    connection.hasPendingCommand('cancel-selection');
+  const lobbyControlsDisabled =
+    connection.status !== 'connected' ||
+    connection.hasPendingCommand('start-selection');
 
   const performHttpAction = async (action: 'leave' | 'end') => {
     const response = await fetch(
@@ -547,7 +557,7 @@ export function SessionApp({ sessionId }: { sessionId: string }) {
       <SetupView
         players={projection.configuration.players}
         cardsPerPlayer={projection.configuration.cardsPerPlayer}
-        disabled={controlsDisabled}
+        disabled={setupControlsDisabled}
         connectionStatus={connectionStatus}
         containerRef={viewContainerRef}
         onPlayersChange={(players) =>
@@ -573,7 +583,12 @@ export function SessionApp({ sessionId }: { sessionId: string }) {
         cardsPerPlayer={projection.configuration.cardsPerPlayer}
         canStart={projection.roomReady}
         isController={isController}
-        controlsDisabled={controlsDisabled}
+        controlsDisabled={lobbyControlsDisabled}
+        pendingActions={{
+          playerIds: connection.pendingLobbyPlayerIds,
+          ready: connection.hasPendingCommand('set-ready'),
+          rotateCode: connection.hasPendingCommand('rotate-code'),
+        }}
         connectionState={connection.status}
         onRetry={connection.retry}
         codeCopyState={copyState}
@@ -590,7 +605,7 @@ export function SessionApp({ sessionId }: { sessionId: string }) {
                   });
                   setRenameDraft(null);
                 },
-                isSubmitting: connection.pendingCommandCount > 0,
+                isSubmitting: connection.hasPendingCommand('rename-player'),
               }
             : undefined
         }
@@ -700,7 +715,8 @@ export function SessionApp({ sessionId }: { sessionId: string }) {
       ) : (
         <OwnSelectionView
           projection={projection}
-          disabled={controlsDisabled}
+          disabled={ownSelectionActionsDisabled}
+          pendingCardWords={connection.pendingCardWords}
           connectionState={connection.status}
           sendCommand={connection.sendCommand}
           onCancel={() => setConfirmation({ type: 'cancel-selection' })}
@@ -835,6 +851,7 @@ export function SessionApp({ sessionId }: { sessionId: string }) {
 function OwnSelectionView({
   projection,
   disabled,
+  pendingCardWords,
   connectionState,
   sendCommand,
   onCancel,
@@ -843,6 +860,7 @@ function OwnSelectionView({
 }: {
   projection: SelectionProjection;
   disabled: boolean;
+  pendingCardWords: readonly string[];
   connectionState: 'connecting' | 'connected' | 'disconnected';
   sendCommand: (command: SessionCommandInput) => string | null;
   onCancel: () => void;
@@ -891,6 +909,7 @@ function OwnSelectionView({
       view="editing"
       offer={projection.offer ?? []}
       draft={projection.draft ?? []}
+      pendingCardWords={pendingCardWords}
       onToggleCard={(cardWord) =>
         sendCommand({
           type: 'toggle-card',

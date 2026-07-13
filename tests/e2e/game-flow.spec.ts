@@ -6,6 +6,8 @@ import {
   test,
 } from '@playwright/test';
 
+import { installCommandAcknowledgementDelay } from './websocket-helpers';
+
 const TOTAL_CARDS = 2;
 const SESSION_URL = /\/session\/[A-Za-z0-9_-]+$/;
 const RECOVERY_HEADINGS = [
@@ -240,6 +242,34 @@ test('sesi dapat diakhiri sebelum permainan dimulai', async ({ page }) => {
       })
     ).toBeVisible();
   }
+});
+
+test('perubahan pengaturan tidak menonaktifkan seluruh form', async ({
+  page,
+}) => {
+  await installCommandAcknowledgementDelay(page);
+  await createSingleDeviceSession(page);
+
+  const playersInput = page.getByRole('spinbutton', {
+    name: 'Pemain',
+    exact: true,
+  });
+  const cardsInput = page.getByRole('spinbutton', {
+    name: 'Kartu per pemain',
+    exact: true,
+  });
+  const startButton = page.getByRole('button', { name: 'Mulai bermain' });
+
+  await playersInput.fill('5');
+  await expect(page.getByText('25 kartu dalam deck')).toBeVisible();
+
+  expect(
+    await Promise.all([
+      playersInput.isEnabled(),
+      cardsInput.isEnabled(),
+      startButton.isEnabled(),
+    ])
+  ).toEqual([true, true, true]);
 });
 
 test('status koneksi tetap statis saat memuat dan memulihkan sesi', async ({

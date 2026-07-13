@@ -134,7 +134,7 @@
   display: flex;
   gap: 12px;
   min-height: 54px;
-  padding: 5px 8px 5px 14px;
+  padding: 5px 14px;
 }
 
 .configStats dt {

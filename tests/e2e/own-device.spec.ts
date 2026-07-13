@@ -20,6 +20,10 @@ import {
   readyPlayersAndStartSelection,
   setCardsPerPlayerToOne,
 } from './own-device-helpers';
+import {
+  installCommandAcknowledgementDelay,
+  setCommandAcknowledgementDelay,
+} from './websocket-helpers';
 
 async function capture(
   page: Page,
@@ -261,6 +265,95 @@ test('pengendali kembali ke beranda tanpa melihat layar sesi berakhir', async ({
     JSON.parse(sessionStorage.getItem('end-session-heading-history') ?? '[]')
   );
   expect(headingHistory).not.toContain('Permainan telah selesai.');
+});
+
+test('perubahan pengaturan lobi tidak menonaktifkan aksi lain', async ({
+  page,
+}) => {
+  await installCommandAcknowledgementDelay(page, {
+    initiallyEnabled: false,
+  });
+  await createOwnDeviceSession(page, 'Pengendali E2E');
+  await setCommandAcknowledgementDelay(page, true);
+
+  const configuration = page.getByRole('region', {
+    name: 'Pengaturan permainan',
+  });
+  const renameButton = page
+    .getByLabel('Namamu')
+    .locator('..')
+    .getByRole('button');
+
+  await configuration
+    .getByRole('button', { name: 'Kurangi kartu per pemain' })
+    .click();
+  await expect(configuration.getByRole('status')).toHaveText('4');
+
+  expect(
+    await Promise.all([
+      configuration
+        .getByRole('button', { name: 'Tambah kartu per pemain' })
+        .isEnabled(),
+      page.getByRole('button', { name: 'Ganti kode' }).isEnabled(),
+      page.getByRole('button', { name: 'Saya siap' }).isEnabled(),
+      page
+        .getByRole('button', {
+          name: 'Pindahkan Pengendali E2E ke Tim 2',
+        })
+        .isEnabled(),
+      renameButton.isEnabled(),
+      page.getByRole('button', { name: 'Tinggalkan sesi' }).isEnabled(),
+    ])
+  ).toEqual([true, true, true, true, true, true]);
+  expect(await renameButton.innerText()).toBe('Simpan nama');
+});
+
+test('memilih kartu tidak menonaktifkan pilihan lain saat sinkronisasi', async ({
+  browser,
+  page: controllerPage,
+}, testInfo) => {
+  const joinerContext = await createMatchingContext(browser, testInfo);
+  const joinerPage = await joinerContext.newPage();
+  await installCommandAcknowledgementDelay(controllerPage, {
+    initiallyEnabled: false,
+  });
+
+  try {
+    const session = await createOwnDeviceSession(
+      controllerPage,
+      'Pengendali E2E'
+    );
+    await joinOwnDeviceSession(joinerPage, {
+      ...session,
+      creatorName: 'Pengendali E2E',
+      playerName: 'Pemain E2E',
+    });
+    await readyPlayersAndStartSelection(controllerPage, joinerPage);
+    await setCommandAcknowledgementDelay(controllerPage, true);
+
+    await controllerPage
+      .getByRole('button', { pressed: false })
+      .first()
+      .click();
+    await expect(
+      controllerPage.getByRole('button', { pressed: true })
+    ).toHaveCount(1);
+
+    expect(
+      await Promise.all([
+        controllerPage
+          .getByRole('button', { pressed: true })
+          .first()
+          .isEnabled(),
+        controllerPage
+          .getByRole('button', { pressed: false })
+          .first()
+          .isEnabled(),
+      ])
+    ).toEqual([false, true]);
+  } finally {
+    await joinerContext.close();
+  }
 });
 
 async function finishOwnDeviceRound(

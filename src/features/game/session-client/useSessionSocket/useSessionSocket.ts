@@ -50,7 +50,7 @@ export function useSessionSocket({
   const [pendingCommandCount, setPendingCommandCount] = useState(0);
   const [retryKey, setRetryKey] = useState(0);
   const socketRef = useRef<WebSocket | null>(null);
-  const pendingCommandIds = useRef(new Set<string>());
+  const pendingCommands = useRef(new Map<string, SessionCommandInput>());
   const onEventRef = useRef(onEvent);
 
   useEffect(() => {
@@ -109,8 +109,8 @@ export function useSessionSocket({
         }
 
         if (serverMessage.type === 'command-ack') {
-          pendingCommandIds.current.delete(serverMessage.commandId);
-          setPendingCommandCount(pendingCommandIds.current.size);
+          pendingCommands.current.delete(serverMessage.commandId);
+          setPendingCommandCount(pendingCommands.current.size);
           if (!serverMessage.ok) setLastError(serverMessage.error.message);
           return;
         }
@@ -121,7 +121,7 @@ export function useSessionSocket({
       socket.addEventListener('close', (event) => {
         if (disposed || socketRef.current !== socket) return;
         socketRef.current = null;
-        pendingCommandIds.current.clear();
+        pendingCommands.current.clear();
         setPendingCommandCount(0);
 
         const terminalReason = recoveryReasonForCloseCode(event.code);
@@ -170,8 +170,8 @@ export function useSessionSocket({
       ...input,
       id: commandId,
     } as SessionCommand;
-    pendingCommandIds.current.add(commandId);
-    setPendingCommandCount(pendingCommandIds.current.size);
+    pendingCommands.current.set(commandId, input);
+    setPendingCommandCount(pendingCommands.current.size);
     socket.send(JSON.stringify(command));
     return commandId;
   }, []);
@@ -182,6 +182,24 @@ export function useSessionSocket({
   }, []);
 
   const clearError = useCallback(() => setLastError(''), []);
+  const hasPendingCommand = useCallback(
+    (type: SessionCommand['type']) =>
+      [...pendingCommands.current.values()].some(
+        (command) => command.type === type
+      ),
+    []
+  );
+  const pendingCardWords = [...pendingCommands.current.values()].flatMap(
+    (command) => (command.type === 'toggle-card' ? [command.cardWord] : [])
+  );
+  const pendingLobbyPlayerIds = [...pendingCommands.current.values()].flatMap(
+    (command) =>
+      command.type === 'move-player' ||
+      command.type === 'reorder-player' ||
+      command.type === 'remove-player'
+        ? [command.playerId]
+        : []
+  );
 
   return {
     projection,
@@ -189,6 +207,9 @@ export function useSessionSocket({
     recoveryReason,
     lastError,
     pendingCommandCount,
+    hasPendingCommand,
+    pendingCardWords,
+    pendingLobbyPlayerIds,
     sendCommand,
     retry,
     clearError,

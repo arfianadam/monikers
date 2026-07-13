@@ -50,6 +50,8 @@ export interface OwnSelectionEditingProps extends OwnSelectionBaseProps {
   offer: readonly Card[];
   /** The current recipient's private, server-confirmed draft. */
   draft: readonly Card[];
+  /** Cards with toggle commands awaiting acknowledgement. */
+  pendingCardWords: readonly string[];
   onToggleCard: (cardWord: string) => void;
   onConfirm: () => void;
 }
@@ -206,6 +208,7 @@ export function OwnSelectionScreen(props: OwnSelectionScreenProps) {
   }
 
   const selectedWords = new Set(props.draft.map((card) => card.word));
+  const pendingCardWords = new Set(props.pendingCardWords);
   const remainingToSelect = Math.max(0, cardsPerPlayer - props.draft.length);
   const selectionComplete = props.draft.length === cardsPerPlayer;
 
@@ -270,7 +273,11 @@ export function OwnSelectionScreen(props: OwnSelectionScreenProps) {
                     data-level={card.level}
                     aria-pressed={selected}
                     onClick={() => props.onToggleCard(card.word)}
-                    disabled={mutationsDisabled || selectionLimitReached}
+                    disabled={
+                      mutationsDisabled ||
+                      pendingCardWords.has(card.word) ||
+                      selectionLimitReached
+                    }
                   >
                     <span className={styles.cardTopline}>
                       <span>Tingkat {card.level}</span>

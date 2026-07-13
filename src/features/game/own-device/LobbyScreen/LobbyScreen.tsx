@@ -43,6 +43,12 @@ export interface LobbyRenameView {
   isSubmitting?: boolean;
 }
 
+export interface LobbyPendingActionsView {
+  playerIds?: readonly string[];
+  ready?: boolean;
+  rotateCode?: boolean;
+}
+
 export interface LobbyScreenProps {
   joinCode: string;
   teams: LobbyTeamsView;
@@ -65,6 +71,7 @@ export interface LobbyScreenProps {
   connectionState?: ConnectionStatusState;
   onRetry?: () => void;
   controlsDisabled?: boolean;
+  pendingActions?: LobbyPendingActionsView;
   codeCopyState?: LobbyCodeCopyState;
   startBlockers?: readonly string[];
   rename?: LobbyRenameView;
@@ -112,6 +119,7 @@ export function LobbyScreen({
   connectionState = 'connected',
   onRetry,
   controlsDisabled = false,
+  pendingActions = {},
   codeCopyState = 'idle',
   startBlockers = [],
   rename,
@@ -120,6 +128,7 @@ export function LobbyScreen({
   const currentPlayer = findCurrentPlayer(teams);
   const playerCount = teams.team1.length + teams.team2.length;
   const mutationsDisabled = controlsDisabled || connectionState !== 'connected';
+  const pendingPlayerIds = new Set(pendingActions.playerIds);
 
   return (
     <GameShell variant="setup">
@@ -162,7 +171,7 @@ export function LobbyScreen({
                   <button
                     type="button"
                     onClick={onRotateCode}
-                    disabled={mutationsDisabled}
+                    disabled={mutationsDisabled || pendingActions.rotateCode}
                   >
                     <span aria-hidden="true">↻</span>
                     Ganti kode
@@ -302,7 +311,10 @@ export function LobbyScreen({
                     <ol className={styles.playerList}>
                       {teamPlayers.map((player, playerIndex) => {
                         const destination = otherTeam[teamId];
-                        const canManage = isController && !mutationsDisabled;
+                        const canManage =
+                          isController &&
+                          !mutationsDisabled &&
+                          !pendingPlayerIds.has(player.id);
 
                         return (
                           <li
@@ -435,7 +447,7 @@ export function LobbyScreen({
                   type="button"
                   variant={currentPlayer.ready ? 'secondary' : 'success'}
                   onClick={() => onSetReady(!currentPlayer.ready)}
-                  disabled={mutationsDisabled}
+                  disabled={mutationsDisabled || pendingActions.ready}
                 >
                   {currentPlayer.ready ? 'Batalkan siap' : 'Saya siap'}
                   <span aria-hidden="true">
