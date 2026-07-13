@@ -136,6 +136,10 @@ export function LobbyScreen({
   const playerCount = teams.team1.length + teams.team2.length;
   const mutationsDisabled = controlsDisabled || connectionState !== 'connected';
   const pendingPlayerIds = new Set(pendingActions.playerIds);
+  const visibleStartBlockers =
+    startBlockers.length > 0
+      ? startBlockers
+      : ['Kedua tim, koneksi, dan kesiapan harus lengkap.'];
 
   return (
     <GameShell variant="setup">
@@ -437,53 +441,78 @@ export function LobbyScreen({
             })}
           </section>
 
-          <Panel as="section" className={styles.readyPanel}>
-            <div className={styles.readyCopy}>
-              <Eyebrow>Status ruangan</Eyebrow>
-              <h2>
-                {canStart ? 'Semua siap bermain.' : 'Masih menunggu pemain.'}
-              </h2>
-              {!canStart && (
-                <ul>
-                  {(startBlockers.length > 0
-                    ? startBlockers
-                    : ['Kedua tim, koneksi, dan kesiapan harus lengkap.']
-                  ).map((blocker) => (
-                    <li key={blocker}>{blocker}</li>
-                  ))}
-                </ul>
-              )}
-            </div>
-
-            <div className={styles.readyActions}>
-              {currentPlayer && (
-                <GameButton
-                  type="button"
-                  variant={currentPlayer.ready ? 'secondary' : 'success'}
-                  onClick={() => onSetReady(!currentPlayer.ready)}
-                  disabled={mutationsDisabled || pendingActions.ready}
-                >
-                  {currentPlayer.ready ? 'Batalkan siap' : 'Saya siap'}
+          <Panel
+            as="section"
+            className={styles.readyPanel}
+            data-ready={canStart}
+          >
+            <div className={styles.readySummary}>
+              <div className={styles.readyStatus} aria-live="polite">
+                <span className={styles.readyStatusIcon}>
                   <MaterialSymbol
-                    name={currentPlayer.ready ? 'undo' : 'check'}
-                    filled={!currentPlayer.ready}
+                    name={canStart ? 'check' : 'sync'}
+                    filled={canStart}
                   />
-                </GameButton>
-              )}
+                </span>
+                <div className={styles.readyCopy}>
+                  <Eyebrow>Status ruangan</Eyebrow>
+                  <h2>
+                    {canStart
+                      ? 'Semua siap bermain.'
+                      : 'Masih menunggu pemain.'}
+                  </h2>
+                  <p>
+                    {canStart
+                      ? 'Permainan dapat dimulai kapan saja.'
+                      : `${visibleStartBlockers.length} hal perlu diselesaikan sebelum mulai.`}
+                  </p>
+                </div>
+              </div>
 
-              {isController ? (
-                <GameButton
-                  type="button"
-                  onClick={onStart}
-                  disabled={!canStart || mutationsDisabled}
-                >
-                  Mulai pilih kartu
-                  <MaterialSymbol name="arrow_forward" />
-                </GameButton>
-              ) : (
-                <p>Pengendali akan memulai setelah semua pemain siap.</p>
-              )}
+              <div className={styles.readyActions}>
+                {currentPlayer && (
+                  <GameButton
+                    type="button"
+                    variant={currentPlayer.ready ? 'secondary' : 'success'}
+                    onClick={() => onSetReady(!currentPlayer.ready)}
+                    disabled={mutationsDisabled || pendingActions.ready}
+                  >
+                    {currentPlayer.ready ? 'Batalkan siap' : 'Saya siap'}
+                    <MaterialSymbol
+                      name={currentPlayer.ready ? 'undo' : 'check'}
+                      filled={!currentPlayer.ready}
+                    />
+                  </GameButton>
+                )}
+
+                {isController ? (
+                  <GameButton
+                    type="button"
+                    onClick={onStart}
+                    disabled={!canStart || mutationsDisabled}
+                  >
+                    Mulai pilih kartu
+                    <MaterialSymbol name="arrow_forward" />
+                  </GameButton>
+                ) : (
+                  <p>Pengendali akan memulai setelah semua pemain siap.</p>
+                )}
+              </div>
             </div>
+
+            {!canStart && (
+              <ul
+                className={styles.readyBlockers}
+                aria-label="Yang masih diperlukan"
+              >
+                {visibleStartBlockers.map((blocker, blockerIndex) => (
+                  <li key={blocker}>
+                    <span aria-hidden="true">{blockerIndex + 1}</span>
+                    {blocker}
+                  </li>
+                ))}
+              </ul>
+            )}
           </Panel>
 
           <footer className={styles.sessionActions}>
