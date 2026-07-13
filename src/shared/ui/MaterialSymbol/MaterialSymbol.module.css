@@ -1,0 +1,29 @@
+.symbol {
+  --material-symbol-fill: 0;
+
+  align-items: center;
+  direction: ltr;
+  display: inline-flex;
+  flex: 0 0 auto;
+  font-family: 'Material Symbols Rounded';
+  font-feature-settings: 'liga';
+  font-style: normal;
+  font-variation-settings:
+    'FILL' var(--material-symbol-fill),
+    'opsz' 24;
+  font-weight: 600;
+  justify-content: center;
+  letter-spacing: normal;
+  line-height: 1;
+  overflow-wrap: normal;
+  text-transform: none;
+  user-select: none;
+  vertical-align: middle;
+  white-space: nowrap;
+  word-wrap: normal;
+  -webkit-font-smoothing: antialiased;
+}
+
+.filled {
+  --material-symbol-fill: 1;
+}

@@ -1,14 +1,15 @@
 import type { ReactNode, Ref } from 'react';
 
 import type { Card } from '@/features/game/domain/game-types';
-import { cn } from '@/lib/utils';
 import { Brand } from '@/shared/ui/Brand/Brand';
 import { Eyebrow } from '@/shared/ui/Eyebrow/Eyebrow';
 import { GameButton } from '@/shared/ui/GameButton/GameButton';
 import { GameShell } from '@/shared/ui/GameShell/GameShell';
+import { MaterialSymbol } from '@/shared/ui/MaterialSymbol/MaterialSymbol';
 import { ScreenFrame } from '@/shared/ui/ScreenFrame/ScreenFrame';
 import { TopBar } from '@/shared/ui/TopBar/TopBar';
 
+import { SelectionCard } from '../SelectionCard/SelectionCard';
 import styles from './CardPicker.module.css';
 
 export interface CardPickerProps {
@@ -17,6 +18,7 @@ export interface CardPickerProps {
   cardsPerPlayer: number;
   availableCards: readonly Card[];
   selectedCards: readonly Card[];
+  pendingCardWords?: readonly string[];
   disabled?: boolean;
   connectionStatus?: ReactNode;
   onToggleCard: (card: Card) => void;
@@ -30,6 +32,7 @@ export function CardPicker({
   cardsPerPlayer,
   availableCards,
   selectedCards,
+  pendingCardWords = [],
   disabled = false,
   connectionStatus,
   onToggleCard,
@@ -40,6 +43,9 @@ export function CardPicker({
     (selectedCards.length / cardsPerPlayer) * 100
   );
   const cardsLeftToPick = Math.max(0, cardsPerPlayer - selectedCards.length);
+  const selectedWords = new Set(selectedCards.map((card) => card.word));
+  const pendingWords = new Set(pendingCardWords);
+  const selectionLimitReached = selectedCards.length >= cardsPerPlayer;
   return (
     <GameShell variant="selection">
       <ScreenFrame ref={containerRef} className={styles.screen} tabIndex={-1}>
@@ -79,40 +85,17 @@ export function CardPicker({
 
           <div className={styles.grid}>
             {availableCards.map((card) => {
-              const isSelected = selectedCards.some(
-                (selected) => selected.word === card.word
-              );
+              const isSelected = selectedWords.has(card.word);
 
               return (
-                <button
-                  type="button"
+                <SelectionCard
                   key={card.word}
-                  className={cn(
-                    styles.selectionCard,
-                    isSelected && styles.selectedCard
-                  )}
-                  data-level={card.level}
-                  aria-pressed={isSelected}
-                  disabled={disabled}
-                  onClick={() => onToggleCard(card)}
-                >
-                  <span className={styles.cardTopline}>
-                    <span className={styles.levelBadge}>
-                      Tingkat {card.level}
-                    </span>
-                    <span className={styles.cardCheck} aria-hidden="true">
-                      ✓
-                    </span>
-                  </span>
-                  <strong>{card.word}</strong>
-                  <span className={styles.cardDescription}>
-                    {card.description}
-                  </span>
-                  <span className={styles.cardAction} aria-hidden="true">
-                    {isSelected ? 'Sudah dipilih' : 'Ketuk untuk memilih'}
-                    <span>{isSelected ? '✓' : '+'}</span>
-                  </span>
-                </button>
+                  card={card}
+                  selected={isSelected}
+                  pending={pendingWords.has(card.word)}
+                  disabled={disabled || (selectionLimitReached && !isSelected)}
+                  onToggle={() => onToggleCard(card)}
+                />
               );
             })}
           </div>
@@ -145,7 +128,7 @@ export function CardPicker({
             {currentPlayer < players
               ? 'Serahkan ke pemain berikutnya'
               : 'Selesai'}
-            <span aria-hidden="true">→</span>
+            <MaterialSymbol name="arrow_forward" />
           </GameButton>
         </div>
       </div>

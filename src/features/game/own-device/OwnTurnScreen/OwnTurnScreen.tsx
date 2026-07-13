@@ -20,6 +20,7 @@ import {
 import { Eyebrow } from '@/shared/ui/Eyebrow/Eyebrow';
 import { GameButton } from '@/shared/ui/GameButton/GameButton';
 import { GameShell } from '@/shared/ui/GameShell/GameShell';
+import { MaterialSymbol } from '@/shared/ui/MaterialSymbol/MaterialSymbol';
 import { Panel } from '@/shared/ui/Panel/Panel';
 import { RoundPips } from '@/shared/ui/RoundPips/RoundPips';
 import { ScreenFrame } from '@/shared/ui/ScreenFrame/ScreenFrame';
@@ -249,7 +250,7 @@ export function OwnTurnScreen(props: OwnTurnScreenProps) {
                 disabled={!props.canStart || mutationsDisabled}
               >
                 Mulai giliran {ROUND_DURATION_SECONDS} detik
-                <span aria-hidden="true">→</span>
+                <MaterialSymbol name="arrow_forward" />
               </GameButton>
             </Panel>
           </main>
@@ -299,9 +300,13 @@ export function OwnTurnScreen(props: OwnTurnScreenProps) {
                   <span>detik</span>
                 </div>
               ) : (
-                <span className={styles.waitingIcon} aria-hidden="true">
-                  {props.status === 'team-offline' ? '‖' : '…'}
-                </span>
+                <MaterialSymbol
+                  name={
+                    props.status === 'team-offline' ? 'pause' : 'more_horiz'
+                  }
+                  className={styles.waitingIcon}
+                  filled={props.status === 'team-offline'}
+                />
               )}
               <Eyebrow onDark>{copy.eyebrow}</Eyebrow>
               <h1>{copy.title}</h1>
@@ -309,7 +314,7 @@ export function OwnTurnScreen(props: OwnTurnScreenProps) {
             </section>
 
             <p className={styles.privacyNote}>
-              <span aria-hidden="true">◉</span>
+              <MaterialSymbol name="visibility_off" />
               Kartu tidak ditampilkan di perangkat penonton.
             </p>
           </main>
@@ -399,7 +404,7 @@ export function OwnTurnScreen(props: OwnTurnScreenProps) {
               onClick={() => props.onSkip(props.card.word)}
               disabled={!props.canSkip || mutationsDisabled}
             >
-              <span aria-hidden="true">↻</span>
+              <MaterialSymbol name="skip_next" />
               {props.canSkip ? 'Lewati' : 'Lewati terkunci'}
             </GameButton>
             <GameButton
@@ -409,7 +414,7 @@ export function OwnTurnScreen(props: OwnTurnScreenProps) {
               disabled={!props.canMarkCorrect || mutationsDisabled}
             >
               Benar!
-              <span aria-hidden="true">✓</span>
+              <MaterialSymbol name="check" filled />
             </GameButton>
           </div>
           <button

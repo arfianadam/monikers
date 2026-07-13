@@ -105,24 +105,11 @@
   color: var(--ink);
   display: flex;
   flex: 0 0 auto;
+  font-size: 1.45rem;
   height: 38px;
   justify-content: center;
   transform: rotate(-3deg);
   width: 38px;
-}
-
-.privacyIcon svg {
-  height: 25px;
-  overflow: visible;
-  stroke: currentColor;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 1.8;
-  width: 25px;
-}
-
-.privacyShield {
-  fill: var(--paper-bright);
 }
 
 .privacyNote > span:last-child {

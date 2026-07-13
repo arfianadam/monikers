@@ -10,6 +10,7 @@ import { Eyebrow } from '@/shared/ui/Eyebrow/Eyebrow';
 import { GameButton } from '@/shared/ui/GameButton/GameButton';
 import { GameShell } from '@/shared/ui/GameShell/GameShell';
 import { Input } from '@/shared/ui/Input/Input';
+import { MaterialSymbol } from '@/shared/ui/MaterialSymbol/MaterialSymbol';
 import { Panel } from '@/shared/ui/Panel/Panel';
 import { ScreenFrame } from '@/shared/ui/ScreenFrame/ScreenFrame';
 import { TopBar } from '@/shared/ui/TopBar/TopBar';
@@ -212,7 +213,7 @@ export function JoinScreen({ initialCode }: { initialCode: string }) {
                     disabled={submitting || !name.trim()}
                   >
                     {submitting ? 'Sedang bergabung…' : 'Gabung ke sesi'}
-                    <span aria-hidden="true">→</span>
+                    <MaterialSymbol name="arrow_forward" />
                   </GameButton>
                 </form>
 

@@ -2,6 +2,7 @@
 
 import type { Ref } from 'react';
 
+import { SelectionCard } from '@/features/game/card-selection/SelectionCard/SelectionCard';
 import type { Card } from '@/features/game/domain/game-types';
 import { cn } from '@/lib/utils';
 import { Brand } from '@/shared/ui/Brand/Brand';
@@ -12,6 +13,7 @@ import {
 import { Eyebrow } from '@/shared/ui/Eyebrow/Eyebrow';
 import { GameButton } from '@/shared/ui/GameButton/GameButton';
 import { GameShell } from '@/shared/ui/GameShell/GameShell';
+import { MaterialSymbol } from '@/shared/ui/MaterialSymbol/MaterialSymbol';
 import { Panel } from '@/shared/ui/Panel/Panel';
 import { ScreenFrame } from '@/shared/ui/ScreenFrame/ScreenFrame';
 import { TopBar } from '@/shared/ui/TopBar/TopBar';
@@ -96,9 +98,10 @@ function SelectionStatuses({
               status.isCurrentPlayer && styles.currentStatus
             )}
           >
-            <span aria-hidden="true">
-              {status.state === 'done' ? '✓' : '…'}
-            </span>
+            <MaterialSymbol
+              name={status.state === 'done' ? 'check' : 'more_horiz'}
+              filled={status.state === 'done'}
+            />
             <span>
               <strong>{status.displayName}</strong>
               {status.isCurrentPlayer && <small>kamu</small>}
@@ -176,9 +179,11 @@ export function OwnSelectionScreen(props: OwnSelectionScreenProps) {
 
           <main className={styles.waitingMain}>
             <section className={styles.waitingCopy}>
-              <span className={styles.waitingMark} aria-hidden="true">
-                ✓
-              </span>
+              <MaterialSymbol
+                name="check"
+                className={styles.waitingMark}
+                filled
+              />
               <Eyebrow onDark>Pilihanmu sudah dikunci</Eyebrow>
               <h1>Tunggu yang lain.</h1>
               <p>
@@ -263,36 +268,14 @@ export function OwnSelectionScreen(props: OwnSelectionScreenProps) {
                   props.draft.length >= cardsPerPlayer && !selected;
 
                 return (
-                  <button
-                    type="button"
+                  <SelectionCard
                     key={card.word}
-                    className={cn(
-                      styles.selectionCard,
-                      selected && styles.selectedCard
-                    )}
-                    data-level={card.level}
-                    aria-pressed={selected}
-                    onClick={() => props.onToggleCard(card.word)}
-                    disabled={
-                      mutationsDisabled ||
-                      pendingCardWords.has(card.word) ||
-                      selectionLimitReached
-                    }
-                  >
-                    <span className={styles.cardTopline}>
-                      <span>Tingkat {card.level}</span>
-                      <span className={styles.cardCheck} aria-hidden="true">
-                        {selected ? '✓' : '+'}
-                      </span>
-                    </span>
-                    <strong>{card.word}</strong>
-                    <span className={styles.cardDescription}>
-                      {card.description}
-                    </span>
-                    <span className={styles.cardAction} aria-hidden="true">
-                      {selected ? 'Dipilih' : 'Pilih kartu'}
-                    </span>
-                  </button>
+                    card={card}
+                    selected={selected}
+                    pending={pendingCardWords.has(card.word)}
+                    onToggle={() => props.onToggleCard(card.word)}
+                    disabled={mutationsDisabled || selectionLimitReached}
+                  />
                 );
               })}
             </div>
@@ -332,7 +315,7 @@ export function OwnSelectionScreen(props: OwnSelectionScreenProps) {
             disabled={!selectionComplete || mutationsDisabled}
           >
             Kunci pilihan
-            <span aria-hidden="true">→</span>
+            <MaterialSymbol name="arrow_forward" />
           </GameButton>
         </div>
       </div>

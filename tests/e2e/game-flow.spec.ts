@@ -6,7 +6,10 @@ import {
   test,
 } from '@playwright/test';
 
-import { installCommandAcknowledgementDelay } from './websocket-helpers';
+import {
+  installCommandAcknowledgementDelay,
+  setCommandAcknowledgementDelay,
+} from './websocket-helpers';
 
 const TOTAL_CARDS = 2;
 const SESSION_URL = /\/session\/[A-Za-z0-9_-]+$/;
@@ -270,6 +273,104 @@ test('perubahan pengaturan tidak menonaktifkan seluruh form', async ({
       startButton.isEnabled(),
     ])
   ).toEqual([true, true, true]);
+});
+
+test('pemilihan kartu menjaga tampilan stabil dan menonaktifkan pilihan setelah batas tercapai', async ({
+  page,
+}) => {
+  await installCommandAcknowledgementDelay(page, {
+    initiallyEnabled: false,
+  });
+  await createSingleDeviceSession(page);
+  await configureGame(page, 2, 2);
+  await page.getByRole('button', { name: 'Mulai bermain' }).click();
+  await page.getByRole('button', { name: 'Buka kartuku' }).click();
+
+  const offeredCards = page
+    .getByRole('main')
+    .getByRole('button', { pressed: false });
+  await expect(offeredCards).toHaveCount(4);
+  const offeredWords = await offeredCards.locator('strong').allTextContents();
+  const cardFor = (word: string) =>
+    page.getByRole('button').filter({
+      has: page.getByText(word, { exact: true }),
+    });
+  const firstCard = cardFor(offeredWords[0]);
+  const secondCard = cardFor(offeredWords[1]);
+  const thirdCard = cardFor(offeredWords[2]);
+  const nextButton = page.getByRole('button', {
+    name: 'Serahkan ke pemain berikutnya',
+  });
+
+  if ((page.viewportSize()?.width ?? Number.POSITIVE_INFINITY) <= 700) {
+    await expect(firstCard).toHaveCSS('box-shadow', 'none');
+    await expect(firstCard).toHaveCSS('transition-property', 'none');
+    await expect(firstCard).toHaveCSS('transform', 'none');
+  }
+
+  await setCommandAcknowledgementDelay(page, true);
+  await firstCard.click();
+  await expect(firstCard).toHaveAttribute('aria-pressed', 'true');
+  await page.evaluate(
+    () =>
+      new Promise<void>((resolve) => {
+        requestAnimationFrame(() => resolve());
+      })
+  );
+
+  expect(
+    await Promise.all([
+      firstCard.isEnabled(),
+      secondCard.isEnabled(),
+      nextButton.isEnabled(),
+    ])
+  ).toEqual([false, true, false]);
+
+  await setCommandAcknowledgementDelay(page, false);
+  await expect(firstCard).toBeEnabled({ timeout: 3_000 });
+  await secondCard.click();
+  await expect(page.getByRole('button', { pressed: true })).toHaveCount(2);
+
+  const remainingCards = page
+    .getByRole('main')
+    .getByRole('button', { pressed: false });
+  await expect(remainingCards).toHaveCount(2);
+  expect(
+    await Promise.all(
+      (await remainingCards.all()).map((card) => card.isEnabled())
+    )
+  ).toEqual([false, false]);
+
+  if ((page.viewportSize()?.width ?? Number.POSITIVE_INFINITY) <= 700) {
+    await expect(firstCard).toHaveCSS('box-shadow', 'none');
+    await expect(firstCard).toHaveCSS('transition-property', 'none');
+    await expect(firstCard).toHaveCSS('transform', 'none');
+  }
+
+  await setCommandAcknowledgementDelay(page, true);
+  await firstCard.click();
+  await expect(firstCard).toHaveAttribute('aria-pressed', 'false');
+  await page.evaluate(
+    () =>
+      new Promise<void>((resolve) => {
+        requestAnimationFrame(() => resolve());
+      })
+  );
+
+  expect(
+    await Promise.all([
+      firstCard.isEnabled(),
+      secondCard.isEnabled(),
+      thirdCard.isEnabled(),
+      nextButton.isEnabled(),
+    ])
+  ).toEqual([false, true, true, false]);
+  expect(
+    await firstCard.evaluate((card) => {
+      const style = getComputedStyle(card);
+      return { filter: style.filter, opacity: style.opacity };
+    })
+  ).toEqual({ filter: 'none', opacity: '1' });
 });
 
 test('status koneksi tetap statis saat memuat dan memulihkan sesi', async ({

@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils';
 import { Brand } from '@/shared/ui/Brand/Brand';
 import { GameButton } from '@/shared/ui/GameButton/GameButton';
 import { GameShell } from '@/shared/ui/GameShell/GameShell';
+import { MaterialSymbol } from '@/shared/ui/MaterialSymbol/MaterialSymbol';
 import { Panel } from '@/shared/ui/Panel/Panel';
 import { RoundPips } from '@/shared/ui/RoundPips/RoundPips';
 import { ScreenFrame } from '@/shared/ui/ScreenFrame/ScreenFrame';
@@ -133,7 +134,7 @@ export function ActiveTurn({
               disabled={actionsDisabled || !canSkip || remainingCardCount <= 1}
               className={cn(styles.actionButton, styles.skipButton)}
             >
-              <span aria-hidden="true">↻</span>
+              <MaterialSymbol name="skip_next" />
               {canSkip ? 'Lewati' : 'Sudah digunakan'}
             </GameButton>
             <GameButton
@@ -143,7 +144,7 @@ export function ActiveTurn({
               className={cn(styles.actionButton, styles.guessButton)}
             >
               Benar!
-              <span aria-hidden="true">✓</span>
+              <MaterialSymbol name="check" filled />
             </GameButton>
           </div>
           <div className={styles.actionMeta}>

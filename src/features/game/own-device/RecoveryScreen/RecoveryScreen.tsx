@@ -7,6 +7,10 @@ import { ConnectionStatus } from '@/shared/ui/ConnectionStatus/ConnectionStatus'
 import { Eyebrow } from '@/shared/ui/Eyebrow/Eyebrow';
 import { GameButton } from '@/shared/ui/GameButton/GameButton';
 import { GameShell } from '@/shared/ui/GameShell/GameShell';
+import {
+  MaterialSymbol,
+  type MaterialSymbolName,
+} from '@/shared/ui/MaterialSymbol/MaterialSymbol';
 import { Panel } from '@/shared/ui/Panel/Panel';
 import { ScreenFrame } from '@/shared/ui/ScreenFrame/ScreenFrame';
 import { TopBar } from '@/shared/ui/TopBar/TopBar';
@@ -72,6 +76,18 @@ const recoveryCopy: Record<
   },
 };
 
+const recoveryIcons = {
+  connecting: 'sync',
+  disconnected: 'wifi_off',
+  'duplicate-tab': 'content_copy',
+  revoked: 'block',
+  expired: 'timer_off',
+  ended: 'stop_circle',
+} satisfies Record<
+  TransientRecoveryReason | TerminalRecoveryReason,
+  MaterialSymbolName
+>;
+
 export function RecoveryScreen(props: RecoveryScreenProps) {
   const copy = recoveryCopy[props.reason];
   const isTransient =
@@ -104,15 +120,11 @@ export function RecoveryScreen(props: RecoveryScreenProps) {
             className={styles.card}
             aria-live={isTransient ? 'polite' : undefined}
           >
-            <span className={styles.statusMark} aria-hidden="true">
-              {props.reason === 'connecting'
-                ? '…'
-                : props.reason === 'disconnected'
-                  ? '↻'
-                  : props.reason === 'duplicate-tab'
-                    ? '▣'
-                    : '×'}
-            </span>
+            <MaterialSymbol
+              name={recoveryIcons[props.reason]}
+              className={styles.statusMark}
+              filled
+            />
             <Eyebrow>{copy.eyebrow}</Eyebrow>
             <h1>{copy.title}</h1>
             <p>{props.detailMessage ?? copy.body}</p>
@@ -127,7 +139,7 @@ export function RecoveryScreen(props: RecoveryScreenProps) {
                   {props.reason === 'connecting'
                     ? 'Sambungkan sekarang'
                     : 'Coba lagi'}
-                  <span aria-hidden="true">↻</span>
+                  <MaterialSymbol name="refresh" />
                 </GameButton>
               )}
               <button type="button" onClick={props.onGoHome}>

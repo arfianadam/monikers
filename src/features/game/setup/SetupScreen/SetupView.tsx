@@ -4,6 +4,7 @@ import { Brand } from '@/shared/ui/Brand/Brand';
 import { Eyebrow } from '@/shared/ui/Eyebrow/Eyebrow';
 import { GameButton } from '@/shared/ui/GameButton/GameButton';
 import { GameShell } from '@/shared/ui/GameShell/GameShell';
+import { MaterialSymbol } from '@/shared/ui/MaterialSymbol/MaterialSymbol';
 import { Panel } from '@/shared/ui/Panel/Panel';
 import { ScreenFrame } from '@/shared/ui/ScreenFrame/ScreenFrame';
 import { TopBar } from '@/shared/ui/TopBar/TopBar';
@@ -118,7 +119,7 @@ export function SetupView({
                   disabled={disabled}
                 >
                   Mulai bermain
-                  <span aria-hidden="true">→</span>
+                  <MaterialSymbol name="arrow_forward" />
                 </GameButton>
               </form>
             </Panel>

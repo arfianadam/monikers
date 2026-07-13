@@ -4,6 +4,7 @@ import { Brand } from '@/shared/ui/Brand/Brand';
 import { Eyebrow } from '@/shared/ui/Eyebrow/Eyebrow';
 import { GameButton } from '@/shared/ui/GameButton/GameButton';
 import { GameShell } from '@/shared/ui/GameShell/GameShell';
+import { MaterialSymbol } from '@/shared/ui/MaterialSymbol/MaterialSymbol';
 import { Panel } from '@/shared/ui/Panel/Panel';
 import { ScreenFrame } from '@/shared/ui/ScreenFrame/ScreenFrame';
 import { TopBar } from '@/shared/ui/TopBar/TopBar';
@@ -64,16 +65,11 @@ export function PrivateHandoff({
               mengintip sebelum kamu membuka kartunya.
             </p>
             <div className={styles.privacyNote}>
-              <span className={styles.privacyIcon} aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none">
-                  <path
-                    d="M12 3.25 19 6v5.16c0 4.45-2.75 7.8-7 9.59-4.25-1.79-7-5.14-7-9.59V6l7-2.75Z"
-                    className={styles.privacyShield}
-                  />
-                  <circle cx="12" cy="11" r="1.65" />
-                  <path d="M12 12.55v2.7" />
-                </svg>
-              </span>
+              <MaterialSymbol
+                name="shield_lock"
+                className={styles.privacyIcon}
+                filled
+              />
               <span>
                 <strong>Hanya untukmu</strong>
                 Pilih {cardsPerPlayer} dari {cardsPerPlayer + 2} kartu
@@ -81,7 +77,7 @@ export function PrivateHandoff({
             </div>
             <GameButton onClick={onReady} disabled={disabled}>
               Buka kartuku
-              <span aria-hidden="true">→</span>
+              <MaterialSymbol name="arrow_forward" />
             </GameButton>
           </Panel>
 

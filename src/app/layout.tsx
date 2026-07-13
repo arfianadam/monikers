@@ -12,6 +12,11 @@ const geistMono = Geist_Mono({
   subsets: ['latin'],
 });
 
+const materialSymbolsHref =
+  'https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL@20..48,600,0..1' +
+  '&icon_names=add,arrow_downward,arrow_forward,arrow_upward,block,check,close,content_copy,expand_more,more_horiz,pause,person_remove,refresh,remove,shield_lock,skip_next,stop_circle,style,sync,timer_off,undo,visibility_off,wifi_off' +
+  '&display=block';
+
 export const metadata: Metadata = {
   title: 'Monikers — Permainan Tebak Nama',
   description:
@@ -25,6 +30,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id" className="dark">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+        <link rel="stylesheet" href={materialSymbolsHref} />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

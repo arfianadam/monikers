@@ -13,6 +13,7 @@ import { Eyebrow } from '@/shared/ui/Eyebrow/Eyebrow';
 import { GameButton } from '@/shared/ui/GameButton/GameButton';
 import { GameShell } from '@/shared/ui/GameShell/GameShell';
 import { Input } from '@/shared/ui/Input/Input';
+import { MaterialSymbol } from '@/shared/ui/MaterialSymbol/MaterialSymbol';
 import { Panel } from '@/shared/ui/Panel/Panel';
 import { ScreenFrame } from '@/shared/ui/ScreenFrame/ScreenFrame';
 import { TopBar } from '@/shared/ui/TopBar/TopBar';
@@ -164,7 +165,7 @@ export function LobbyScreen({
               <output aria-label={`Kode sesi ${joinCode}`}>{joinCode}</output>
               <div className={styles.codeActions}>
                 <button type="button" onClick={onCopyCode}>
-                  <span aria-hidden="true">⧉</span>
+                  <MaterialSymbol name="content_copy" />
                   Salin kode
                 </button>
                 {isController && onRotateCode && (
@@ -173,7 +174,7 @@ export function LobbyScreen({
                     onClick={onRotateCode}
                     disabled={mutationsDisabled || pendingActions.rotateCode}
                   >
-                    <span aria-hidden="true">↻</span>
+                    <MaterialSymbol name="refresh" />
                     Ganti kode
                   </button>
                 )}
@@ -212,7 +213,7 @@ export function LobbyScreen({
                         disabled={mutationsDisabled || cardsPerPlayer <= 1}
                         aria-label="Kurangi kartu per pemain"
                       >
-                        −
+                        <MaterialSymbol name="remove" />
                       </button>
                       <output aria-live="polite">{cardsPerPlayer}</output>
                       <button
@@ -225,7 +226,7 @@ export function LobbyScreen({
                         disabled={mutationsDisabled || cardsPerPlayer >= 10}
                         aria-label="Tambah kartu per pemain"
                       >
-                        +
+                        <MaterialSymbol name="add" />
                       </button>
                     </span>
                   ) : (
@@ -371,7 +372,7 @@ export function LobbyScreen({
                                   aria-label={`Naikkan ${player.displayName} dalam urutan Tim ${teamNumber}`}
                                   title="Naikkan urutan"
                                 >
-                                  ↑
+                                  <MaterialSymbol name="arrow_upward" />
                                 </button>
                                 <button
                                   type="button"
@@ -386,7 +387,7 @@ export function LobbyScreen({
                                   aria-label={`Turunkan ${player.displayName} dalam urutan Tim ${teamNumber}`}
                                   title="Turunkan urutan"
                                 >
-                                  ↓
+                                  <MaterialSymbol name="arrow_downward" />
                                 </button>
                                 <button
                                   type="button"
@@ -397,7 +398,8 @@ export function LobbyScreen({
                                   aria-label={`Pindahkan ${player.displayName} ke Tim ${teamNumbers[destination]}`}
                                   title={`Pindahkan ke Tim ${teamNumbers[destination]}`}
                                 >
-                                  →{teamNumbers[destination]}
+                                  <MaterialSymbol name="arrow_forward" />
+                                  {teamNumbers[destination]}
                                 </button>
                                 {player.canRemove && (
                                   <button
@@ -408,7 +410,7 @@ export function LobbyScreen({
                                     aria-label={`Keluarkan ${player.displayName} dari sesi`}
                                     title="Keluarkan pemain"
                                   >
-                                    ×
+                                    <MaterialSymbol name="person_remove" />
                                   </button>
                                 )}
                               </span>
@@ -450,9 +452,10 @@ export function LobbyScreen({
                   disabled={mutationsDisabled || pendingActions.ready}
                 >
                   {currentPlayer.ready ? 'Batalkan siap' : 'Saya siap'}
-                  <span aria-hidden="true">
-                    {currentPlayer.ready ? '↶' : '✓'}
-                  </span>
+                  <MaterialSymbol
+                    name={currentPlayer.ready ? 'undo' : 'check'}
+                    filled={!currentPlayer.ready}
+                  />
                 </GameButton>
               )}
 
@@ -463,7 +466,7 @@ export function LobbyScreen({
                   disabled={!canStart || mutationsDisabled}
                 >
                   Mulai pilih kartu
-                  <span aria-hidden="true">→</span>
+                  <MaterialSymbol name="arrow_forward" />
                 </GameButton>
               ) : (
                 <p>Pengendali akan memulai setelah semua pemain siap.</p>

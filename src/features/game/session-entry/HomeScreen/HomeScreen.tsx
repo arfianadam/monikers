@@ -9,6 +9,7 @@ import { Eyebrow } from '@/shared/ui/Eyebrow/Eyebrow';
 import { GameButton } from '@/shared/ui/GameButton/GameButton';
 import { GameShell } from '@/shared/ui/GameShell/GameShell';
 import { Input } from '@/shared/ui/Input/Input';
+import { MaterialSymbol } from '@/shared/ui/MaterialSymbol/MaterialSymbol';
 import { Panel } from '@/shared/ui/Panel/Panel';
 import { ScreenFrame } from '@/shared/ui/ScreenFrame/ScreenFrame';
 import { TopBar } from '@/shared/ui/TopBar/TopBar';
@@ -128,9 +129,10 @@ export function HomeScreen() {
                     Oper ponsel atau laptop setiap giliran.
                   </small>
                 </span>
-                <span className={styles.modeIcon} aria-hidden="true">
-                  →
-                </span>
+                <MaterialSymbol
+                  name="arrow_forward"
+                  className={styles.modeIcon}
+                />
               </GameButton>
 
               <GameButton
@@ -157,9 +159,7 @@ export function HomeScreen() {
                     Bagikan kode agar kartu tetap rahasia.
                   </small>
                 </span>
-                <span className={styles.modeIcon} aria-hidden="true">
-                  ＋
-                </span>
+                <MaterialSymbol name="add" className={styles.modeIcon} />
               </GameButton>
             </div>
 

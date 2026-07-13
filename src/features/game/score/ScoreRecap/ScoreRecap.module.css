@@ -132,12 +132,12 @@
 }
 
 .toggle {
-  font-size: 1rem;
+  font-size: 1.25rem;
   transition: transform 160ms ease;
 }
 
 .teamResult[open] .toggle {
-  transform: rotate(45deg);
+  transform: rotate(180deg);
 }
 
 .teamResult:focus-within {

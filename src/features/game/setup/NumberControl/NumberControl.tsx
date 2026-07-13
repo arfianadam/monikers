@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 
 import { Input } from '@/shared/ui/Input/Input';
+import { MaterialSymbol } from '@/shared/ui/MaterialSymbol/MaterialSymbol';
 
 import styles from './NumberControl.module.css';
 
@@ -58,7 +59,7 @@ export function NumberControl({
           disabled={disabled || value <= min}
           aria-label={`Kurangi ${label.toLowerCase()}`}
         >
-          −
+          <MaterialSymbol name="remove" />
         </button>
         <Input
           id={id}
@@ -93,7 +94,7 @@ export function NumberControl({
           disabled={disabled || value >= max}
           aria-label={`Tambah ${label.toLowerCase()}`}
         >
-          +
+          <MaterialSymbol name="add" />
         </button>
       </div>
     </div>

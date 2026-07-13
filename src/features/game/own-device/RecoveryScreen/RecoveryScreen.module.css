@@ -27,10 +27,9 @@
   border: var(--border);
   border-radius: 50%;
   box-shadow: 5px 5px 0 var(--ink);
+  color: var(--ink);
   display: flex;
-  font-family: var(--font-geist-mono), monospace;
   font-size: 1.7rem;
-  font-weight: 900;
   height: 70px;
   justify-content: center;
   margin-bottom: 30px;

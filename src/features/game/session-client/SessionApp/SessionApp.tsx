@@ -31,6 +31,7 @@ import { useStageScroll } from '@/shared/hooks/useStageScroll/useStageScroll';
 import { Brand } from '@/shared/ui/Brand/Brand';
 import { ConnectionStatus } from '@/shared/ui/ConnectionStatus/ConnectionStatus';
 import { GameShell } from '@/shared/ui/GameShell/GameShell';
+import { MaterialSymbol } from '@/shared/ui/MaterialSymbol/MaterialSymbol';
 import { ScreenFrame } from '@/shared/ui/ScreenFrame/ScreenFrame';
 import { TopBar } from '@/shared/ui/TopBar/TopBar';
 
@@ -413,6 +414,9 @@ export function SessionApp({ sessionId }: { sessionId: string }) {
   const setupControlsDisabled =
     connection.status !== 'connected' ||
     connection.hasPendingCommand('start-selection');
+  const singleSelectionActionsDisabled =
+    connection.status !== 'connected' ||
+    connection.hasPendingCommand('confirm-selection');
   const ownSelectionActionsDisabled =
     connection.status !== 'connected' ||
     connection.hasPendingCommand('confirm-selection') ||
@@ -694,7 +698,8 @@ export function SessionApp({ sessionId }: { sessionId: string }) {
             cardsPerPlayer={projection.configuration.cardsPerPlayer}
             availableCards={projection.offer ?? []}
             selectedCards={projection.draft ?? []}
-            disabled={controlsDisabled}
+            pendingCardWords={connection.pendingCardWords}
+            disabled={singleSelectionActionsDisabled}
             connectionStatus={connectionStatus}
             onToggleCard={(card) =>
               connection.sendCommand({
@@ -820,7 +825,7 @@ export function SessionApp({ sessionId }: { sessionId: string }) {
           onClick={connection.clearError}
           aria-label={`${connection.lastError} Tutup pesan.`}
         >
-          {connection.lastError} <span aria-hidden="true">×</span>
+          {connection.lastError} <MaterialSymbol name="close" />
         </button>
       )}
       {copy && (

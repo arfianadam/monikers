@@ -86,6 +86,10 @@
   grid-column: 1 / -1;
 }
 
+.codeActions button > span {
+  font-size: 1rem;
+}
+
 .codeActions button:disabled {
   opacity: 0.45;
 }
@@ -401,16 +405,23 @@
 }
 
 .playerActions button {
+  align-items: center;
   background: var(--paper-bright);
   border: 1px solid rgba(23, 24, 30, 0.45);
   border-radius: 9px;
   color: var(--ink);
+  display: inline-flex;
   font-family: var(--font-geist-mono), monospace;
   font-size: 0.68rem;
   font-weight: 850;
   height: 44px;
+  justify-content: center;
   min-width: 44px;
   padding: 0 7px;
+}
+
+.playerActions button > span {
+  font-size: 1.05rem;
 }
 
 .playerActions button:hover:not(:disabled) {

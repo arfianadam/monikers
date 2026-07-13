@@ -5,6 +5,7 @@ import type {
 } from '@/features/game/domain/game-types';
 import { getCardPoints } from '@/features/game/domain/scoring';
 import { Eyebrow } from '@/shared/ui/Eyebrow/Eyebrow';
+import { MaterialSymbol } from '@/shared/ui/MaterialSymbol/MaterialSymbol';
 import { Panel } from '@/shared/ui/Panel/Panel';
 
 import styles from './ScoreRecap.module.css';
@@ -51,9 +52,10 @@ export function ScoreRecap({ scores, rounds }: ScoreRecapProps) {
                         {cards.length} kartu
                       </span>
                       <strong>{points} poin</strong>
-                      <span className={styles.toggle} aria-hidden="true">
-                        +
-                      </span>
+                      <MaterialSymbol
+                        name="expand_more"
+                        className={styles.toggle}
+                      />
                     </summary>
                     <div className={styles.cardChipList}>
                       {cards.length > 0 ? (
