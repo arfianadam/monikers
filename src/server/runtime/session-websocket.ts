@@ -48,6 +48,7 @@ interface LiveConnection {
 export interface SessionWebSocketGatewayOptions {
   runtime: SessionRuntime;
   heartbeatIntervalMs?: number;
+  rateLimitsEnabled?: boolean;
   setInterval?: typeof globalThis.setInterval;
   clearInterval?: typeof globalThis.clearInterval;
 }
@@ -100,6 +101,7 @@ export class SessionWebSocketGateway {
     perMessageDeflate: false,
   });
   private readonly connections = new Map<string, Map<string, LiveConnection>>();
+  private readonly rateLimitsEnabled: boolean;
   private readonly clearIntervalFn: typeof globalThis.clearInterval;
   private readonly heartbeatHandle: ReturnType<typeof globalThis.setInterval>;
   private readonly unsubscribeUpdate: () => boolean;
@@ -109,6 +111,7 @@ export class SessionWebSocketGateway {
 
   constructor(options: SessionWebSocketGatewayOptions) {
     this.runtime = options.runtime;
+    this.rateLimitsEnabled = options.rateLimitsEnabled ?? false;
     this.clearIntervalFn = options.clearInterval ?? globalThis.clearInterval;
     const setIntervalFn = options.setInterval ?? globalThis.setInterval;
     this.heartbeatHandle = setIntervalFn(
@@ -309,15 +312,15 @@ export class SessionWebSocketGateway {
     }
     if (!(await connection.connected) || !this.isCurrent(connection)) return;
 
-    const rate = connection.limiter.consume(
-      'commands',
-      SESSION_COMMAND_RATE_LIMIT
-    );
+    const rateAllowed =
+      !this.rateLimitsEnabled ||
+      connection.limiter.consume('commands', SESSION_COMMAND_RATE_LIMIT)
+        .allowed;
     let raw: unknown;
     try {
       raw = JSON.parse(data.toString()) as unknown;
     } catch {
-      await this.rejectInvalidMessage(connection, 'invalid', rate.allowed);
+      await this.rejectInvalidMessage(connection, 'invalid', rateAllowed);
       return;
     }
 
@@ -326,12 +329,12 @@ export class SessionWebSocketGateway {
       await this.rejectInvalidMessage(
         connection,
         commandIdFromUnknown(raw),
-        rate.allowed
+        rateAllowed
       );
       return;
     }
 
-    const outcome = rate.allowed
+    const outcome = rateAllowed
       ? await this.runtime.executeCommand(
           connection.record,
           connection.actorId,

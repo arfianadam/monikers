@@ -50,6 +50,7 @@ export interface StateChangeDetails {
 }
 
 export interface SessionHttpControllerOptions {
+  rateLimitsEnabled?: boolean;
   repository: InMemorySessionRepository;
   now?: () => number;
   onStateChanged?: (
@@ -88,6 +89,7 @@ export class SessionHttpController {
   private readonly onDeleted: NonNullable<
     SessionHttpControllerOptions['onDeleted']
   >;
+  private readonly rateLimitsEnabled: boolean;
   private readonly creationLimiter: SlidingWindowRateLimiter;
   private readonly failedCodeLimiter: SlidingWindowRateLimiter;
 
@@ -97,6 +99,7 @@ export class SessionHttpController {
     this.onStateChanged = options.onStateChanged ?? (() => undefined);
     this.onLeave = options.onLeave;
     this.onDeleted = options.onDeleted ?? (() => undefined);
+    this.rateLimitsEnabled = options.rateLimitsEnabled ?? false;
     this.creationLimiter = new SlidingWindowRateLimiter(this.now);
     this.failedCodeLimiter = new SlidingWindowRateLimiter(this.now);
   }
@@ -161,19 +164,21 @@ export class SessionHttpController {
     response: ServerResponse
   ) {
     if (!this.requireSameOrigin(request, response)) return;
-    const rate = this.creationLimiter.consume(
-      getClientAddress(request),
-      CREATION_RATE_LIMIT
-    );
-    if (!rate.allowed) {
-      sendError(
-        response,
-        429,
-        'RATE_LIMITED',
-        'Terlalu banyak sesi dibuat. Coba lagi sebentar.',
-        { 'retry-after': String(Math.ceil(rate.retryAfterMs / 1_000)) }
+    if (this.rateLimitsEnabled) {
+      const rate = this.creationLimiter.consume(
+        getClientAddress(request),
+        CREATION_RATE_LIMIT
       );
-      return;
+      if (!rate.allowed) {
+        sendError(
+          response,
+          429,
+          'RATE_LIMITED',
+          'Terlalu banyak sesi dibuat. Coba lagi sebentar.',
+          { 'retry-after': String(Math.ceil(rate.retryAfterMs / 1_000)) }
+        );
+        return;
+      }
     }
 
     try {
@@ -581,19 +586,21 @@ export class SessionHttpController {
     request: IncomingMessage,
     response: ServerResponse
   ) {
-    const result = this.failedCodeLimiter.consume(
-      getClientAddress(request),
-      FAILED_CODE_RATE_LIMIT
-    );
-    if (!result.allowed) {
-      sendError(
-        response,
-        429,
-        'RATE_LIMITED',
-        'Terlalu banyak kode yang gagal. Coba lagi sebentar.',
-        { 'retry-after': String(Math.ceil(result.retryAfterMs / 1_000)) }
+    if (this.rateLimitsEnabled) {
+      const result = this.failedCodeLimiter.consume(
+        getClientAddress(request),
+        FAILED_CODE_RATE_LIMIT
       );
-      return;
+      if (!result.allowed) {
+        sendError(
+          response,
+          429,
+          'RATE_LIMITED',
+          'Terlalu banyak kode yang gagal. Coba lagi sebentar.',
+          { 'retry-after': String(Math.ceil(result.retryAfterMs / 1_000)) }
+        );
+        return;
+      }
     }
     sendError(
       response,
@@ -604,6 +611,7 @@ export class SessionHttpController {
   }
 
   pruneRateLimits() {
+    if (!this.rateLimitsEnabled) return;
     this.creationLimiter.prune();
     this.failedCodeLimiter.prune();
   }

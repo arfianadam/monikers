@@ -24,6 +24,7 @@ import {
   installCommandAcknowledgementDelay,
   setCommandAcknowledgementDelay,
 } from './websocket-helpers';
+import { expectVisualFontsLoaded } from './visual-helpers';
 
 async function capture(
   page: Page,
@@ -32,7 +33,7 @@ async function capture(
   fullPage = false
 ) {
   await page.bringToFront();
-  await page.evaluate(async () => document.fonts.ready);
+  await expectVisualFontsLoaded(page);
   await page.evaluate(
     () =>
       new Promise<void>((resolve) => {
@@ -59,7 +60,7 @@ async function capture(
 
 async function captureRegion(page: Page, region: Locator, name: string) {
   await page.bringToFront();
-  await page.evaluate(async () => document.fonts.ready);
+  await expectVisualFontsLoaded(page);
   await page.evaluate(
     () =>
       new Promise<void>((resolve) => {

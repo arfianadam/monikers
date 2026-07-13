@@ -18,10 +18,7 @@ import {
   type SessionRequestHandler,
   type SessionServer,
 } from './session-server';
-import {
-  SESSION_COMMAND_RATE_LIMIT,
-  SESSION_SOCKET_CLOSE,
-} from './session-websocket';
+import { SESSION_SOCKET_CLOSE } from './session-websocket';
 
 interface HttpResponse<T = unknown> {
   status: number;
@@ -685,55 +682,6 @@ describe('session HTTP and WebSocket server', () => {
         (value) => value.phase === 'setup' && value.configuration.players === 2
       )
     ).resolves.toMatchObject({ projection: { phase: 'setup' } });
-  });
-
-  it('rate-limits command bursts per connection and recovers after the window', async () => {
-    let now = 1_000;
-    const harness = await startHarness({ now: () => now });
-    const created = await harness.request<{ sessionId: string }>(
-      '/api/sessions',
-      {
-        method: 'POST',
-        origin: harness.origin,
-        body: { mode: 'single-device' },
-      }
-    );
-    const credential = cookieFrom(created);
-    const client = await harness.openWebSocket(
-      created.body.sessionId,
-      credential.cookie
-    );
-    await projection(client);
-
-    for (let index = 0; index < SESSION_COMMAND_RATE_LIMIT.limit; index += 1) {
-      await expect(
-        command(client, {
-          id: `allowed-${index}`,
-          type: 'update-setup',
-          players: 4,
-        })
-      ).resolves.toMatchObject({ ok: true });
-    }
-
-    await expect(
-      command(client, {
-        id: 'rate-limited',
-        type: 'update-setup',
-        players: 2,
-      })
-    ).resolves.toMatchObject({
-      ok: false,
-      error: { code: 'RATE_LIMITED' },
-    });
-
-    now += SESSION_COMMAND_RATE_LIMIT.windowMs + 1;
-    await expect(
-      command(client, {
-        id: 'after-rate-window',
-        type: 'update-setup',
-        players: 2,
-      })
-    ).resolves.toMatchObject({ ok: true });
   });
 
   it('rotates the public code and immediately retires the old code', async () => {

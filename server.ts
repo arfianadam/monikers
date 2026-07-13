@@ -46,7 +46,10 @@ export async function startMonikersServer(
   let nextHandler: NextRequestHandler | null = null;
   let nextServer: ReturnType<typeof next> | null = null;
   const testSeed = process.env.MONIKERS_TEST_SEED;
+  const rateLimitsEnabled =
+    process.env.NODE_ENV === 'production' && !dev && !testSeed;
   const sessionServer = createSessionServer({
+    rateLimitsEnabled,
     requestHandler: (request, response) => {
       if (!nextHandler) {
         response.writeHead(503, {

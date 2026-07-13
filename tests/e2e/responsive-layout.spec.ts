@@ -6,6 +6,8 @@ import {
   test,
 } from '@playwright/test';
 
+import { expectVisualFontsLoaded } from './visual-helpers';
+
 interface HorizontalBounds {
   width: number;
   x: number;
@@ -224,7 +226,7 @@ async function reachActiveTurn(
 test('layout khusus tetap terbaca dan stabil', async ({ page }, testInfo) => {
   const socketGate = await installSessionSocketGate(page);
   await page.goto('/');
-  await page.evaluate(async () => document.fonts.ready);
+  await expectVisualFontsLoaded(page);
 
   const eyebrowDot = page
     .getByText('Calon permainan favorit di acara kumpulmu', { exact: true })
@@ -275,6 +277,7 @@ test('layout khusus tetap terbaca dan stabil', async ({ page }, testInfo) => {
       await expectStaticConnectionLayout(page);
     }
   );
+  await expectVisualFontsLoaded(page);
   await expect(page).toHaveScreenshot('active-turn.png', { fullPage: true });
   await expectStaticConnectionLayout(page, { activeTurn: true });
   await socketGate.block();

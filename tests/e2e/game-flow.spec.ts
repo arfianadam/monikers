@@ -10,6 +10,7 @@ import {
   installCommandAcknowledgementDelay,
   setCommandAcknowledgementDelay,
 } from './websocket-helpers';
+import { expectVisualFontsLoaded } from './visual-helpers';
 
 const TOTAL_CARDS = 2;
 const SESSION_URL = /\/session\/[A-Za-z0-9_-]+$/;
@@ -78,9 +79,7 @@ async function widenInitialProjectionRace(page: Page) {
 }
 
 async function captureStage(page: Page, name: string) {
-  await page.evaluate(async () => {
-    await document.fonts.ready;
-  });
+  await expectVisualFontsLoaded(page);
   await expect(page).toHaveScreenshot(`${name}.png`, { fullPage: true });
 }
 

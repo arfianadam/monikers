@@ -23,11 +23,15 @@ export type SessionRequestHandler = (
 ) => void | Promise<void>;
 
 export interface CreateSessionServerOptions {
+  rateLimitsEnabled?: boolean;
   requestHandler?: SessionRequestHandler;
   repository?: InMemorySessionRepository;
   runtime?: SessionRuntime;
   runtimeOptions?: Omit<SessionRuntimeOptions, 'repository' | 'onMaintenance'>;
-  websocketOptions?: Omit<SessionWebSocketGatewayOptions, 'runtime'>;
+  websocketOptions?: Omit<
+    SessionWebSocketGatewayOptions,
+    'rateLimitsEnabled' | 'runtime'
+  >;
   onClose?: () => void | Promise<void>;
   onError?: (error: unknown) => void;
 }
@@ -84,9 +88,11 @@ export function createSessionServer(
   const repository = runtime.repository;
   const websocket = new SessionWebSocketGateway({
     ...options.websocketOptions,
+    rateLimitsEnabled: options.rateLimitsEnabled ?? false,
     runtime,
   });
   const httpController = new SessionHttpController({
+    rateLimitsEnabled: options.rateLimitsEnabled ?? false,
     repository,
     now: () => runtime.serverTime,
     onLeave: (record, actorId, now) => runtime.leave(record, actorId, now),
