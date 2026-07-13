@@ -725,10 +725,10 @@ test('sesi perangkat masing-masing menyelesaikan seluruh siklus dan pemulihan', 
 
     await controllerPage.getByRole('button', { name: 'Main lagi' }).click();
     await expect(
-      controllerPage.getByRole('heading', { name: 'Susun kedua tim.' })
+      controllerPage.getByRole('heading', { name: 'Lobby' })
     ).toBeVisible();
     await expect(
-      joinerPage.getByRole('heading', { name: 'Susun kedua tim.' })
+      joinerPage.getByRole('heading', { name: 'Lobby' })
     ).toBeVisible();
     await expect(
       controllerPage.getByRole('button', { name: 'Saya siap' })
@@ -738,7 +738,7 @@ test('sesi perangkat masing-masing menyelesaikan seluruh siklus dan pemulihan', 
     const newestControllerPage = await controllerContext.newPage();
     await newestControllerPage.goto(session.sessionPath);
     await expect(
-      newestControllerPage.getByRole('heading', { name: 'Susun kedua tim.' })
+      newestControllerPage.getByRole('heading', { name: 'Lobby' })
     ).toBeVisible();
     await expect(
       replacedControllerPage.getByRole('heading', {
@@ -757,7 +757,7 @@ test('sesi perangkat masing-masing menyelesaikan seluruh siklus dan pemulihan', 
     await returnedControllerPage.goto(session.sessionPath);
     await expect(
       returnedControllerPage.getByRole('heading', {
-        name: 'Susun kedua tim.',
+        name: 'Lobby',
       })
     ).toBeVisible();
     await expect(

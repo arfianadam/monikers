@@ -159,7 +159,7 @@ export function LobbyScreen({
               <Eyebrow onDark>
                 Ruang tunggu · {playerCount} dari 20 pemain
               </Eyebrow>
-              <h1>Susun kedua tim.</h1>
+              <h1>Lobby</h1>
               <p>
                 Bagikan kode, atur urutan pemain, lalu tandai siap saat semua
                 orang sudah memegang perangkatnya.
@@ -457,9 +457,7 @@ export function LobbyScreen({
                 <div className={styles.readyCopy}>
                   <Eyebrow>Status ruangan</Eyebrow>
                   <h2>
-                    {canStart
-                      ? 'Semua siap bermain.'
-                      : 'Masih menunggu pemain.'}
+                    {canStart ? 'Semua siap bermain.' : 'Menunggu semua siap.'}
                   </h2>
                   <p>
                     {canStart

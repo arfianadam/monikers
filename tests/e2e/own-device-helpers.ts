@@ -67,7 +67,7 @@ export async function createOwnDeviceSession(page: Page, creatorName: string) {
   await activate.click();
 
   await expect(
-    page.getByRole('heading', { level: 1, name: 'Susun kedua tim.' })
+    page.getByRole('heading', { level: 1, name: 'Lobby' })
   ).toBeVisible();
   const codeRegion = page.getByRole('region', { name: 'Kode sesi' });
   const codeOutput = codeRegion.locator('output');
@@ -106,7 +106,7 @@ export async function joinOwnDeviceSession(
   await page.getByRole('button', { name: 'Gabung ke sesi' }).click();
   await expect(page).toHaveURL(new RegExp(`${options.sessionPath}$`));
   await expect(
-    page.getByRole('heading', { level: 1, name: 'Susun kedua tim.' })
+    page.getByRole('heading', { level: 1, name: 'Lobby' })
   ).toBeVisible();
 }
 

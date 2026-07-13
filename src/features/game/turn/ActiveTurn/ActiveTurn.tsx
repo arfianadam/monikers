@@ -106,7 +106,7 @@ export function ActiveTurn({
             >
               <div className={styles.cardTopline}>
                 <span className={styles.levelBadge}>
-                  Tingkat {activeCard.level}
+                  Level {activeCard.level}
                 </span>
                 <span className={styles.cardSerial}>
                   {String(remainingCardCount).padStart(2, '0')} /{' '}

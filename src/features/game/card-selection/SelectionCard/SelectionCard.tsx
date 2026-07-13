@@ -33,7 +33,7 @@ export function SelectionCard({
       onClick={onToggle}
     >
       <span className={styles.cardTopline}>
-        <span className={styles.levelBadge}>Tingkat {card.level}</span>
+        <span className={styles.levelBadge}>Level {card.level}</span>
         <MaterialSymbol name="check" className={styles.cardCheck} filled />
       </span>
       <strong>{card.word}</strong>

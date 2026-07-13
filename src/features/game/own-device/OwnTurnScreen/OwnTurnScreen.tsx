@@ -395,7 +395,7 @@ export function OwnTurnScreen(props: OwnTurnScreenProps) {
             aria-live="polite"
           >
             <div className={styles.cardTopline}>
-              <span>Tingkat {props.card.level}</span>
+              <span>Level {props.card.level}</span>
               <span>Babak 0{round}</span>
             </div>
             <div className={styles.cardCopy}>

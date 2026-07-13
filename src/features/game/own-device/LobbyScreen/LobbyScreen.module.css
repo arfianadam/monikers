@@ -513,6 +513,7 @@
   font-size: clamp(1.55rem, 3vw, 2.2rem);
   letter-spacing: -0.045em;
   margin: 0;
+  line-height: 1;
 }
 
 .readyCopy > p:last-child {
