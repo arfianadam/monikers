@@ -153,34 +153,6 @@
   margin: 0;
 }
 
-.stepper {
-  align-items: center;
-  background: var(--paper);
-  border: 1.5px solid var(--ink);
-  border-radius: 999px;
-  color: var(--ink);
-  display: flex;
-  overflow: hidden;
-}
-
-.stepper button {
-  background: transparent;
-  border: 0;
-  color: var(--ink);
-  font-size: 1.1rem;
-  height: 44px;
-  width: 44px;
-}
-
-.stepper button:hover:not(:disabled) {
-  background: var(--yellow);
-}
-
-.stepper output {
-  min-width: 30px;
-  text-align: center;
-}
-
 .renameForm {
   align-items: end;
   border-top: 1px solid rgba(248, 242, 227, 0.12);

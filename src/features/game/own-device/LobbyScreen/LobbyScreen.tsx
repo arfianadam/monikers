@@ -14,6 +14,7 @@ import { GameButton } from '@/shared/ui/GameButton/GameButton';
 import { GameShell } from '@/shared/ui/GameShell/GameShell';
 import { Input } from '@/shared/ui/Input/Input';
 import { MaterialSymbol } from '@/shared/ui/MaterialSymbol/MaterialSymbol';
+import { NumberStepper } from '@/shared/ui/NumberStepper/NumberStepper';
 import { Panel } from '@/shared/ui/Panel/Panel';
 import { ScreenFrame } from '@/shared/ui/ScreenFrame/ScreenFrame';
 import { TopBar } from '@/shared/ui/TopBar/TopBar';
@@ -202,33 +203,15 @@ export function LobbyScreen({
                 <dt>Kartu per pemain</dt>
                 <dd>
                   {isController && onCardsPerPlayerChange ? (
-                    <span className={styles.stepper}>
-                      <button
-                        type="button"
-                        onClick={() =>
-                          onCardsPerPlayerChange(
-                            Math.max(1, cardsPerPlayer - 1)
-                          )
-                        }
-                        disabled={mutationsDisabled || cardsPerPlayer <= 1}
-                        aria-label="Kurangi kartu per pemain"
-                      >
-                        <MaterialSymbol name="remove" />
-                      </button>
-                      <output aria-live="polite">{cardsPerPlayer}</output>
-                      <button
-                        type="button"
-                        onClick={() =>
-                          onCardsPerPlayerChange(
-                            Math.min(10, cardsPerPlayer + 1)
-                          )
-                        }
-                        disabled={mutationsDisabled || cardsPerPlayer >= 10}
-                        aria-label="Tambah kartu per pemain"
-                      >
-                        <MaterialSymbol name="add" />
-                      </button>
-                    </span>
+                    <NumberStepper
+                      id="lobby-cards-per-player"
+                      label="Kartu per pemain"
+                      value={cardsPerPlayer}
+                      min={1}
+                      max={10}
+                      disabled={mutationsDisabled}
+                      onChange={onCardsPerPlayerChange}
+                    />
                   ) : (
                     cardsPerPlayer
                   )}

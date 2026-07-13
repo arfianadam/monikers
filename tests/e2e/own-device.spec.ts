@@ -280,15 +280,17 @@ test('perubahan pengaturan lobi tidak menonaktifkan aksi lain', async ({
   const configuration = page.getByRole('region', {
     name: 'Pengaturan permainan',
   });
+  const cardsPerPlayerInput = configuration.getByRole('spinbutton', {
+    name: 'Kartu per pemain',
+  });
   const renameButton = page
     .getByLabel('Namamu')
     .locator('..')
     .getByRole('button');
 
-  await configuration
-    .getByRole('button', { name: 'Kurangi kartu per pemain' })
-    .click();
-  await expect(configuration.getByRole('status')).toHaveText('4');
+  await expect(cardsPerPlayerInput).toBeEditable();
+  await cardsPerPlayerInput.fill('4');
+  await expect(cardsPerPlayerInput).toHaveValue('4');
 
   expect(
     await Promise.all([

@@ -122,12 +122,14 @@ export async function setCardsPerPlayerToOne(
   const decrease = configuration.getByRole('button', {
     name: 'Kurangi kartu per pemain',
   });
-  const value = configuration.getByRole('status');
+  const value = configuration.getByRole('spinbutton', {
+    name: 'Kartu per pemain',
+  });
 
-  await expect(value).toHaveText('5');
+  await expect(value).toHaveValue('5');
   for (let cards = 4; cards >= 1; cards -= 1) {
     await decrease.click();
-    await expect(value).toHaveText(String(cards));
+    await expect(value).toHaveValue(String(cards));
   }
   await expect(
     configurationRegion(otherPage).getByRole('definition').nth(1)
