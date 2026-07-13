@@ -373,6 +373,11 @@ test('perubahan pengaturan lobi tidak menonaktifkan aksi lain', async ({
       configuration
         .getByRole('button', { name: 'Tambah kartu per pemain' })
         .isEnabled(),
+      configuration
+        .getByRole('checkbox', {
+          name: /Berlakukan batas waktu pemain terputus/,
+        })
+        .isEnabled(),
       page.getByRole('button', { name: 'Ganti kode' }).isEnabled(),
       page.getByRole('button', { name: 'Saya siap' }).isEnabled(),
       page
@@ -383,8 +388,47 @@ test('perubahan pengaturan lobi tidak menonaktifkan aksi lain', async ({
       renameButton.isEnabled(),
       page.getByRole('button', { name: 'Tinggalkan sesi' }).isEnabled(),
     ])
-  ).toEqual([true, true, true, true, true, true]);
+  ).toEqual([true, true, true, true, true, true, true]);
   expect(await renameButton.innerText()).toBe('Simpan nama');
+});
+
+test('hanya pengendali yang dapat mengubah batas waktu pemain tidak aktif', async ({
+  browser,
+  page: controllerPage,
+}, testInfo) => {
+  const joinerContext = await createMatchingContext(browser, testInfo);
+  const joinerPage = await joinerContext.newPage();
+
+  try {
+    const session = await createOwnDeviceSession(
+      controllerPage,
+      'Pengendali E2E'
+    );
+    await joinOwnDeviceSession(joinerPage, {
+      ...session,
+      creatorName: 'Pengendali E2E',
+      playerName: 'Pemain E2E',
+    });
+
+    const checkboxName = /Berlakukan batas waktu pemain terputus/;
+    const controllerCheckbox = controllerPage.getByRole('checkbox', {
+      name: checkboxName,
+    });
+    const joinerCheckbox = joinerPage.getByRole('checkbox', {
+      name: checkboxName,
+    });
+
+    await expect(controllerCheckbox).toBeChecked();
+    await expect(controllerCheckbox).toBeEnabled();
+    await expect(joinerCheckbox).toBeChecked();
+    await expect(joinerCheckbox).toBeDisabled();
+
+    await controllerCheckbox.click();
+    await expect(controllerCheckbox).not.toBeChecked();
+    await expect(joinerCheckbox).not.toBeChecked();
+  } finally {
+    await joinerContext.close();
+  }
 });
 
 test('memilih kartu tidak menonaktifkan pilihan lain saat sinkronisasi', async ({

@@ -64,6 +64,11 @@ export const sessionCommandSchema = z.discriminatedUnion('type', [
   }),
   z.object({
     ...commandBase,
+    type: z.literal('set-inactivity-timeout'),
+    enabled: z.boolean(),
+  }),
+  z.object({
+    ...commandBase,
     type: z.literal('rename-player'),
     displayName: z.string().trim().min(1).max(96),
   }),
@@ -192,6 +197,7 @@ const lobbyProjectionSchema = z.object({
   mode: z.literal('own-device'),
   phase: z.literal('lobby'),
   configuration: sessionConfigurationSchema,
+  inactivityTimeoutEnabled: z.boolean(),
   joinCode: z.string(),
   controllerId: z.string().min(1),
   participants: z.array(participantProjectionSchema),
@@ -233,6 +239,8 @@ const turnProjectionSchema = z.object({
   clueGiverName: z.string().nullable(),
   turnId: z.number().int().positive(),
   turnActive: z.boolean(),
+  inactivityTimeoutEnabled: z.boolean(),
+  clueGiverConnected: z.boolean(),
   turnEndsAt: z.number().finite().nonnegative().nullable(),
   clueGiverWaitEndsAt: z.number().finite().nonnegative().nullable(),
   initialCardCount: z.number().int().nonnegative(),

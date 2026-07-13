@@ -301,6 +301,7 @@ function OwnTurnView({
       team1: projection.scores.team1.total,
       team2: projection.scores.team2.total,
     },
+    inactivityTimeoutEnabled: projection.inactivityTimeoutEnabled,
     connectionState,
     actionsDisabled: disabled,
     containerRef,
@@ -353,13 +354,16 @@ function OwnTurnView({
     );
   }
 
-  const watchingStatus = projection.clueGiverWaitEndsAt
-    ? 'waiting-for-clue-giver'
-    : projection.clueGiverId === null
-      ? 'team-offline'
-      : projection.turnActive
-        ? 'active'
-        : 'waiting-for-start';
+  const watchingStatus =
+    !projection.turnActive &&
+    projection.clueGiverId !== null &&
+    !projection.clueGiverConnected
+      ? 'waiting-for-clue-giver'
+      : projection.clueGiverId === null
+        ? 'team-offline'
+        : projection.turnActive
+          ? 'active'
+          : 'waiting-for-start';
 
   return (
     <OwnTurnScreen
@@ -609,6 +613,7 @@ export function SessionApp({ sessionId }: { sessionId: string }) {
         joinCode={projection.joinCode}
         teams={teams}
         cardsPerPlayer={projection.configuration.cardsPerPlayer}
+        inactivityTimeoutEnabled={projection.inactivityTimeoutEnabled}
         canStart={projection.roomReady}
         isController={isController}
         controlsDisabled={lobbyControlsDisabled}
@@ -616,6 +621,9 @@ export function SessionApp({ sessionId }: { sessionId: string }) {
           playerIds: connection.pendingLobbyPlayerIds,
           ready: connection.hasPendingCommand('set-ready'),
           rotateCode: connection.hasPendingCommand('rotate-code'),
+          inactivityTimeout: connection.hasPendingCommand(
+            'set-inactivity-timeout'
+          ),
         }}
         connectionState={connection.status}
         onRetry={connection.retry}
@@ -654,6 +662,15 @@ export function SessionApp({ sessionId }: { sessionId: string }) {
                 connection.sendCommand({
                   type: 'update-setup',
                   cardsPerPlayer,
+                })
+            : undefined
+        }
+        onInactivityTimeoutChange={
+          isController
+            ? (enabled) =>
+                connection.sendCommand({
+                  type: 'set-inactivity-timeout',
+                  enabled,
                 })
             : undefined
         }

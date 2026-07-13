@@ -102,6 +102,7 @@ export function projectSession(
       mode: 'own-device',
       phase: 'lobby',
       configuration: state.configuration,
+      inactivityTimeoutEnabled: state.inactivityTimeoutEnabled,
       joinCode: state.joinCode,
       controllerId: state.controllerId,
       participants: orderedParticipants(state).map((participant) =>
@@ -204,6 +205,10 @@ export function projectSession(
       state.mode === 'single-device' ||
       (participantId !== null &&
         state.participants[participantId]?.connected === true);
+    const clueGiverConnected =
+      state.mode === 'single-device' ||
+      (turn.clueGiverId !== null &&
+        state.participants[turn.clueGiverId]?.connected === true);
 
     return {
       ...base,
@@ -214,6 +219,8 @@ export function projectSession(
       clueGiverName,
       turnId: turn.id,
       turnActive: turn.active,
+      inactivityTimeoutEnabled: state.inactivityTimeoutEnabled,
+      clueGiverConnected,
       turnEndsAt: turn.endsAt,
       clueGiverWaitEndsAt: turn.clueGiverWaitEndsAt,
       initialCardCount: state.game.chosenDeck.length,

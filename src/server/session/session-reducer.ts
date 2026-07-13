@@ -202,7 +202,7 @@ function findScheduledClueGiver(
       state.participants[id]?.departureStatus === 'active' &&
       state.participants[id]?.connected
   );
-  if (!connectedPlayerExists) {
+  if (!connectedPlayerExists && state.inactivityTimeoutEnabled) {
     return {
       clueGiverId: null,
       waitEndsAt: null,
@@ -216,6 +216,10 @@ function findScheduledClueGiver(
     if (!participant || participant.departureStatus === 'departed') continue;
 
     if (participant.connected) {
+      return { clueGiverId: participant.id, waitEndsAt: null, cursor };
+    }
+
+    if (!state.inactivityTimeoutEnabled) {
       return { clueGiverId: participant.id, waitEndsAt: null, cursor };
     }
 
@@ -586,6 +590,36 @@ function setReady(
         ...state.participants,
         [actorId]: { ...participant, ready },
       },
+    },
+  };
+}
+
+function setInactivityTimeout(
+  state: SessionState,
+  actorId: string,
+  enabled: boolean
+): CommandMutation {
+  if (state.mode !== 'own-device' || state.phase !== 'lobby') {
+    return error(
+      state,
+      'INVALID_PHASE',
+      'Batas waktu pemain tidak aktif hanya dapat diubah di lobi.'
+    );
+  }
+  if (!isController(state, actorId)) {
+    return error(
+      state,
+      'NOT_AUTHORIZED',
+      'Hanya pengendali sesi yang dapat mengubah batas waktu pemain tidak aktif.'
+    );
+  }
+  if (state.inactivityTimeoutEnabled === enabled) return { state };
+
+  return {
+    state: {
+      ...state,
+      inactivityTimeoutEnabled: enabled,
+      participants: resetAllReadiness(state.participants),
     },
   };
 }
@@ -1463,6 +1497,8 @@ function dispatchCommand(
       return updateSetup(state, actorId, command);
     case 'set-ready':
       return setReady(state, actorId, command.ready);
+    case 'set-inactivity-timeout':
+      return setInactivityTimeout(state, actorId, command.enabled);
     case 'rename-player':
       return renamePlayer(state, actorId, command.displayName);
     case 'move-player':
@@ -1542,16 +1578,18 @@ function reconcileWithoutRevision(
   if (nextState.mode === 'own-device') {
     let participants = nextState.participants;
     let participantsChanged = false;
-    for (const participant of activeParticipants(nextState)) {
-      if (
-        participant.ready &&
-        !participant.connected &&
-        participant.disconnectedAt !== null &&
-        now >= participant.disconnectedAt + CONTROLLER_GRACE_MS
-      ) {
-        if (!participantsChanged) participants = { ...participants };
-        participants[participant.id] = { ...participant, ready: false };
-        participantsChanged = true;
+    if (nextState.inactivityTimeoutEnabled) {
+      for (const participant of activeParticipants(nextState)) {
+        if (
+          participant.ready &&
+          !participant.connected &&
+          participant.disconnectedAt !== null &&
+          now >= participant.disconnectedAt + CONTROLLER_GRACE_MS
+        ) {
+          if (!participantsChanged) participants = { ...participants };
+          participants[participant.id] = { ...participant, ready: false };
+          participantsChanged = true;
+        }
       }
     }
     if (participantsChanged) nextState = { ...nextState, participants };
@@ -1559,7 +1597,8 @@ function reconcileWithoutRevision(
     const controller = getActiveParticipant(nextState, nextState.controllerId);
     if (
       !controller ||
-      (!controller.connected &&
+      (nextState.inactivityTimeoutEnabled &&
+        !controller.connected &&
         controller.disconnectedAt !== null &&
         now >= controller.disconnectedAt + CONTROLLER_GRACE_MS)
     ) {
@@ -1597,7 +1636,11 @@ function reconcileWithoutRevision(
             },
           };
         }
-      } else {
+      } else if (
+        nextState.inactivityTimeoutEnabled ||
+        !participant ||
+        participant.departureStatus === 'departed'
+      ) {
         const shouldReschedule =
           !participant ||
           participant.departureStatus === 'departed' ||
@@ -1693,7 +1736,7 @@ export function getNextSessionDeadline(
     deadlines.push(turn.clueGiverWaitEndsAt);
   }
 
-  if (state.mode === 'own-device') {
+  if (state.mode === 'own-device' && state.inactivityTimeoutEnabled) {
     const controller = getActiveParticipant(state, state.controllerId);
     if (
       controller &&

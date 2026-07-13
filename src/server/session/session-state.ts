@@ -78,6 +78,7 @@ interface SessionStateBase {
   createdAt: number;
   controllerId: string;
   configuration: SessionConfiguration;
+  inactivityTimeoutEnabled: boolean;
   game: SessionGameState;
 }
 
@@ -160,6 +161,7 @@ export function createPendingSession({
     createdAt: now,
     controllerId,
     configuration: { players: 4, cardsPerPlayer: 5 },
+    inactivityTimeoutEnabled: true,
     game: createInitialGameState(),
   };
 

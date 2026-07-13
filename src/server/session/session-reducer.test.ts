@@ -122,16 +122,19 @@ function createTurnState({
   clueGiverId = 'creator',
   cards = [catalog[0]],
   clueGiverCursors = { team1: 0, team2: 0 },
+  inactivityTimeoutEnabled = true,
 }: {
   playerIds?: string[];
   team?: TeamId;
   clueGiverId?: string;
   cards?: Card[];
   clueGiverCursors?: Record<TeamId, number>;
+  inactivityTimeoutEnabled?: boolean;
 } = {}): OwnDeviceSessionState {
   const state = createLobby(playerIds);
   return {
     ...state,
+    inactivityTimeoutEnabled,
     phase: 'turn',
     frozenTeamOrder: {
       team1: [...state.teamOrder.team1],
@@ -253,6 +256,64 @@ describe('session reducer lifecycle', () => {
     expect(state.controllerId).toBe('guest');
     expect(state.participants.creator.connected).toBe(true);
     expect(state.participants.creator.ready).toBe(false);
+  });
+
+  it('lets only the controller configure the inactivity timeout', () => {
+    let state = createLobby();
+    state = own(
+      apply(state, 'creator', 20, { type: 'set-ready', ready: true })
+    );
+    state = own(apply(state, 'guest', 21, { type: 'set-ready', ready: true }));
+
+    const unauthorized = reduceSessionCommand(
+      state,
+      {
+        actorId: 'guest',
+        receivedAt: 22,
+        command: {
+          id: 'guest-timeout-setting',
+          type: 'set-inactivity-timeout',
+          enabled: false,
+        },
+      },
+      dependencies
+    );
+    expect(unauthorized.acknowledgement).toMatchObject({
+      ok: false,
+      error: { code: 'NOT_AUTHORIZED' },
+    });
+    expect(own(unauthorized.state).inactivityTimeoutEnabled).toBe(true);
+
+    state = own(
+      apply(state, 'creator', 23, {
+        type: 'set-inactivity-timeout',
+        enabled: false,
+      })
+    );
+    expect(state.inactivityTimeoutEnabled).toBe(false);
+    expect(
+      Object.values(state.participants).every(
+        (participant) => !participant.ready
+      )
+    ).toBe(true);
+  });
+
+  it('keeps a disconnected controller in control when inactivity timeout is disabled', () => {
+    let state = createLobby();
+    state = own(
+      apply(state, 'creator', 20, {
+        type: 'set-inactivity-timeout',
+        enabled: false,
+      })
+    );
+    state = own(disconnectParticipant(state, 'creator', 100).state);
+
+    expect(getNextSessionDeadline(state, 100)).toBeNull();
+    state = own(reconcileSessionDeadlines(state, 100_000).state);
+    expect(state.controllerId).toBe('creator');
+
+    state = own(connectParticipant(state, 'creator', 100_001).state);
+    expect(state.controllerId).toBe('creator');
   });
 
   it('deals disjoint private offers and completes simultaneous selection', () => {
@@ -646,6 +707,45 @@ describe('session reducer lifecycle', () => {
     state = own(connectParticipant(state, 'guest', 100_001).state);
     expect(state.game.turn).toMatchObject({
       currentTeam: 'team2',
+      clueGiverId: 'guest',
+      clueGiverWaitEndsAt: null,
+      active: false,
+    });
+  });
+
+  it('waits indefinitely for the scheduled clue giver when inactivity timeout is disabled', () => {
+    let state = createTurnState({
+      playerIds: ['creator', 'guest', 'third', 'fourth'],
+      inactivityTimeoutEnabled: false,
+    });
+    state = own(disconnectParticipant(state, 'guest', 50).state);
+
+    state = own(
+      apply(state, 'creator', 60, {
+        type: 'start-turn',
+        turnId: state.game.turn!.id,
+      })
+    );
+    expect(state.game.turn?.endsAt).toBe(60_060);
+    state = own(
+      apply(state, 'creator', 61, {
+        type: 'end-turn',
+        turnId: state.game.turn!.id,
+      })
+    );
+
+    expect(state.game.turn).toMatchObject({
+      currentTeam: 'team2',
+      clueGiverId: 'guest',
+      clueGiverWaitEndsAt: null,
+      active: false,
+    });
+    const waitingTurn = state.game.turn;
+    state = own(reconcileSessionDeadlines(state, 100_000).state);
+    expect(state.game.turn).toEqual(waitingTurn);
+
+    state = own(connectParticipant(state, 'guest', 100_001).state);
+    expect(state.game.turn).toMatchObject({
       clueGiverId: 'guest',
       clueGiverWaitEndsAt: null,
       active: false,

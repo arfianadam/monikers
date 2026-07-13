@@ -79,6 +79,11 @@ export interface SetReadyCommand extends CommandBase {
   ready: boolean;
 }
 
+export interface SetInactivityTimeoutCommand extends CommandBase {
+  type: 'set-inactivity-timeout';
+  enabled: boolean;
+}
+
 export interface RenamePlayerCommand extends CommandBase {
   type: 'rename-player';
   displayName: string;
@@ -171,6 +176,7 @@ export interface EndSessionCommand extends CommandBase {
 export type SessionCommand =
   | UpdateSetupCommand
   | SetReadyCommand
+  | SetInactivityTimeoutCommand
   | RenamePlayerCommand
   | MovePlayerCommand
   | ReorderPlayerCommand
@@ -261,6 +267,7 @@ export interface LobbyProjection extends ProjectionBase {
   mode: 'own-device';
   phase: 'lobby';
   configuration: SessionConfiguration;
+  inactivityTimeoutEnabled: boolean;
   joinCode: string;
   controllerId: string;
   participants: ParticipantProjection[];
@@ -299,6 +306,8 @@ export interface TurnProjection extends ProjectionBase {
   clueGiverName: string | null;
   turnId: number;
   turnActive: boolean;
+  inactivityTimeoutEnabled: boolean;
+  clueGiverConnected: boolean;
   turnEndsAt: number | null;
   clueGiverWaitEndsAt: number | null;
   initialCardCount: number;

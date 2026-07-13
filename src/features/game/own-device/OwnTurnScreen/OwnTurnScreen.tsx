@@ -39,6 +39,7 @@ interface OwnTurnBaseProps {
   clueGiverName: string | null;
   remainingCardCount: number;
   scores: OwnTurnScoresView;
+  inactivityTimeoutEnabled: boolean;
   connectionState?: ConnectionStatusState;
   onRetry?: () => void;
   headerActions?: ReactNode;
@@ -168,8 +169,9 @@ function getWatchingCopy(props: OwnTurnWatchingProps) {
       return {
         eyebrow: 'Koneksi pemain terputus',
         title: `Menunggu ${clueGiver} kembali.`,
-        body:
-          props.reconnectSecondsRemaining === undefined
+        body: !props.inactivityTimeoutEnabled
+          ? 'Giliran akan menunggu sampai perangkatnya kembali tersambung.'
+          : props.reconnectSecondsRemaining === undefined
             ? 'Giliran akan berpindah jika pemberi petunjuk tidak segera tersambung kembali.'
             : `Giliran akan berpindah dalam ${props.reconnectSecondsRemaining} detik jika perangkatnya belum tersambung.`,
       };

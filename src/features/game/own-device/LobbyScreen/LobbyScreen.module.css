@@ -153,6 +153,47 @@
   margin: 0;
 }
 
+.inactivityTimeoutOption {
+  align-items: center;
+  background: rgba(248, 242, 227, 0.07);
+  border: 1px solid rgba(248, 242, 227, 0.13);
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  flex: 1 1 320px;
+  gap: 11px;
+  min-height: 54px;
+  padding: 8px 14px;
+}
+
+.inactivityTimeoutOption:has(input:disabled) {
+  cursor: default;
+}
+
+.inactivityTimeoutOption input {
+  accent-color: var(--lime);
+  flex: 0 0 auto;
+  height: 20px;
+  margin: 0;
+  width: 20px;
+}
+
+.inactivityTimeoutOption > span {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.inactivityTimeoutOption strong {
+  font-size: 0.72rem;
+}
+
+.inactivityTimeoutOption small {
+  color: var(--muted);
+  font-size: 0.62rem;
+  line-height: 1.35;
+}
+
 .renameForm {
   align-items: end;
   border-top: 1px solid rgba(248, 242, 227, 0.12);
@@ -530,6 +571,11 @@
   .configStats > div,
   .readyActions > * {
     flex: 1;
+  }
+
+  .inactivityTimeoutOption {
+    flex-basis: auto;
+    width: 100%;
   }
 
   .teams {

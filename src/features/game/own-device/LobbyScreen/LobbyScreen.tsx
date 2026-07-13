@@ -49,12 +49,14 @@ export interface LobbyPendingActionsView {
   playerIds?: readonly string[];
   ready?: boolean;
   rotateCode?: boolean;
+  inactivityTimeout?: boolean;
 }
 
 export interface LobbyScreenProps {
   joinCode: string;
   teams: LobbyTeamsView;
   cardsPerPlayer: number;
+  inactivityTimeoutEnabled: boolean;
   canStart: boolean;
   isController: boolean;
   onSetReady: (ready: boolean) => void;
@@ -62,6 +64,7 @@ export interface LobbyScreenProps {
   onStart: () => void;
   onLeave: () => void;
   onCardsPerPlayerChange?: (cardsPerPlayer: number) => void;
+  onInactivityTimeoutChange?: (enabled: boolean) => void;
   onRotateCode?: () => void;
   onMovePlayer?: (playerId: string, destination: TeamId) => void;
   onReorderPlayer?: (
@@ -106,6 +109,7 @@ export function LobbyScreen({
   joinCode,
   teams,
   cardsPerPlayer,
+  inactivityTimeoutEnabled,
   canStart,
   isController,
   onSetReady,
@@ -113,6 +117,7 @@ export function LobbyScreen({
   onStart,
   onLeave,
   onCardsPerPlayerChange,
+  onInactivityTimeoutChange,
   onRotateCode,
   onMovePlayer,
   onReorderPlayer,
@@ -218,6 +223,30 @@ export function LobbyScreen({
                 </dd>
               </div>
             </dl>
+
+            <label className={styles.inactivityTimeoutOption}>
+              <input
+                type="checkbox"
+                checked={inactivityTimeoutEnabled}
+                onChange={(event) =>
+                  onInactivityTimeoutChange?.(event.target.checked)
+                }
+                disabled={
+                  !isController ||
+                  !onInactivityTimeoutChange ||
+                  mutationsDisabled ||
+                  pendingActions.inactivityTimeout
+                }
+              />
+              <span>
+                <strong>Berlakukan batas waktu pemain terputus</strong>
+                <small>
+                  {isController
+                    ? 'Setelah 30 detik terputus, kendali sesi atau giliran dialihkan ke pemain aktif.'
+                    : 'Pengaturan ini dikendalikan oleh pengendali sesi.'}
+                </small>
+              </span>
+            </label>
 
             {rename && (
               <form
