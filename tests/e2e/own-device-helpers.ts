@@ -166,17 +166,23 @@ export async function readyPlayersAndStartSelection(
 
 export async function privateOfferWords(page: Page) {
   return page
+    .getByRole('main')
     .getByRole('button', { pressed: false })
     .locator('strong')
     .allTextContents();
 }
 
 export async function chooseOnePrivateCard(page: Page) {
-  const card = page.getByRole('button', { pressed: false }).first();
+  const card = page
+    .getByRole('main')
+    .getByRole('button', { pressed: false })
+    .first();
   const word = (await card.locator('strong').innerText()).trim();
 
   await card.click();
-  await expect(page.getByRole('button', { pressed: true })).toHaveCount(1);
+  await expect(
+    page.getByRole('main').getByRole('button', { pressed: true })
+  ).toHaveCount(1);
   return word;
 }
 

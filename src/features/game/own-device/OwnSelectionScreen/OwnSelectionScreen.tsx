@@ -1,6 +1,6 @@
 'use client';
 
-import type { Ref } from 'react';
+import type { ReactNode, Ref } from 'react';
 
 import { SelectionCard } from '@/features/game/card-selection/SelectionCard/SelectionCard';
 import type { Card } from '@/features/game/domain/game-types';
@@ -41,6 +41,7 @@ interface OwnSelectionBaseProps {
   statuses: readonly OwnSelectionPlayerStatusView[];
   connectionState?: ConnectionStatusState;
   onRetry?: () => void;
+  headerActions?: ReactNode;
   actionsDisabled?: boolean;
   cancellation?: OwnSelectionCancellationView;
   containerRef?: Ref<HTMLDivElement>;
@@ -151,6 +152,7 @@ export function OwnSelectionScreen(props: OwnSelectionScreenProps) {
     statuses,
     connectionState = 'connected',
     onRetry,
+    headerActions,
     actionsDisabled = false,
     cancellation,
     containerRef,
@@ -171,7 +173,10 @@ export function OwnSelectionScreen(props: OwnSelectionScreenProps) {
         >
           <TopBar
             trailing={
-              <ConnectionStatus state={connectionState} onRetry={onRetry} />
+              <>
+                {headerActions}
+                <ConnectionStatus state={connectionState} onRetry={onRetry} />
+              </>
             }
           >
             <Brand compact />
@@ -234,7 +239,10 @@ export function OwnSelectionScreen(props: OwnSelectionScreenProps) {
             </div>
           }
           trailing={
-            <ConnectionStatus state={connectionState} onRetry={onRetry} />
+            <>
+              {headerActions}
+              <ConnectionStatus state={connectionState} onRetry={onRetry} />
+            </>
           }
         >
           <Brand compact />

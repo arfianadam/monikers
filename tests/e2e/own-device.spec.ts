@@ -220,6 +220,82 @@ test('status koneksi layar aktivasi tetap di kanan tanpa bertumpuk', async ({
     .toBe(false);
 });
 
+test('menu tindakan sesi tetap ringkas dan terjangkau di layar sempit', async ({
+  browser,
+  page: controllerPage,
+}, testInfo) => {
+  const joinerContext = await createMatchingContext(browser, testInfo);
+  const joinerPage = await joinerContext.newPage();
+
+  try {
+    const session = await createOwnDeviceSession(
+      controllerPage,
+      'Pengendali E2E'
+    );
+    await joinOwnDeviceSession(joinerPage, {
+      ...session,
+      creatorName: 'Pengendali E2E',
+      playerName: 'Pemain E2E',
+    });
+    await readyPlayersAndStartSelection(controllerPage, joinerPage);
+
+    await controllerPage.setViewportSize({ width: 360, height: 640 });
+    const trigger = controllerPage.getByRole('button', {
+      name: 'Buka tindakan sesi',
+    });
+    const status = controllerPage.getByRole('status', {
+      name: 'Status koneksi',
+    });
+
+    await expect(trigger).toBeVisible();
+    await expect(trigger).toHaveAttribute('aria-expanded', 'false');
+    await expect.poll(() => locatorsOverlap(trigger, status)).toBe(false);
+    await trigger.click();
+
+    const panel = controllerPage.getByRole('region', {
+      name: 'Pilihan tindakan sesi',
+    });
+    const returnToLobby = panel.getByRole('button', {
+      name: /Kembali ke ruang tunggu/,
+    });
+    const leave = panel.getByRole('button', { name: /Tinggalkan sesi/ });
+    const end = panel.getByRole('button', { name: /Akhiri sesi/ });
+
+    await expect(panel).toBeInViewport({ ratio: 1 });
+    await expect(returnToLobby).toBeVisible();
+    await expect(leave).toBeVisible();
+    await expect(end).toBeVisible();
+    await expect.poll(() => locatorsOverlap(returnToLobby, leave)).toBe(false);
+    await expect.poll(() => locatorsOverlap(leave, end)).toBe(false);
+    await capture(controllerPage, '09-own-session-actions-menu.png');
+
+    await controllerPage.keyboard.press('Escape');
+    await expect(panel).toHaveCount(0);
+    await expect(trigger).toBeFocused();
+
+    await controllerPage.setViewportSize({ width: 360, height: 240 });
+    await trigger.click();
+    const shortPanelBox = await requireBoundingBox(panel, 'Menu tindakan sesi');
+    expect(shortPanelBox.x).toBeGreaterThanOrEqual(0);
+    expect(shortPanelBox.y).toBeGreaterThanOrEqual(0);
+    expect(shortPanelBox.x + shortPanelBox.width).toBeLessThanOrEqual(360);
+    expect(shortPanelBox.y + shortPanelBox.height).toBeLessThanOrEqual(240);
+    await end.scrollIntoViewIfNeeded();
+    await expect(end).toBeInViewport({ ratio: 1 });
+
+    await controllerPage.keyboard.press('Escape');
+    await controllerPage.setViewportSize({ width: 360, height: 640 });
+    await trigger.click();
+    await returnToLobby.click();
+    const dialog = controllerPage.getByRole('alertdialog');
+    await expect(dialog).toContainText('Kembali ke ruang tunggu?');
+    await dialog.getByRole('button', { name: 'Batal' }).click();
+    await expect(trigger).toBeFocused();
+  } finally {
+    await joinerContext.close();
+  }
+});
+
 test('pengendali kembali ke beranda tanpa melihat layar sesi berakhir', async ({
   page,
 }) => {
@@ -335,20 +411,23 @@ test('memilih kartu tidak menonaktifkan pilihan lain saat sinkronisasi', async (
     await setCommandAcknowledgementDelay(controllerPage, true);
 
     await controllerPage
+      .getByRole('main')
       .getByRole('button', { pressed: false })
       .first()
       .click();
     await expect(
-      controllerPage.getByRole('button', { pressed: true })
+      controllerPage.getByRole('main').getByRole('button', { pressed: true })
     ).toHaveCount(1);
 
     expect(
       await Promise.all([
         controllerPage
+          .getByRole('main')
           .getByRole('button', { pressed: true })
           .first()
           .isEnabled(),
         controllerPage
+          .getByRole('main')
           .getByRole('button', { pressed: false })
           .first()
           .isEnabled(),

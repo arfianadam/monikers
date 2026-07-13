@@ -22,6 +22,7 @@ export interface ScoreViewProps {
   canContinue?: boolean;
   disabled?: boolean;
   waitingMessage?: string;
+  headerActions?: ReactNode;
   connectionStatus?: ReactNode;
   containerRef?: Ref<HTMLDivElement>;
   onContinue: () => void;
@@ -33,6 +34,7 @@ export function ScoreView({
   canContinue = true,
   disabled = false,
   waitingMessage = 'Menunggu pengendali sesi melanjutkan permainan…',
+  headerActions,
   connectionStatus,
   containerRef,
   onContinue,
@@ -54,7 +56,14 @@ export function ScoreView({
       <ScreenFrame ref={containerRef} tabIndex={-1}>
         <TopBar
           meta={<RoundPips round={latestRound} final={isGameOver} />}
-          trailing={connectionStatus}
+          trailing={
+            headerActions !== undefined || connectionStatus !== undefined ? (
+              <>
+                {headerActions}
+                {connectionStatus}
+              </>
+            ) : undefined
+          }
         >
           <Brand compact />
         </TopBar>

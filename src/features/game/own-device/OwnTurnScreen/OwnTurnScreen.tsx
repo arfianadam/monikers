@@ -1,6 +1,6 @@
 'use client';
 
-import type { CSSProperties, Ref } from 'react';
+import type { CSSProperties, ReactNode, Ref } from 'react';
 
 import type {
   Card,
@@ -41,6 +41,7 @@ interface OwnTurnBaseProps {
   scores: OwnTurnScoresView;
   connectionState?: ConnectionStatusState;
   onRetry?: () => void;
+  headerActions?: ReactNode;
   actionsDisabled?: boolean;
   containerRef?: Ref<HTMLDivElement>;
 }
@@ -87,15 +88,22 @@ function TurnTopBar({
   round,
   connectionState,
   onRetry,
+  headerActions,
 }: {
   round: RoundNumber;
   connectionState: ConnectionStatusState;
   onRetry?: () => void;
+  headerActions?: ReactNode;
 }) {
   return (
     <TopBar
       meta={<RoundPips round={round} />}
-      trailing={<ConnectionStatus state={connectionState} onRetry={onRetry} />}
+      trailing={
+        <>
+          {headerActions}
+          <ConnectionStatus state={connectionState} onRetry={onRetry} />
+        </>
+      }
     >
       <Brand compact />
     </TopBar>
@@ -183,6 +191,7 @@ export function OwnTurnScreen(props: OwnTurnScreenProps) {
     scores,
     connectionState = 'connected',
     onRetry,
+    headerActions,
     actionsDisabled = false,
     containerRef,
   } = props;
@@ -203,6 +212,7 @@ export function OwnTurnScreen(props: OwnTurnScreenProps) {
             round={round}
             connectionState={connectionState}
             onRetry={onRetry}
+            headerActions={headerActions}
           />
 
           <main className={styles.handoffMain}>
@@ -275,6 +285,7 @@ export function OwnTurnScreen(props: OwnTurnScreenProps) {
             round={round}
             connectionState={connectionState}
             onRetry={onRetry}
+            headerActions={headerActions}
           />
 
           <main className={styles.watchingMain}>
@@ -343,6 +354,7 @@ export function OwnTurnScreen(props: OwnTurnScreenProps) {
           round={round}
           connectionState={connectionState}
           onRetry={onRetry}
+          headerActions={headerActions}
         />
 
         <div className={styles.activeHud}>

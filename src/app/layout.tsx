@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 const materialSymbolsHref =
   'https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL@20..48,600,0..1' +
-  '&icon_names=add,arrow_downward,arrow_forward,arrow_upward,block,check,close,content_copy,expand_more,more_horiz,pause,person_remove,refresh,remove,shield_lock,skip_next,stop_circle,style,sync,timer_off,undo,visibility_off,wifi_off' +
+  '&icon_names=add,arrow_downward,arrow_forward,arrow_upward,block,check,close,content_copy,expand_more,logout,more_horiz,pause,person_remove,refresh,remove,shield_lock,skip_next,stop_circle,style,sync,timer_off,undo,visibility_off,wifi_off' +
   '&display=block';
 
 export const metadata: Metadata = {

@@ -14,6 +14,7 @@ export type MaterialSymbolName =
   | 'close'
   | 'content_copy'
   | 'expand_more'
+  | 'logout'
   | 'more_horiz'
   | 'pause'
   | 'person_remove'

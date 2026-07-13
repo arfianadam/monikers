@@ -36,6 +36,7 @@ import { ScreenFrame } from '@/shared/ui/ScreenFrame/ScreenFrame';
 import { TopBar } from '@/shared/ui/TopBar/TopBar';
 
 import { ConfirmDialog } from '../ConfirmDialog/ConfirmDialog';
+import { SessionActionsMenu } from '../SessionActionsMenu/SessionActionsMenu';
 import { useServerCountdown } from '../useServerCountdown/useServerCountdown';
 import {
   useSessionSocket,
@@ -273,6 +274,7 @@ function OwnTurnView({
   sendCommand,
   containerRef,
   onRetry,
+  headerActions,
 }: {
   projection: TurnProjection;
   disabled: boolean;
@@ -280,6 +282,7 @@ function OwnTurnView({
   sendCommand: (command: SessionCommandInput) => string | null;
   containerRef: React.RefObject<HTMLDivElement | null>;
   onRetry: () => void;
+  headerActions?: React.ReactNode;
 }) {
   const seconds = useServerCountdown(
     projection.turnEndsAt,
@@ -302,6 +305,7 @@ function OwnTurnView({
     actionsDisabled: disabled,
     containerRef,
     onRetry,
+    headerActions,
   } as const;
   const controls = projection.controls;
 
@@ -518,6 +522,26 @@ export function SessionApp({ sessionId }: { sessionId: string }) {
   const connectionStatus = (
     <ConnectionStatus state={connection.status} onRetry={connection.retry} />
   );
+  const showOwnSessionActions =
+    projection.mode === 'own-device' &&
+    projection.phase !== 'pending' &&
+    projection.phase !== 'lobby' &&
+    projection.phase !== 'ended';
+  const canReturnToLobby =
+    projection.isController &&
+    (projection.phase === 'selection' ||
+      projection.phase === 'turn' ||
+      projection.phase === 'round-score');
+  const headerActions = showOwnSessionActions ? (
+    <SessionActionsMenu
+      disabled={controlsDisabled}
+      canReturnToLobby={canReturnToLobby}
+      canEndSession={projection.isController}
+      onLeave={() => setConfirmation({ type: 'leave' })}
+      onReturnToLobby={() => setConfirmation({ type: 'return-lobby' })}
+      onEndSession={() => setConfirmation({ type: 'end' })}
+    />
+  ) : undefined;
   let content: React.ReactNode;
 
   if (projection.phase === 'pending') {
@@ -727,6 +751,7 @@ export function SessionApp({ sessionId }: { sessionId: string }) {
           onCancel={() => setConfirmation({ type: 'cancel-selection' })}
           containerRef={viewContainerRef}
           onRetry={connection.retry}
+          headerActions={headerActions}
         />
       );
   } else if (projection.phase === 'turn') {
@@ -747,6 +772,7 @@ export function SessionApp({ sessionId }: { sessionId: string }) {
           sendCommand={connection.sendCommand}
           containerRef={viewContainerRef}
           onRetry={connection.retry}
+          headerActions={headerActions}
         />
       );
   } else if (
@@ -759,6 +785,7 @@ export function SessionApp({ sessionId }: { sessionId: string }) {
         isGameOver={projection.phase === 'final-score'}
         canContinue={projection.canContinue}
         disabled={controlsDisabled}
+        headerActions={headerActions}
         connectionStatus={connectionStatus}
         containerRef={viewContainerRef}
         onContinue={() =>
@@ -774,50 +801,11 @@ export function SessionApp({ sessionId }: { sessionId: string }) {
     );
   }
 
-  const showOwnSessionMenu =
-    projection.mode === 'own-device' &&
-    projection.phase !== 'pending' &&
-    projection.phase !== 'lobby' &&
-    projection.phase !== 'ended';
-  const canReturnToLobby =
-    projection.isController &&
-    (projection.phase === 'selection' ||
-      projection.phase === 'turn' ||
-      projection.phase === 'round-score');
   const copy = confirmation ? confirmationCopy[confirmation.type] : null;
 
   return (
     <>
       {content}
-      {showOwnSessionMenu && (
-        <div className={styles.sessionMenu} aria-label="Tindakan sesi">
-          <button
-            type="button"
-            onClick={() => setConfirmation({ type: 'leave' })}
-            disabled={controlsDisabled}
-          >
-            Tinggalkan sesi
-          </button>
-          {canReturnToLobby && (
-            <button
-              type="button"
-              onClick={() => setConfirmation({ type: 'return-lobby' })}
-              disabled={controlsDisabled}
-            >
-              Kembali ke ruang tunggu
-            </button>
-          )}
-          {projection.isController && (
-            <button
-              type="button"
-              onClick={() => setConfirmation({ type: 'end' })}
-              disabled={controlsDisabled}
-            >
-              Akhiri sesi
-            </button>
-          )}
-        </div>
-      )}
       {connection.lastError && connection.status !== 'disconnected' && (
         <button
           type="button"
@@ -862,6 +850,7 @@ function OwnSelectionView({
   onCancel,
   containerRef,
   onRetry,
+  headerActions,
 }: {
   projection: SelectionProjection;
   disabled: boolean;
@@ -871,6 +860,7 @@ function OwnSelectionView({
   onCancel: () => void;
   containerRef: React.RefObject<HTMLDivElement | null>;
   onRetry: () => void;
+  headerActions?: React.ReactNode;
 }) {
   const playerName =
     projection.statuses.find(
@@ -902,6 +892,7 @@ function OwnSelectionView({
         : undefined,
     containerRef,
     onRetry,
+    headerActions,
   } as const;
 
   if (projection.confirmed || !projection.canEdit) {
