@@ -213,9 +213,7 @@ async function reachActiveTurn(
 
   await page.getByRole('button', { name: 'Buka kartuku' }).click();
   await chooseCard(page);
-  await page
-    .getByRole('button', { name: 'Serahkan ke pemain berikutnya' })
-    .click();
+  await page.getByRole('button', { name: 'Lanjut' }).click();
   await page.getByRole('button', { name: 'Buka kartuku' }).click();
   await chooseCard(page);
   await page.getByRole('button', { name: 'Selesai' }).click();

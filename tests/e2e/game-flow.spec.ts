@@ -299,7 +299,7 @@ test('pemilihan kartu menjaga tampilan stabil dan menonaktifkan pilihan setelah 
   const secondCard = cardFor(offeredWords[1]);
   const thirdCard = cardFor(offeredWords[2]);
   const nextButton = page.getByRole('button', {
-    name: 'Serahkan ke pemain berikutnya',
+    name: 'Lanjut',
   });
 
   if ((page.viewportSize()?.width ?? Number.POSITIVE_INFINITY) <= 700) {
@@ -464,7 +464,7 @@ async function completeSingleDeviceSelection(
     await chooseCards(page, cardsPerPlayer);
     await page
       .getByRole('button', {
-        name: player === 1 ? 'Serahkan ke pemain berikutnya' : 'Selesai',
+        name: player === 1 ? 'Lanjut' : 'Selesai',
       })
       .click();
   }
@@ -541,9 +541,7 @@ test('dua pemain menyelesaikan tiga babak dan sesi pulih setelah refresh', async
   await captureStage(page, '03-card-picker');
 
   await chooseCards(page, 1);
-  await page
-    .getByRole('button', { name: 'Serahkan ke pemain berikutnya' })
-    .click();
+  await page.getByRole('button', { name: 'Lanjut' }).click();
   await expect(
     page.getByText('Pemain 2, pilihanmu rahasia.', { exact: false })
   ).toBeVisible();

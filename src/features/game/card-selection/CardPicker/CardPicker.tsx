@@ -125,9 +125,7 @@ export function CardPicker({
             onClick={onNextPlayer}
             disabled={disabled || selectedCards.length !== cardsPerPlayer}
           >
-            {currentPlayer < players
-              ? 'Serahkan ke pemain berikutnya'
-              : 'Selesai'}
+            {currentPlayer < players ? 'Lanjut' : 'Selesai'}
             <MaterialSymbol name="arrow_forward" />
           </GameButton>
         </div>
