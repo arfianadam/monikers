@@ -11,7 +11,7 @@ export function useLeaveGuard() {
     };
 
     const handlePopState = () => {
-      const shouldLeave = window.confirm('Yakin ingin meninggalkan permainan?');
+      const shouldLeave = window.confirm('Yakin mau keluar dari game?');
       if (shouldLeave) {
         window.removeEventListener('popstate', handlePopState);
         window.history.back();

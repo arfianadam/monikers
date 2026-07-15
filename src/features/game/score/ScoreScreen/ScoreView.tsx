@@ -33,7 +33,7 @@ export function ScoreView({
   isGameOver,
   canContinue = true,
   disabled = false,
-  waitingMessage = 'Menunggu pengendali sesi melanjutkan permainan…',
+  waitingMessage = 'Nunggu host lanjutkan game…',
   headerActions,
   connectionStatus,
   containerRef,
@@ -48,9 +48,9 @@ export function ScoreView({
 
   const title = isGameOver
     ? isTie
-      ? 'Hasil seri yang legendaris.'
-      : `Tim ${leader} merebut mahkota.`
-    : `Babak ${latestRound} telah usai.`;
+      ? 'Seri. Sama-sama jago!'
+      : `Tim ${leader} juaranya!`
+    : `Ronde ${latestRound} kelar!`;
   return (
     <GameShell variant="score" final={isGameOver}>
       <ScreenFrame ref={containerRef} tabIndex={-1}>
@@ -73,13 +73,13 @@ export function ScoreView({
             className={cn(styles.heading, isGameOver && styles.finalHeading)}
           >
             <Eyebrow className={styles.headingEyebrow} onDark>
-              {isGameOver ? 'Skor akhir' : 'Cek skor'}
+              {isGameOver ? 'Final score' : 'Score check'}
             </Eyebrow>
             <h1>{title}</h1>
             <p>
               {isGameOver
-                ? 'Petunjuknya berani, tebakannya meragukan, dan perolehan poinnya sudah sah.'
-                : 'Tarik napas, lihat hasilnya, lalu bersiap untuk babak yang lebih menantang.'}
+                ? 'Clue berani, tebakan meragukan, skor sudah final.'
+                : 'Tarik napas, cek skor, lalu siap-siap buat ronde berikutnya.'}
             </p>
           </div>
 
@@ -96,8 +96,8 @@ export function ScoreView({
             <p>
               {canContinue
                 ? isGameOver
-                  ? 'Pemain yang sama, deck baru?'
-                  : `Berikutnya: Babak ${latestRound + 1}`
+                  ? 'Player sama, deck baru?'
+                  : `Next: Ronde ${latestRound + 1}`
                 : waitingMessage}
             </p>
             {canContinue && (
@@ -106,7 +106,7 @@ export function ScoreView({
                 onClick={onContinue}
                 disabled={disabled}
               >
-                {isGameOver ? 'Main lagi' : 'Mulai babak berikutnya'}
+                {isGameOver ? 'Rematch' : 'Lanjut ronde berikutnya'}
                 <MaterialSymbol name="arrow_forward" />
               </GameButton>
             )}

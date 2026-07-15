@@ -66,33 +66,29 @@ export function SessionActionsMenu({
   };
 
   return (
-    <div
-      ref={containerRef}
-      className={styles.container}
-      aria-label="Tindakan sesi"
-    >
+    <div ref={containerRef} className={styles.container} aria-label="Menu sesi">
       <button
         ref={triggerRef}
         type="button"
         className={styles.trigger}
         aria-expanded={open}
         aria-controls={menuId}
-        aria-label={open ? 'Tutup tindakan sesi' : 'Buka tindakan sesi'}
-        title="Tindakan sesi"
+        aria-label={open ? 'Tutup menu sesi' : 'Buka menu sesi'}
+        title="Menu sesi"
         disabled={disabled}
         onClick={() => setOpen((current) => !current)}
       >
         <MaterialSymbol name="more_horiz" />
-        <span className={styles.triggerLabel}>Opsi sesi</span>
+        <span className={styles.triggerLabel}>Menu</span>
       </button>
 
       {open && (
         <section
           id={menuId}
           className={styles.panel}
-          aria-label="Pilihan tindakan sesi"
+          aria-label="Pilihan menu sesi"
         >
-          <p>Tindakan sesi</p>
+          <p>Menu sesi</p>
           {canReturnToLobby && (
             <button
               type="button"
@@ -101,8 +97,8 @@ export function SessionActionsMenu({
             >
               <MaterialSymbol name="undo" />
               <span>
-                <strong>Kembali ke ruang tunggu</strong>
-                <small>Pertahankan kode dan pemain</small>
+                <strong>Balik ke lobby</strong>
+                <small>Kode dan player tetap aman</small>
               </span>
             </button>
           )}
@@ -113,8 +109,8 @@ export function SessionActionsMenu({
           >
             <MaterialSymbol name="logout" />
             <span>
-              <strong>Tinggalkan sesi</strong>
-              <small>Keluar hanya dari perangkat ini</small>
+              <strong>Keluar dari sesi</strong>
+              <small>Cuma device ini yang keluar</small>
             </span>
           </button>
           {canEndSession && (
@@ -125,8 +121,8 @@ export function SessionActionsMenu({
             >
               <MaterialSymbol name="stop_circle" filled />
               <span>
-                <strong>Akhiri sesi</strong>
-                <small>Hapus permainan untuk semua</small>
+                <strong>Tutup sesi</strong>
+                <small>Hentikan game buat semua</small>
               </span>
             </button>
           )}

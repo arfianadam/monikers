@@ -132,8 +132,8 @@ function PublicHud({
         </dd>
       </div>
       <div>
-        <dt>Pemberi petunjuk</dt>
-        <dd>{clueGiverName ?? 'Menunggu pemain'}</dd>
+        <dt>Pemberi clue</dt>
+        <dd>{clueGiverName ?? 'Nunggu player'}</dd>
       </div>
       <div>
         <dt>Kartu tersisa</dt>
@@ -150,36 +150,36 @@ function PublicHud({
 }
 
 function getWatchingCopy(props: OwnTurnWatchingProps) {
-  const clueGiver = props.clueGiverName ?? 'Pemberi petunjuk';
+  const clueGiver = props.clueGiverName ?? 'pemberi clue';
 
   switch (props.status) {
     case 'waiting-for-start':
       return {
-        eyebrow: 'Pemberi petunjuk bersiap',
-        title: `Menunggu ${clueGiver}.`,
-        body: 'Giliran akan dimulai dari perangkat pemberi petunjuk. Kartu tetap rahasia di perangkat ini sepanjang giliran.',
+        eyebrow: 'Pemberi clue lagi siap-siap',
+        title: `Nunggu ${clueGiver}.`,
+        body: 'Giliran dimulai dari device pemberi clue. Kartunya tetap rahasia selama giliran.',
       };
     case 'active':
       return {
-        eyebrow: `Tim ${teamNumbers[props.currentTeam]} sedang bermain`,
-        title: `${clueGiver} memberi petunjuk.`,
-        body: 'Tebak bersama timmu. Hanya pemberi petunjuk yang dapat melihat dan mengendalikan kartu.',
+        eyebrow: `Tim ${teamNumbers[props.currentTeam]} lagi main`,
+        title: `${clueGiver} lagi kasih clue.`,
+        body: 'Tebak bareng timmu. Cuma pemberi clue yang bisa lihat dan kontrol kartu.',
       };
     case 'waiting-for-clue-giver':
       return {
-        eyebrow: 'Koneksi pemain terputus',
-        title: `Menunggu ${clueGiver} kembali.`,
+        eyebrow: 'Player offline',
+        title: `Nunggu ${clueGiver} balik.`,
         body: !props.inactivityTimeoutEnabled
-          ? 'Giliran akan menunggu sampai perangkatnya kembali tersambung.'
+          ? 'Giliran ditahan sampai device-nya online lagi.'
           : props.reconnectSecondsRemaining === undefined
-            ? 'Giliran akan berpindah jika pemberi petunjuk tidak segera tersambung kembali.'
-            : `Giliran akan berpindah dalam ${props.reconnectSecondsRemaining} detik jika perangkatnya belum tersambung.`,
+            ? 'Giliran bakal pindah kalau pemberi clue nggak segera online lagi.'
+            : `Giliran pindah dalam ${props.reconnectSecondsRemaining} detik kalau device-nya masih offline.`,
       };
     case 'team-offline':
       return {
-        eyebrow: 'Giliran dijeda',
-        title: `Tim ${teamNumbers[props.currentTeam]} belum tersambung.`,
-        body: 'Permainan akan dilanjutkan ketika setidaknya satu pemain dari tim ini kembali tersambung.',
+        eyebrow: 'Giliran di-pause',
+        title: `Tim ${teamNumbers[props.currentTeam]} lagi offline.`,
+        body: 'Game lanjut saat minimal satu player dari tim ini online lagi.',
       };
   }
 }
@@ -220,10 +220,10 @@ export function OwnTurnScreen(props: OwnTurnScreenProps) {
           <main className={styles.handoffMain}>
             <section className={styles.handoffIntro}>
               <Eyebrow onDark>
-                Babak {round} · {roundDetails.name}
+                Ronde {round} · {roundDetails.name}
               </Eyebrow>
               <h1>
-                {clueGiverName ?? 'Giliranmu'},<span>beri petunjuk.</span>
+                {clueGiverName ?? 'Giliranmu'},<span>kasih clue.</span>
               </h1>
               <p>{roundDetails.instruction}</p>
               <div className={styles.ruleNote}>
@@ -236,11 +236,11 @@ export function OwnTurnScreen(props: OwnTurnScreenProps) {
             </section>
 
             <Panel as="section" className={styles.handoffTicket}>
-              <span className={styles.privateLabel}>Khusus perangkatmu</span>
-              <h2>Kamu pemberi petunjuk.</h2>
+              <span className={styles.privateLabel}>Cuma di device-mu</span>
+              <h2>Kamu pemberi clue.</h2>
               <p>
-                Pastikan teman satu tim siap. Kartu pertama baru dikirim setelah
-                giliran dimulai.
+                Pastikan timmu ready. Kartu pertama muncul setelah giliran
+                mulai.
               </p>
               <dl>
                 <div>
@@ -261,7 +261,7 @@ export function OwnTurnScreen(props: OwnTurnScreenProps) {
                 onClick={props.onStart}
                 disabled={!props.canStart || mutationsDisabled}
               >
-                Mulai giliran {ROUND_DURATION_SECONDS} detik
+                Gas {ROUND_DURATION_SECONDS} detik
                 <MaterialSymbol name="arrow_forward" />
               </GameButton>
             </Panel>
@@ -328,7 +328,7 @@ export function OwnTurnScreen(props: OwnTurnScreenProps) {
 
             <p className={styles.privacyNote}>
               <MaterialSymbol name="visibility_off" />
-              Kartu tidak ditampilkan di perangkat penonton.
+              Kartu disembunyikan di device penonton.
             </p>
           </main>
         </ScreenFrame>
@@ -364,7 +364,7 @@ export function OwnTurnScreen(props: OwnTurnScreenProps) {
             <span className={styles.teamDot} aria-hidden="true" />
             <span>
               Tim {teamNumber}
-              <small>{clueGiverName ?? 'Pemberi petunjuk'}</small>
+              <small>{clueGiverName ?? 'Pemberi clue'}</small>
             </span>
           </div>
 
@@ -396,16 +396,16 @@ export function OwnTurnScreen(props: OwnTurnScreenProps) {
           >
             <div className={styles.cardTopline}>
               <span>Level {props.card.level}</span>
-              <span>Babak 0{round}</span>
+              <span>Ronde 0{round}</span>
             </div>
             <div className={styles.cardCopy}>
-              <p>Buat timmu menebak</p>
+              <p>Bikin timmu nebak</p>
               <h1>{props.card.word}</h1>
               <span>{props.card.description}</span>
             </div>
             <div className={styles.cardFooter}>
               <span>Monikers</span>
-              <span>Kartu saat ini</span>
+              <span>Kartu sekarang</span>
             </div>
           </Panel>
         </main>
@@ -419,7 +419,7 @@ export function OwnTurnScreen(props: OwnTurnScreenProps) {
               disabled={!props.canSkip || mutationsDisabled}
             >
               <MaterialSymbol name="skip_next" />
-              {props.canSkip ? 'Lewati' : 'Lewati terkunci'}
+              {props.canSkip ? 'Skip' : 'Skip terkunci'}
             </GameButton>
             <GameButton
               type="button"
@@ -437,7 +437,7 @@ export function OwnTurnScreen(props: OwnTurnScreenProps) {
             onClick={props.onEnd}
             disabled={!props.canEnd || mutationsDisabled}
           >
-            Akhiri giliran lebih awal
+            Stop giliran
           </button>
         </div>
       </ScreenFrame>

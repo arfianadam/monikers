@@ -15,9 +15,9 @@ export interface ConnectionStatusProps extends Omit<
 }
 
 const connectionLabels: Record<ConnectionStatusState, string> = {
-  connected: 'Tersambung',
-  connecting: 'Menyambungkan…',
-  disconnected: 'Koneksi terputus',
+  connected: 'Online',
+  connecting: 'Connecting…',
+  disconnected: 'Offline',
 };
 
 export function ConnectionStatus({

@@ -95,8 +95,8 @@ const otherTeam: Record<TeamId, TeamId> = {
 
 const copyMessages: Record<LobbyCodeCopyState, string> = {
   idle: '',
-  copied: 'Kode disalin.',
-  failed: 'Kode belum dapat disalin.',
+  copied: 'Kode sudah di-copy!',
+  failed: 'Oops, kode belum bisa di-copy.',
 };
 
 function findCurrentPlayer(teams: LobbyTeamsView) {
@@ -139,7 +139,7 @@ export function LobbyScreen({
   const visibleStartBlockers =
     startBlockers.length > 0
       ? startBlockers
-      : ['Kedua tim, koneksi, dan kesiapan harus lengkap.'];
+      : ['Pastikan kedua tim lengkap, online, dan siap.'];
 
   return (
     <GameShell variant="setup">
@@ -156,27 +156,25 @@ export function LobbyScreen({
         <main className={styles.main}>
           <section className={styles.heading}>
             <div>
-              <Eyebrow onDark>
-                Ruang tunggu · {playerCount} dari 20 pemain
-              </Eyebrow>
+              <Eyebrow onDark>Lobby · {playerCount} dari 20 player</Eyebrow>
               <h1>Lobby</h1>
               <p>
-                Bagikan kode, atur urutan pemain, lalu tandai siap saat semua
-                orang sudah memegang perangkatnya.
+                Share kode, atur urutan player, lalu klik siap kalau semua sudah
+                pegang device masing-masing.
               </p>
             </div>
 
             <Panel
               as="section"
               className={styles.codeCard}
-              aria-label="Kode sesi"
+              aria-label="Room code"
             >
-              <span>Kode sesi</span>
-              <output aria-label={`Kode sesi ${joinCode}`}>{joinCode}</output>
+              <span>Room code</span>
+              <output aria-label={`Room code ${joinCode}`}>{joinCode}</output>
               <div className={styles.codeActions}>
                 <button type="button" onClick={onCopyCode}>
                   <MaterialSymbol name="content_copy" />
-                  Salin kode
+                  Copy kode
                 </button>
                 {isController && onRotateCode && (
                   <button
@@ -200,21 +198,21 @@ export function LobbyScreen({
             aria-labelledby="game-settings"
           >
             <div>
-              <h2 id="game-settings">Pengaturan permainan</h2>
-              <p>Jumlah pemain mengikuti orang yang sudah bergabung.</p>
+              <h2 id="game-settings">Game setup</h2>
+              <p>Jumlah player mengikuti yang sudah join.</p>
             </div>
             <dl className={styles.configStats}>
               <div>
-                <dt>Pemain</dt>
+                <dt>Player</dt>
                 <dd>{playerCount}</dd>
               </div>
               <div>
-                <dt>Kartu per pemain</dt>
+                <dt>Kartu per player</dt>
                 <dd>
                   {isController && onCardsPerPlayerChange ? (
                     <NumberStepper
                       id="lobby-cards-per-player"
-                      label="Kartu per pemain"
+                      label="Kartu per player"
                       value={cardsPerPlayer}
                       min={1}
                       max={10}
@@ -243,11 +241,11 @@ export function LobbyScreen({
                 }
               />
               <span>
-                <strong>Berlakukan batas waktu pemain terputus</strong>
+                <strong>Pakai timeout kalau player offline</strong>
                 <small>
                   {isController
-                    ? 'Setelah 30 detik terputus, kendali sesi atau giliran dialihkan ke pemain aktif.'
-                    : 'Pengaturan ini dikendalikan oleh pengendali sesi.'}
+                    ? 'Kalau offline 30 detik, kontrol sesi atau giliran pindah ke player yang aktif.'
+                    : 'Cuma host yang bisa mengubah setting ini.'}
                 </small>
               </span>
             </label>
@@ -280,7 +278,7 @@ export function LobbyScreen({
                     !rename.value.trim()
                   }
                 >
-                  {rename.isSubmitting ? 'Menyimpan…' : 'Simpan nama'}
+                  {rename.isSubmitting ? 'Lagi simpan…' : 'Simpan nama'}
                 </button>
                 {rename.errorMessage && (
                   <span id="lobby-name-error" role="alert">
@@ -291,7 +289,7 @@ export function LobbyScreen({
             )}
           </section>
 
-          <section className={styles.teams} aria-label="Susunan tim">
+          <section className={styles.teams} aria-label="Lineup tim">
             {(['team1', 'team2'] as const).map((teamId) => {
               const teamPlayers = teams[teamId];
               const teamNumber = teamNumbers[teamId];
@@ -311,7 +309,7 @@ export function LobbyScreen({
                       </span>
                       <div>
                         <h2 id={`${teamId}-heading`}>Tim {teamNumber}</h2>
-                        <p>{teamPlayers.length} pemain · urutan giliran</p>
+                        <p>{teamPlayers.length} player · urutan main</p>
                       </div>
                     </div>
                     <span className={styles.readyTotal}>
@@ -322,7 +320,7 @@ export function LobbyScreen({
 
                   {teamPlayers.length === 0 ? (
                     <p className={styles.emptyTeam}>
-                      Tim ini belum memiliki pemain.
+                      Belum ada player di tim ini.
                     </p>
                   ) : (
                     <ol className={styles.playerList}>
@@ -359,9 +357,9 @@ export function LobbyScreen({
                                   aria-hidden="true"
                                 />
                                 {player.presence === 'connected'
-                                  ? 'Tersambung'
-                                  : 'Terputus'}
-                                {player.isController && ' · Pengendali'}
+                                  ? 'Online'
+                                  : 'Offline'}
+                                {player.isController && ' · Host'}
                               </span>
                             </span>
                             <span
@@ -370,7 +368,7 @@ export function LobbyScreen({
                                 player.ready && styles.ready
                               )}
                             >
-                              {player.ready ? 'Siap' : 'Belum siap'}
+                              {player.ready ? 'Ready' : 'Belum ready'}
                             </span>
 
                             {isController && (
@@ -386,7 +384,7 @@ export function LobbyScreen({
                                     playerIndex === 0
                                   }
                                   aria-label={`Naikkan ${player.displayName} dalam urutan Tim ${teamNumber}`}
-                                  title="Naikkan urutan"
+                                  title="Geser ke atas"
                                 >
                                   <MaterialSymbol name="arrow_upward" />
                                 </button>
@@ -401,7 +399,7 @@ export function LobbyScreen({
                                     playerIndex === teamPlayers.length - 1
                                   }
                                   aria-label={`Turunkan ${player.displayName} dalam urutan Tim ${teamNumber}`}
-                                  title="Turunkan urutan"
+                                  title="Geser ke bawah"
                                 >
                                   <MaterialSymbol name="arrow_downward" />
                                 </button>
@@ -424,7 +422,7 @@ export function LobbyScreen({
                                     onClick={() => onRemovePlayer?.(player.id)}
                                     disabled={!canManage || !onRemovePlayer}
                                     aria-label={`Keluarkan ${player.displayName} dari sesi`}
-                                    title="Keluarkan pemain"
+                                    title="Keluarkan player"
                                   >
                                     <MaterialSymbol name="person_remove" />
                                   </button>
@@ -455,14 +453,12 @@ export function LobbyScreen({
                   />
                 </span>
                 <div className={styles.readyCopy}>
-                  <Eyebrow>Status ruangan</Eyebrow>
-                  <h2>
-                    {canStart ? 'Semua siap bermain.' : 'Menunggu semua siap.'}
-                  </h2>
+                  <Eyebrow>Room status</Eyebrow>
+                  <h2>{canStart ? 'Semua ready!' : 'Nunggu semua ready.'}</h2>
                   <p>
                     {canStart
-                      ? 'Permainan dapat dimulai kapan saja.'
-                      : `${visibleStartBlockers.length} hal perlu diselesaikan sebelum mulai.`}
+                      ? 'Game bisa langsung dimulai.'
+                      : `Masih ada ${visibleStartBlockers.length} hal sebelum mulai.`}
                   </p>
                 </div>
               </div>
@@ -475,7 +471,7 @@ export function LobbyScreen({
                     onClick={() => onSetReady(!currentPlayer.ready)}
                     disabled={mutationsDisabled || pendingActions.ready}
                   >
-                    {currentPlayer.ready ? 'Batalkan siap' : 'Saya siap'}
+                    {currentPlayer.ready ? 'Belum ready' : 'Aku ready'}
                     <MaterialSymbol
                       name={currentPlayer.ready ? 'undo' : 'check'}
                       filled={!currentPlayer.ready}
@@ -493,7 +489,7 @@ export function LobbyScreen({
                     <MaterialSymbol name="arrow_forward" />
                   </GameButton>
                 ) : (
-                  <p>Pengendali akan memulai setelah semua pemain siap.</p>
+                  <p>Host akan mulai setelah semua player ready.</p>
                 )}
               </div>
             </div>
@@ -501,7 +497,7 @@ export function LobbyScreen({
             {!canStart && (
               <ul
                 className={styles.readyBlockers}
-                aria-label="Yang masih diperlukan"
+                aria-label="Yang masih kurang"
               >
                 {visibleStartBlockers.map((blocker, blockerIndex) => (
                   <li key={blocker}>
@@ -519,7 +515,7 @@ export function LobbyScreen({
               onClick={onLeave}
               disabled={mutationsDisabled}
             >
-              Tinggalkan sesi
+              Keluar dari sesi
             </button>
             {isController && onEndSession && (
               <button
@@ -528,7 +524,7 @@ export function LobbyScreen({
                 onClick={onEndSession}
                 disabled={mutationsDisabled}
               >
-                Akhiri sesi untuk semua
+                Tutup sesi buat semua
               </button>
             )}
           </footer>

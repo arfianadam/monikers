@@ -51,10 +51,10 @@ export function TurnHandoff({
         <main className={styles.layout}>
           <section className={styles.intro}>
             <Eyebrow onDark>
-              Babak {round} · {roundDetails.name}
+              Ronde {round} · {roundDetails.name}
             </Eyebrow>
             <h1>
-              Tim {currentTeamNumber},<span>giliranmu.</span>
+              Tim {currentTeamNumber},<span>you’re up!</span>
             </h1>
             <p className={styles.lede}>{roundDetails.instruction}</p>
 
@@ -88,15 +88,14 @@ export function TurnHandoff({
             </div>
             <div className={styles.ticketDivider} />
             <p>
-              Serahkan perangkat kepada pemberi petunjuk, lalu mulai penghitung
-              waktunya.
+              Oper device ke pemberi clue. Kalau tim sudah siap, langsung gas.
             </p>
             <GameButton
               className={styles.startButton}
               onClick={onStart}
               disabled={disabled}
             >
-              Mulai giliran {ROUND_DURATION_SECONDS} detik
+              Gas {ROUND_DURATION_SECONDS} detik
               <MaterialSymbol name="arrow_forward" />
             </GameButton>
           </Panel>

@@ -36,7 +36,7 @@ export function ScoreDuel({
               <span>Tim {team}</span>
               {isLeader && (
                 <span className={styles.leaderSticker}>
-                  {isGameOver ? 'Pemenang' : 'Unggul'}
+                  {isGameOver ? 'Winner' : 'Unggul'}
                 </span>
               )}
               {isTie && <span className={styles.leaderSticker}>Seri</span>}
@@ -47,7 +47,7 @@ export function ScoreDuel({
         );
       })}
       <span className={styles.versus} aria-hidden="true">
-        lawan
+        vs
       </span>
     </section>
   );

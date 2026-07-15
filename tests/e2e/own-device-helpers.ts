@@ -47,29 +47,29 @@ export async function playedSounds(page: Page) {
 export async function createOwnDeviceSession(page: Page, creatorName: string) {
   await page.goto('/');
   await page
-    .getByRole('button', { name: 'Buat sesi perangkat masing-masing' })
+    .getByRole('button', { name: 'Buat room untuk device masing-masing' })
     .click();
   await expect(page).toHaveURL(SESSION_URL);
   const sessionPath = new URL(page.url()).pathname;
 
   const activationHeading = page.getByRole('heading', {
     level: 1,
-    name: /Mulai sebagai pemain pertama/,
+    name: /Kamu jadi player pertama/,
   });
   await expect(activationHeading).toBeVisible();
   await expect(activationHeading).not.toBeFocused();
 
-  const nameInput = page.getByLabel('Nama pemain');
+  const nameInput = page.getByLabel('Nama kamu');
   await nameInput.fill(creatorName);
   await expect(nameInput).toHaveValue(creatorName);
-  const activate = page.getByRole('button', { name: 'Buat kode sesi' });
+  const activate = page.getByRole('button', { name: 'Bikin room code' });
   await expect(activate).toBeEnabled();
   await activate.click();
 
   await expect(
     page.getByRole('heading', { level: 1, name: 'Lobby' })
   ).toBeVisible();
-  const codeRegion = page.getByRole('region', { name: 'Kode sesi' });
+  const codeRegion = page.getByRole('region', { name: 'Room code' });
   const codeOutput = codeRegion.locator('output');
   await expect(codeOutput).toHaveText(/^[A-Z0-9]{6}$/);
 
@@ -92,7 +92,7 @@ export async function joinOwnDeviceSession(
 ) {
   await page.goto(`/join/${options.code}`);
   await expect(
-    page.getByRole('heading', { level: 1, name: 'Masuk ke ruangan.' })
+    page.getByRole('heading', { level: 1, name: 'Masuk ke room.' })
   ).toBeVisible();
   await expect(
     page.getByText(options.creatorName, { exact: true })
@@ -103,7 +103,7 @@ export async function joinOwnDeviceSession(
   await options.onPreview?.();
 
   await page.getByLabel('Namamu').fill(options.playerName);
-  await page.getByRole('button', { name: 'Gabung ke sesi' }).click();
+  await page.getByRole('button', { name: 'Join game' }).click();
   await expect(page).toHaveURL(new RegExp(`${options.sessionPath}$`));
   await expect(
     page.getByRole('heading', { level: 1, name: 'Lobby' })
@@ -111,7 +111,7 @@ export async function joinOwnDeviceSession(
 }
 
 function configurationRegion(page: Page) {
-  return page.getByRole('region', { name: 'Pengaturan permainan' });
+  return page.getByRole('region', { name: 'Game setup' });
 }
 
 export async function setCardsPerPlayerToOne(
@@ -120,10 +120,10 @@ export async function setCardsPerPlayerToOne(
 ) {
   const configuration = configurationRegion(controllerPage);
   const decrease = configuration.getByRole('button', {
-    name: 'Kurangi kartu per pemain',
+    name: 'Kurangi kartu per player',
   });
   const value = configuration.getByRole('spinbutton', {
-    name: 'Kartu per pemain',
+    name: 'Kartu per player',
   });
 
   await expect(value).toHaveValue('5');
@@ -140,14 +140,14 @@ export async function readyPlayersAndStartSelection(
   controllerPage: Page,
   otherPage: Page
 ) {
-  await controllerPage.getByRole('button', { name: 'Saya siap' }).click();
+  await controllerPage.getByRole('button', { name: 'Aku ready' }).click();
   await expect(
-    controllerPage.getByRole('button', { name: 'Batalkan siap' })
+    controllerPage.getByRole('button', { name: 'Belum ready' })
   ).toBeVisible();
 
-  await otherPage.getByRole('button', { name: 'Saya siap' }).click();
+  await otherPage.getByRole('button', { name: 'Aku ready' }).click();
   await expect(
-    otherPage.getByRole('button', { name: 'Batalkan siap' })
+    otherPage.getByRole('button', { name: 'Belum ready' })
   ).toBeVisible();
 
   const start = controllerPage.getByRole('button', {
@@ -191,23 +191,26 @@ export async function lockBothSelections(
   secondPage: Page,
   onFirstLocked?: () => Promise<void>
 ) {
-  await firstPage.getByRole('button', { name: 'Kunci pilihan' }).click();
+  await firstPage.getByRole('button', { name: 'Lock pilihan' }).click();
   await expect(
-    firstPage.getByRole('heading', { level: 1, name: 'Tunggu yang lain.' })
+    firstPage.getByRole('heading', {
+      level: 1,
+      name: 'Tinggal tunggu yang lain.',
+    })
   ).toBeVisible();
   await expect(
     secondPage.getByRole('heading', {
       level: 2,
-      name: 'Siapa yang sudah selesai?',
+      name: 'Siapa yang sudah beres?',
     })
   ).toBeVisible();
   await onFirstLocked?.();
 
-  await secondPage.getByRole('button', { name: 'Kunci pilihan' }).click();
+  await secondPage.getByRole('button', { name: 'Lock pilihan' }).click();
 }
 
 export async function expectSecretAbsent(page: Page, secretWord: string) {
   await expect(page.getByText(secretWord, { exact: true })).toHaveCount(0);
   await expect(page.getByRole('button', { name: 'Benar!' })).toHaveCount(0);
-  await expect(page.getByRole('button', { name: /Lewati/ })).toHaveCount(0);
+  await expect(page.getByRole('button', { name: /Skip/ })).toHaveCount(0);
 }

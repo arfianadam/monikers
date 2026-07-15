@@ -159,7 +159,7 @@ async function expectStaticConnectionLayout(
   }
 
   if (options.disconnected) {
-    await expect(status).toContainText('Koneksi terputus');
+    await expect(status).toContainText('Offline');
     await expect(
       status.getByRole('button', { name: 'Coba lagi' })
     ).toBeInViewport({ ratio: 1 });
@@ -173,22 +173,22 @@ async function reachActiveTurn(
   expectedHeadingTreatment: HeadingTreatment,
   onSetup?: () => Promise<void>
 ) {
-  await page.getByRole('button', { name: 'Main di satu perangkat' }).click();
+  await page.getByRole('button', { name: 'Main di satu device' }).click();
   await expect(page).toHaveURL(/\/session\/[A-Za-z0-9_-]+$/);
   await expect(
     page.getByRole('heading', {
       level: 1,
-      name: 'Atur, lalu main bergantian.',
+      name: 'Setup dulu, lalu oper-operan.',
     })
   ).toBeVisible();
   await expect(
     page.getByText(
-      'Tentukan jumlah pemain dan kartu. Setelah mulai, oper perangkat kepada tiap pemain supaya mereka dapat memilih kartu secara rahasia.'
+      'Tentukan jumlah player dan kartu. Setelah mulai, oper device ke tiap player biar mereka bisa pilih kartu diam-diam.'
     )
   ).toBeAttached();
 
   const setupPanel = page.getByRole('region', {
-    name: 'Pengaturan permainan',
+    name: 'Setup permainan',
   });
 
   expectHorizontallyAligned(
@@ -198,28 +198,28 @@ async function reachActiveTurn(
   expect(await horizontalPadding(setupPanel)).toEqual(expectedPanelPadding);
   expect(
     await headingTreatment(
-      setupPanel.getByRole('heading', { name: 'Susun deck-mu' })
+      setupPanel.getByRole('heading', { name: 'Atur deck-mu' })
     )
   ).toEqual(expectedHeadingTreatment);
   await expect(page.getByText('№ 001', { exact: true })).toHaveCount(0);
   await onSetup?.();
 
-  await page.getByRole('spinbutton', { name: 'Pemain', exact: true }).fill('2');
+  await page.getByRole('spinbutton', { name: 'Player', exact: true }).fill('2');
   await expect(
-    page.getByRole('spinbutton', { name: 'Kartu per pemain', exact: true })
+    page.getByRole('spinbutton', { name: 'Kartu per player', exact: true })
   ).toBeEnabled();
   await page
-    .getByRole('spinbutton', { name: 'Kartu per pemain', exact: true })
+    .getByRole('spinbutton', { name: 'Kartu per player', exact: true })
     .fill('1');
-  await page.getByRole('button', { name: 'Mulai bermain' }).click();
+  await page.getByRole('button', { name: 'Mulai game' }).click();
 
   await page.getByRole('button', { name: 'Buka kartuku' }).click();
   await chooseCard(page);
-  await page.getByRole('button', { name: 'Lanjut' }).click();
+  await page.getByRole('button', { name: 'Next player' }).click();
   await page.getByRole('button', { name: 'Buka kartuku' }).click();
   await chooseCard(page);
-  await page.getByRole('button', { name: 'Selesai' }).click();
-  await page.getByRole('button', { name: 'Mulai giliran 60 detik' }).click();
+  await page.getByRole('button', { name: 'Beres' }).click();
+  await page.getByRole('button', { name: 'Gas 60 detik' }).click();
   await expect(page.getByLabel(/\d+ detik tersisa/)).toBeVisible();
 }
 
@@ -229,7 +229,7 @@ test('layout khusus tetap terbaca dan stabil', async ({ page }, testInfo) => {
   await expectVisualFontsLoaded(page);
 
   const eyebrowDot = page
-    .getByText('Calon permainan favorit di acara kumpulmu', { exact: true })
+    .getByText('Calon party game favorit gengmu', { exact: true })
     .locator('span');
   const eyebrowDotBox = await eyebrowDot.boundingBox();
   expect(eyebrowDotBox).not.toBeNull();
@@ -241,15 +241,15 @@ test('layout khusus tetap terbaca dan stabil', async ({ page }, testInfo) => {
       : 'home.png';
   await expect(page).toHaveScreenshot(homeScreenshotName, { fullPage: true });
 
-  const homePanel = page.getByRole('region', { name: 'Semua siap?' });
+  const homePanel = page.getByRole('region', { name: 'Mau main gimana?' });
   const homePanelBounds = await horizontalBounds(homePanel);
   const homePanelPadding = await horizontalPadding(homePanel);
   const homeHeadingTreatment = await headingTreatment(
-    homePanel.getByRole('heading', { name: 'Semua siap?' })
+    homePanel.getByRole('heading', { name: 'Mau main gimana?' })
   );
 
   await page
-    .getByRole('button', { name: 'Buat sesi perangkat masing-masing' })
+    .getByRole('button', { name: 'Buat room untuk device masing-masing' })
     .click();
   await expect(page).toHaveURL(/\/session\/[A-Za-z0-9_-]+$/);
   expectHorizontallyAligned(
@@ -273,7 +273,7 @@ test('layout khusus tetap terbaca dan stabil', async ({ page }, testInfo) => {
         .click();
       await expect(
         page.getByRole('status', { name: 'Status koneksi' })
-      ).toContainText('Tersambung');
+      ).toContainText('Online');
       await expectStaticConnectionLayout(page);
     }
   );

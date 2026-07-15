@@ -41,19 +41,19 @@ const previewErrorCopy: Record<
   { eyebrow: string; title: string; body: string }
 > = {
   invalid: {
-    eyebrow: 'Kode tidak berlaku',
-    title: 'Sesi tidak ditemukan.',
-    body: 'Kode sesi tidak ditemukan atau sudah kedaluwarsa. Minta kode terbaru kepada pembuat sesi.',
+    eyebrow: 'Kode nggak valid',
+    title: 'Room-nya nggak ketemu.',
+    body: 'Room code ini salah atau sudah expired. Coba minta kode baru ke temanmu.',
   },
   full: {
-    eyebrow: 'Ruangan penuh',
-    title: 'Sesi sudah penuh.',
-    body: 'Dua puluh pemain sudah berada di ruangan ini. Minta pembuat sesi mengeluarkan pemain yang tidak ikut.',
+    eyebrow: 'Room penuh',
+    title: 'Sudah full, nih.',
+    body: 'Sudah ada 20 player di room ini. Minta host mengeluarkan player yang nggak ikut.',
   },
   started: {
-    eyebrow: 'Permainan sudah dimulai',
-    title: 'Kamu terlambat bergabung.',
-    body: 'Sesi ini masih berlaku, tetapi pemilihan kartu atau permainan sudah dimulai. Tunggu permainan berikutnya.',
+    eyebrow: 'Game sudah mulai',
+    title: 'Yah, kamu telat join.',
+    body: 'Pemilihan kartu atau game-nya sudah jalan. Tunggu game berikutnya, ya.',
   },
 };
 
@@ -124,7 +124,7 @@ export function JoinScreen({ initialCode }: { initialCode: string }) {
       const body = (await response.json()) as JoinResponse;
 
       if (!response.ok || !body.route) {
-        throw new Error(body.error || 'Belum dapat bergabung ke sesi.');
+        throw new Error(body.error || 'Oops, belum bisa join sesi.');
       }
 
       router.replace(body.route);
@@ -132,7 +132,7 @@ export function JoinScreen({ initialCode }: { initialCode: string }) {
       setError(
         caughtError instanceof Error
           ? caughtError.message
-          : 'Belum dapat bergabung ke sesi.'
+          : 'Oops, belum bisa join sesi.'
       );
       setSubmitting(false);
     }
@@ -141,7 +141,7 @@ export function JoinScreen({ initialCode }: { initialCode: string }) {
   return (
     <GameShell variant="handoff">
       <ScreenFrame ref={containerRef} className={styles.screen} tabIndex={-1}>
-        <TopBar note="Perangkat masing-masing · Kartu tetap rahasia">
+        <TopBar note="Device masing-masing · Kartu tetap rahasia">
           <Brand compact />
         </TopBar>
 
@@ -149,11 +149,9 @@ export function JoinScreen({ initialCode }: { initialCode: string }) {
           <Panel as="section" className={styles.card} aria-live="polite">
             {status === 'loading' && (
               <>
-                <Eyebrow>Memeriksa kode</Eyebrow>
-                <h1>Sebentar…</h1>
-                <p>
-                  Kami sedang mencari sesi dengan kode {code || 'tersebut'}.
-                </p>
+                <Eyebrow>Cek room code</Eyebrow>
+                <h1>Bentar, ya…</h1>
+                <p>Lagi cari room dengan kode {code || 'itu'}.</p>
               </>
             )}
 
@@ -163,26 +161,26 @@ export function JoinScreen({ initialCode }: { initialCode: string }) {
                 <h1>{previewErrorCopy[status].title}</h1>
                 <p>{previewErrorCopy[status].body}</p>
                 <Link href="/" className={styles.backLink}>
-                  Kembali ke halaman awal
+                  Balik ke home
                 </Link>
               </>
             )}
 
             {status === 'ready' && preview && (
               <>
-                <Eyebrow>Gabung ke sesi</Eyebrow>
-                <h1>Masuk ke ruangan.</h1>
+                <Eyebrow>Join game</Eyebrow>
+                <h1>Masuk ke room.</h1>
                 <dl className={styles.preview}>
                   <div>
                     <dt>Kode</dt>
                     <dd>{preview.code}</dd>
                   </div>
                   <div>
-                    <dt>Dibuat oleh</dt>
+                    <dt>Host</dt>
                     <dd>{preview.controllerName}</dd>
                   </div>
                   <div>
-                    <dt>Pemain</dt>
+                    <dt>Player</dt>
                     <dd>{preview.playerCount} / 20</dd>
                   </div>
                 </dl>
@@ -205,14 +203,13 @@ export function JoinScreen({ initialCode }: { initialCode: string }) {
                     aria-describedby="display-name-hint"
                   />
                   <small id="display-name-hint">
-                    Gunakan 1–24 karakter dan nama yang berbeda dari pemain
-                    lain.
+                    Pakai 1–24 karakter dan nama yang belum dipakai player lain.
                   </small>
                   <GameButton
                     type="submit"
                     disabled={submitting || !name.trim()}
                   >
-                    {submitting ? 'Sedang bergabung…' : 'Gabung ke sesi'}
+                    {submitting ? 'Lagi join…' : 'Join game'}
                     <MaterialSymbol name="arrow_forward" />
                   </GameButton>
                 </form>

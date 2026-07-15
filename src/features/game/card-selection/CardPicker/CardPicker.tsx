@@ -54,7 +54,7 @@ export function CardPicker({
           meta={
             <div className={styles.status}>
               <span className={styles.statusPlayer}>
-                Pemain {currentPlayer} dari {players}
+                Player {currentPlayer} dari {players}
               </span>
               <span className={styles.statusCount}>
                 <strong>{selectedCards.length}</strong> / {cardsPerPlayer}{' '}
@@ -70,12 +70,11 @@ export function CardPicker({
         <main className={styles.main}>
           <div className={styles.heading}>
             <div>
-              <Eyebrow onDark>Susun deck bersama</Eyebrow>
+              <Eyebrow onDark>Bikin deck bareng</Eyebrow>
               <h1>Pilih favoritmu</h1>
             </div>
             <p>
-              Pilih nama yang kamu kenal—atau yang paling lucu untuk dijelaskan
-              nanti.
+              Pilih nama yang kamu kenal—atau yang bakal paling lucu dijelasin.
             </p>
           </div>
 
@@ -111,7 +110,7 @@ export function CardPicker({
             <p>
               <strong>
                 {cardsLeftToPick === 0
-                  ? 'Semua sudah dipilih'
+                  ? 'Sip, sudah lengkap'
                   : `${cardsLeftToPick} kartu lagi`}
               </strong>
               <span>
@@ -125,7 +124,7 @@ export function CardPicker({
             onClick={onNextPlayer}
             disabled={disabled || selectedCards.length !== cardsPerPlayer}
           >
-            {currentPlayer < players ? 'Lanjut' : 'Selesai'}
+            {currentPlayer < players ? 'Next player' : 'Beres'}
             <MaterialSymbol name="arrow_forward" />
           </GameButton>
         </div>

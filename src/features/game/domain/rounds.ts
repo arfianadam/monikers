@@ -11,25 +11,24 @@ export interface RoundDetails {
 
 export const ROUND_DETAILS: Readonly<Record<RoundNumber, RoundDetails>> = {
   1: {
-    name: 'Bicara bebas',
-    shortName: 'Bebas bicara',
-    instruction:
-      'Gunakan kata apa pun—asal jangan menyebut nama yang tertulis di kartu.',
-    example: 'Cerita, petunjuk, tiruan... semuanya boleh.',
+    name: 'Ngomong bebas',
+    shortName: 'Bebas ngomong',
+    instruction: 'Ngomong apa saja—yang penting jangan sebut nama di kartunya.',
+    example: 'Cerita, clue, tiruan... bebas!',
   },
   2: {
     name: 'Satu kata',
-    shortName: 'Satu kata saja',
+    shortName: 'Cuma satu kata',
     instruction:
-      'Berikan tepat satu kata sebagai petunjuk. Timmu boleh terus menebak.',
-    example: 'Pilih satu kata itu dengan sangat hati-hati.',
+      'Kasih satu kata saja sebagai clue. Timmu boleh nebak berkali-kali.',
+    example: 'Satu kata. Pilih yang ngena.',
   },
   3: {
-    name: 'Peragaan',
-    shortName: 'Peragakan',
+    name: 'Pakai gaya',
+    shortName: 'Pakai gaya',
     instruction:
-      'Tanpa kata atau suara. Gunakan pantomim, gerakan, dan akting terbaikmu.',
-    example: 'Totalitaslah. Gengsi tidak wajib.',
+      'Nggak boleh ngomong atau bikin suara. Andalkan gerakan dan aktingmu.',
+    example: 'Totalitas. Gengsi belakangan.',
   },
 };
 

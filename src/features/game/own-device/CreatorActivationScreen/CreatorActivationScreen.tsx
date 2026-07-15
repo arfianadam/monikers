@@ -50,7 +50,7 @@ export function CreatorActivationScreen({
     <GameShell variant="handoff">
       <ScreenFrame ref={containerRef} className={styles.screen} tabIndex={-1}>
         <TopBar
-          note="Perangkat masing-masing · Satu ruangan bersama"
+          note="Device masing-masing · Satu room bareng"
           trailing={
             <ConnectionStatus state={connectionState} onRetry={onRetry} />
           }
@@ -61,14 +61,14 @@ export function CreatorActivationScreen({
         <main className={styles.main}>
           <div className={styles.intro}>
             <Eyebrow className={styles.introEyebrow} onDark>
-              Buat sesi baru
+              Bikin room baru
             </Eyebrow>
             <h1>
-              Mulai sebagai <span>pemain pertama.</span>
+              Kamu jadi <span>player pertama.</span>
             </h1>
             <p>
-              Setelah namamu diterima, kamu akan mendapat kode enam karakter
-              untuk dibagikan kepada pemain lain.
+              Setelah isi nama, kamu bakal dapat room code enam karakter buat
+              dibagikan ke player lain.
             </p>
           </div>
 
@@ -78,10 +78,10 @@ export function CreatorActivationScreen({
               className={styles.formCard}
               aria-labelledby="creator-activation-title"
             >
-              <Eyebrow>Aktifkan ruangan</Eyebrow>
+              <Eyebrow>Setup room</Eyebrow>
               <h2 id="creator-activation-title">Siapa namamu?</h2>
               <form onSubmit={handleSubmit} noValidate>
-                <label htmlFor="creator-display-name">Nama pemain</label>
+                <label htmlFor="creator-display-name">Nama kamu</label>
                 <Input
                   id="creator-display-name"
                   name="displayName"
@@ -98,7 +98,7 @@ export function CreatorActivationScreen({
                   }
                 />
                 <small id="creator-name-hint">
-                  Gunakan nama unik sepanjang 1–24 karakter.
+                  Pakai nama unik, 1–24 karakter.
                 </small>
 
                 {errorMessage && (
@@ -119,7 +119,7 @@ export function CreatorActivationScreen({
                     !displayName.trim()
                   }
                 >
-                  {isSubmitting ? 'Membuat ruangan…' : 'Buat kode sesi'}
+                  {isSubmitting ? 'Lagi bikin room…' : 'Bikin room code'}
                   <MaterialSymbol name="arrow_forward" />
                 </GameButton>
               </form>
@@ -132,7 +132,7 @@ export function CreatorActivationScreen({
                 onClick={onEndSession}
                 disabled={isSubmitting || connectionState !== 'connected'}
               >
-                Akhiri sesi
+                Tutup sesi
               </button>
             )}
           </div>

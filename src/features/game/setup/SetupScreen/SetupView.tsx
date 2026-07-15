@@ -41,7 +41,7 @@ export function SetupView({
     <GameShell variant="setup">
       <ScreenFrame ref={containerRef} className={styles.screen} tabIndex={-1}>
         <TopBar
-          note="Bergantian di satu perangkat · Tanpa perlu masuk"
+          note="Oper satu device · Nggak perlu login"
           trailing={connectionStatus}
         >
           <Brand />
@@ -50,15 +50,14 @@ export function SetupView({
         <main className={styles.layout}>
           <section className={styles.intro} aria-labelledby="setup-title">
             <Eyebrow className={styles.introEyebrow} onDark>
-              Satu perangkat
+              Satu device
             </Eyebrow>
             <h1 id="setup-title">
-              Atur, lalu <span>main bergantian.</span>
+              Setup dulu, <span>lalu oper-operan.</span>
             </h1>
             <p>
-              Tentukan jumlah pemain dan kartu. Setelah mulai, oper perangkat
-              kepada tiap pemain supaya mereka dapat memilih kartu secara
-              rahasia.
+              Tentukan jumlah player dan kartu. Setelah mulai, oper device ke
+              tiap player biar mereka bisa pilih kartu diam-diam.
             </p>
           </section>
 
@@ -66,11 +65,11 @@ export function SetupView({
             <Panel
               as="section"
               className={styles.settingsCard}
-              aria-label="Pengaturan permainan"
+              aria-label="Setup permainan"
             >
               <div className={styles.settingsHeading}>
-                <Eyebrow>Pengaturan permainan</Eyebrow>
-                <h2>Susun deck-mu</h2>
+                <Eyebrow>Game setup</Eyebrow>
+                <h2>Atur deck-mu</h2>
               </div>
 
               <form
@@ -81,8 +80,8 @@ export function SetupView({
               >
                 <NumberControl
                   id="players"
-                  label="Pemain"
-                  hint="2–20 orang, dibagi menjadi dua tim"
+                  label="Player"
+                  hint="2–20 orang, dibagi jadi dua tim"
                   value={players}
                   min={2}
                   max={20}
@@ -91,8 +90,8 @@ export function SetupView({
                 />
                 <NumberControl
                   id="cards"
-                  label="Kartu per pemain"
-                  hint="1–10 kartu, dipilih diam-diam oleh tiap pemain"
+                  label="Kartu per player"
+                  hint="1–10 kartu, dipilih diam-diam oleh tiap player"
                   value={cardsPerPlayer}
                   min={1}
                   max={10}
@@ -107,8 +106,8 @@ export function SetupView({
                     <span />
                   </span>
                   <span>
-                    <strong>{totalCards} kartu dalam deck</strong>
-                    {players} pemain · 3 babak · sekitar 30 menit
+                    <strong>{totalCards} kartu di deck</strong>
+                    {players} player · 3 ronde · sekitar 30 menit
                   </span>
                 </div>
 
@@ -118,7 +117,7 @@ export function SetupView({
                   type="submit"
                   disabled={disabled}
                 >
-                  Mulai bermain
+                  Mulai game
                   <MaterialSymbol name="arrow_forward" />
                 </GameButton>
               </form>
@@ -131,14 +130,14 @@ export function SetupView({
                 onClick={onEndSession}
                 disabled={disabled}
               >
-                Akhiri sesi
+                Tutup sesi
               </button>
             )}
           </div>
         </main>
 
         <footer className={styles.footer}>
-          <span>Dibuat untuk suasana ramai dan petunjuk yang absurd.</span>
+          <span>Dibuat buat rame-rame dan clue yang absurd.</span>
           <span>© arfianadam</span>
         </footer>
       </ScreenFrame>

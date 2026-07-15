@@ -39,7 +39,7 @@ export function SelectionCard({
       <strong>{card.word}</strong>
       <span className={styles.cardDescription}>{card.description}</span>
       <span className={styles.cardAction} aria-hidden="true">
-        {selected ? 'Sudah dipilih' : 'Ketuk untuk memilih'}
+        {selected ? 'Sudah masuk' : 'Tap buat pilih'}
         <MaterialSymbol name={selected ? 'check' : 'add'} filled={selected} />
       </span>
     </button>

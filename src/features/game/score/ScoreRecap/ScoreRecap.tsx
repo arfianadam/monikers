@@ -20,8 +20,8 @@ export function ScoreRecap({ scores, rounds }: ScoreRecapProps) {
     <Panel as="section" className={styles.recap}>
       <div className={styles.header}>
         <div>
-          <Eyebrow className={styles.headerEyebrow}>Babak demi babak</Eyebrow>
-          <h2>Perolehan poin</h2>
+          <Eyebrow className={styles.headerEyebrow}>Ronde per ronde</Eyebrow>
+          <h2>Score recap</h2>
         </div>
         <span>{rounds.length} / 3 selesai</span>
       </div>
@@ -31,7 +31,7 @@ export function ScoreRecap({ scores, rounds }: ScoreRecapProps) {
           <article className={styles.round} key={round}>
             <div className={styles.roundLabel}>
               <span>0{round}</span>
-              <strong>Babak {round}</strong>
+              <strong>Ronde {round}</strong>
             </div>
             <div className={styles.teams}>
               {([1, 2] as const).map((team) => {
@@ -67,7 +67,7 @@ export function ScoreRecap({ scores, rounds }: ScoreRecapProps) {
                         ))
                       ) : (
                         <span className={styles.empty}>
-                          Tidak ada kartu di babak ini
+                          Belum ada kartu di ronde ini
                         </span>
                       )}
                     </div>

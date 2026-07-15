@@ -38,10 +38,10 @@ export function PrivateHandoff({
           meta={
             <div
               className={styles.progress}
-              aria-label={`Progres pemilihan kartu: pemain ${currentPlayer} dari ${players}`}
+              aria-label={`Progres pilih kartu: player ${currentPlayer} dari ${players}`}
             >
               <span>
-                Pemain {currentPlayer} dari {players}
+                Player {currentPlayer} dari {players}
               </span>
               <span className={styles.progressTrack}>
                 <span style={{ width: `${playerProgress}%` }} />
@@ -55,14 +55,14 @@ export function PrivateHandoff({
 
         <main className={styles.layout}>
           <Panel as="section" className={styles.card}>
-            <Eyebrow>Pemilihan kartu rahasia</Eyebrow>
+            <Eyebrow>Pilih kartu diam-diam</Eyebrow>
             <div className={styles.cardNumber} aria-hidden="true">
               {String(currentPlayer).padStart(2, '0')}
             </div>
-            <h1>Serahkan perangkatnya</h1>
+            <h1>Oper device-nya</h1>
             <p className={styles.cardLede}>
-              Pemain {currentPlayer}, pilihanmu rahasia. Pastikan tidak ada yang
-              mengintip sebelum kamu membuka kartunya.
+              Player {currentPlayer}, ini giliran rahasiamu. Pastikan nggak ada
+              yang ngintip sebelum buka kartu.
             </p>
             <div className={styles.privacyNote}>
               <MaterialSymbol
@@ -71,7 +71,7 @@ export function PrivateHandoff({
                 filled
               />
               <span>
-                <strong>Hanya untukmu</strong>
+                <strong>For your eyes only</strong>
                 Pilih {cardsPerPlayer} dari {cardsPerPlayer + 2} kartu
               </span>
             </div>
@@ -82,9 +82,9 @@ export function PrivateHandoff({
           </Panel>
 
           <aside className={styles.aside} aria-hidden="true">
-            <span className={styles.asideLabel}>Giliran berikutnya</span>
-            <strong>Pemain {currentPlayer}</strong>
-            <span>Pilih dengan bijak. Semua pemain akan memakai deck ini.</span>
+            <span className={styles.asideLabel}>Up next</span>
+            <strong>Player {currentPlayer}</strong>
+            <span>Pilih yang seru. Semua player bakal pakai deck ini.</span>
             <div className={styles.asideCards}>
               <span />
               <span />

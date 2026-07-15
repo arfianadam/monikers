@@ -83,8 +83,8 @@ function SelectionStatuses({
     >
       <div className={styles.statusHeading}>
         <div>
-          <span>Progres bersama</span>
-          <h2 id="selection-status-heading">Siapa yang sudah selesai?</h2>
+          <span>Progress bareng</span>
+          <h2 id="selection-status-heading">Siapa yang sudah beres?</h2>
         </div>
         <strong aria-label={`${completeCount} dari ${statuses.length} selesai`}>
           {completeCount}/{statuses.length}
@@ -107,7 +107,7 @@ function SelectionStatuses({
               <strong>{status.displayName}</strong>
               {status.isCurrentPlayer && <small>kamu</small>}
             </span>
-            <em>{status.state === 'done' ? 'Selesai' : 'Memilih…'}</em>
+            <em>{status.state === 'done' ? 'Beres' : 'Lagi pilih…'}</em>
           </li>
         ))}
       </ul>
@@ -127,11 +127,11 @@ function CancellationNotice({
   return (
     <section className={styles.cancellation} aria-labelledby="cancel-heading">
       <div>
-        <strong id="cancel-heading">Pemilihan sedang tertahan.</strong>
+        <strong id="cancel-heading">Pemilihan lagi ke-pause.</strong>
         <p>
           {names.length > 0
-            ? `${names.join(', ')} telah meninggalkan sesi. Kamu dapat terus menunggu atau kembali ke ruang tunggu.`
-            : 'Seorang pemain telah meninggalkan sesi. Kamu dapat terus menunggu atau kembali ke ruang tunggu.'}
+            ? `${names.join(', ')} keluar dari sesi. Kamu bisa tetap nunggu atau balik ke lobby.`
+            : 'Ada player yang keluar dari sesi. Kamu bisa tetap nunggu atau balik ke lobby.'}
         </p>
       </div>
       <button
@@ -139,7 +139,7 @@ function CancellationNotice({
         onClick={cancellation.onCancel}
         disabled={disabled || cancellation.disabled}
       >
-        Batalkan dan kembali ke ruang tunggu
+        Batalkan dan balik ke lobby
       </button>
     </section>
   );
@@ -189,17 +189,17 @@ export function OwnSelectionScreen(props: OwnSelectionScreenProps) {
                 className={styles.waitingMark}
                 filled
               />
-              <Eyebrow onDark>Pilihanmu sudah dikunci</Eyebrow>
-              <h1>Tunggu yang lain.</h1>
+              <Eyebrow onDark>Pilihanmu sudah aman</Eyebrow>
+              <h1>Tinggal tunggu yang lain.</h1>
               <p>
-                Kartu pilihan {playerName} aman dan tidak bisa diubah lagi.
-                Permainan dimulai otomatis setelah semua pemain selesai.
+                Kartu pilihan {playerName} sudah dikunci. Game otomatis mulai
+                setelah semua player beres.
               </p>
               <div className={styles.progress}>
                 <span>
                   <strong>{completeCount}</strong> dari {statuses.length}
                 </span>
-                <p>pemain sudah selesai memilih</p>
+                <p>player sudah beres memilih</p>
               </div>
             </section>
 
@@ -252,12 +252,12 @@ export function OwnSelectionScreen(props: OwnSelectionScreenProps) {
           <section className={styles.selectionArea}>
             <div className={styles.selectionHeading}>
               <div>
-                <Eyebrow onDark>Pilihan pribadi · {playerName}</Eyebrow>
+                <Eyebrow onDark>Kartu rahasia · {playerName}</Eyebrow>
                 <h1>Pilih favoritmu.</h1>
               </div>
               <p>
-                Hanya kamu yang dapat melihat tawaran ini. Pilih tepat{' '}
-                {cardsPerPlayer} kartu, lalu kunci pilihanmu.
+                Cuma kamu yang bisa lihat kartu ini. Pilih tepat{' '}
+                {cardsPerPlayer} kartu, lalu lock pilihanmu.
               </p>
             </div>
 
@@ -311,10 +311,10 @@ export function OwnSelectionScreen(props: OwnSelectionScreenProps) {
             <p>
               <strong>
                 {selectionComplete
-                  ? 'Pilihan sudah lengkap'
+                  ? 'Sip, sudah lengkap'
                   : `Pilih ${remainingToSelect} kartu lagi`}
               </strong>
-              <small>Konfirmasi tidak dapat dibatalkan.</small>
+              <small>Setelah di-lock, nggak bisa diubah.</small>
             </p>
           </div>
           <GameButton
@@ -322,7 +322,7 @@ export function OwnSelectionScreen(props: OwnSelectionScreenProps) {
             onClick={props.onConfirm}
             disabled={!selectionComplete || mutationsDisabled}
           >
-            Kunci pilihan
+            Lock pilihan
             <MaterialSymbol name="arrow_forward" />
           </GameButton>
         </div>

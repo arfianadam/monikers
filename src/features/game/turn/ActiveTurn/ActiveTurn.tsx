@@ -114,13 +114,13 @@ export function ActiveTurn({
                 </span>
               </div>
               <div className={styles.cardCopy}>
-                <p>Buat timmu menebak</p>
+                <p>Bikin timmu nebak</p>
                 <h1>{activeCard.word}</h1>
                 <span>{activeCard.description}</span>
               </div>
               <div className={styles.cardFooter}>
                 <span>Monikers</span>
-                <span>Babak 0{round}</span>
+                <span>Ronde 0{round}</span>
               </div>
             </Panel>
           )}
@@ -135,7 +135,7 @@ export function ActiveTurn({
               className={cn(styles.actionButton, styles.skipButton)}
             >
               <MaterialSymbol name="skip_next" />
-              {canSkip ? 'Lewati' : 'Sudah digunakan'}
+              {canSkip ? 'Skip' : 'Skip terpakai'}
             </GameButton>
             <GameButton
               variant="success"
@@ -149,15 +149,15 @@ export function ActiveTurn({
           </div>
           <div className={styles.actionMeta}>
             <span>
-              {guessedCardCount} kartu berhasil ditebak pada giliran ini
-              {!canSkip && ' · Tebak dengan benar agar bisa melewati lagi'}
+              {guessedCardCount} kartu benar di giliran ini
+              {!canSkip && ' · Jawab benar buat dapat skip lagi'}
             </span>
             <button
               onClick={onEndTurn}
               className={styles.endTurnButton}
               disabled={actionsDisabled}
             >
-              Akhiri giliran lebih awal
+              Stop giliran
             </button>
           </div>
         </div>

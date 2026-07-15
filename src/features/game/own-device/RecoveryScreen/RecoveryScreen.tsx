@@ -45,34 +45,34 @@ const recoveryCopy: Record<
   { eyebrow: string; title: string; body: string }
 > = {
   connecting: {
-    eyebrow: 'Menyambungkan kembali',
-    title: 'Sebentar, ya.',
-    body: 'Kami sedang mencari kembali sesi dan keanggotaanmu. Perubahan permainan dinonaktifkan sampai koneksi pulih.',
+    eyebrow: 'Lagi reconnect',
+    title: 'Bentar, ya.',
+    body: 'Lagi cari sesi dan data player-mu. Kontrol game dimatikan dulu sampai koneksi balik.',
   },
   disconnected: {
-    eyebrow: 'Koneksi terputus',
-    title: 'Kamu sedang luring.',
-    body: 'Perangkat ini belum tersambung ke sesi. Permainan tetap berjalan di server dan akan dipulihkan saat koneksi kembali.',
+    eyebrow: 'Koneksi putus',
+    title: 'Kamu lagi offline.',
+    body: 'Device ini belum tersambung ke sesi. Game tetap jalan dan bakal balik otomatis saat koneksi pulih.',
   },
   'duplicate-tab': {
-    eyebrow: 'Sesi dibuka di tab lain',
-    title: 'Tab ini sudah digantikan.',
-    body: 'Keanggotaan yang sama baru saja tersambung dari tab lain. Lanjutkan permainan dari tab yang paling baru.',
+    eyebrow: 'Sesi kebuka di tab lain',
+    title: 'Pakai tab yang baru, ya.',
+    body: 'Player yang sama baru saja tersambung dari tab lain. Lanjut main dari tab paling baru.',
   },
   revoked: {
-    eyebrow: 'Akses dicabut',
-    title: 'Kamu bukan anggota sesi ini lagi.',
-    body: 'Keanggotaan perangkat ini telah dicabut dan tidak dapat digunakan untuk masuk kembali ke ruangan yang sama.',
+    eyebrow: 'Akses dilepas',
+    title: 'Kamu sudah keluar dari sesi.',
+    body: 'Device ini sudah dikeluarkan dan nggak bisa join lagi ke room yang sama.',
   },
   expired: {
-    eyebrow: 'Sesi kedaluwarsa',
-    title: 'Ruangan ini sudah hilang.',
-    body: 'Sesi tidak lagi tersedia. Kamu dapat kembali ke halaman awal untuk membuat sesi baru atau bergabung dengan kode lain.',
+    eyebrow: 'Sesi expired',
+    title: 'Room ini sudah nggak ada.',
+    body: 'Sesi ini sudah selesai. Balik ke home buat bikin sesi baru atau join pakai kode lain.',
   },
   ended: {
-    eyebrow: 'Sesi diakhiri',
-    title: 'Permainan telah selesai.',
-    body: 'Pengendali mengakhiri sesi untuk semua pemain. Kode ruangan ini tidak dapat digunakan lagi.',
+    eyebrow: 'Sesi ditutup',
+    title: 'Game sudah selesai.',
+    body: 'Host menutup sesi buat semua player. Room code ini sudah nggak bisa dipakai.',
   },
 };
 
@@ -137,13 +137,13 @@ export function RecoveryScreen(props: RecoveryScreenProps) {
                   disabled={props.retryDisabled}
                 >
                   {props.reason === 'connecting'
-                    ? 'Sambungkan sekarang'
+                    ? 'Reconnect sekarang'
                     : 'Coba lagi'}
                   <MaterialSymbol name="refresh" />
                 </GameButton>
               )}
               <button type="button" onClick={props.onGoHome}>
-                Kembali ke halaman awal
+                Balik ke home
               </button>
             </div>
           </Panel>

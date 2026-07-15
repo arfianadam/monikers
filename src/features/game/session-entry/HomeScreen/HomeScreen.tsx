@@ -47,7 +47,7 @@ export function HomeScreen() {
       const body = (await response.json()) as CreateSessionResponse;
 
       if (!response.ok || !body.route) {
-        throw new Error(body.error || 'Sesi belum dapat dibuat.');
+        throw new Error(body.error || 'Oops, sesi belum bisa dibuat.');
       }
 
       router.push(body.route);
@@ -55,7 +55,7 @@ export function HomeScreen() {
       setError(
         caughtError instanceof Error
           ? caughtError.message
-          : 'Sesi belum dapat dibuat.'
+          : 'Oops, sesi belum bisa dibuat.'
       );
       setPendingMode(null);
     }
@@ -64,33 +64,33 @@ export function HomeScreen() {
   return (
     <GameShell variant="setup">
       <ScreenFrame className={styles.screen}>
-        <TopBar note="Main bersama · Di ruangan yang sama">
+        <TopBar note="Main bareng · Satu ruangan">
           <Brand />
         </TopBar>
 
         <main className={styles.layout}>
           <section className={styles.intro} aria-labelledby="home-title">
             <Eyebrow className={styles.introEyebrow} onDark dot>
-              Calon permainan favorit di acara kumpulmu
+              Calon party game favorit gengmu
             </Eyebrow>
             <h1 id="home-title" className={styles.displayTitle}>
               Tebak namanya.
               <span>Lupakan jaimnya.</span>
             </h1>
             <p className={styles.introCopy}>
-              Tiga babak. Dua tim. Satu deck nama terkenal yang makin lucu
-              setiap kali dimainkan.
+              Tiga ronde. Dua tim. Satu deck nama terkenal yang makin chaos tiap
+              kali dimainkan.
             </p>
 
-            <ol className={styles.rounds} aria-label="Tiga babak permainan">
+            <ol className={styles.rounds} aria-label="Tiga ronde permainan">
               <li>
-                <span>01</span> Bebas bicara
+                <span>01</span> Ngomong bebas
               </li>
               <li>
-                <span>02</span> Satu kata saja
+                <span>02</span> Cuma satu kata
               </li>
               <li>
-                <span>03</span> Peragakan
+                <span>03</span> Pakai gaya
               </li>
             </ol>
           </section>
@@ -101,8 +101,8 @@ export function HomeScreen() {
             aria-labelledby="session-options-title"
           >
             <div className={styles.actionHeading}>
-              <Eyebrow>Mulai sesi</Eyebrow>
-              <h2 id="session-options-title">Semua siap?</h2>
+              <Eyebrow>Yuk, mulai</Eyebrow>
+              <h2 id="session-options-title">Mau main gimana?</h2>
             </div>
 
             <div className={styles.modeOptions}>
@@ -113,8 +113,8 @@ export function HomeScreen() {
                 className={styles.actionButton}
                 aria-label={
                   pendingMode === 'single-device'
-                    ? 'Membuat sesi…'
-                    : 'Main di satu perangkat'
+                    ? 'Lagi bikin sesi…'
+                    : 'Main di satu device'
                 }
                 aria-describedby="single-device-description"
                 aria-busy={pendingMode === 'single-device'}
@@ -122,11 +122,11 @@ export function HomeScreen() {
                 <span className={styles.modeCopy}>
                   <strong>
                     {pendingMode === 'single-device'
-                      ? 'Membuat sesi…'
-                      : 'Satu perangkat'}
+                      ? 'Lagi bikin sesi…'
+                      : 'Satu device'}
                   </strong>
                   <small id="single-device-description">
-                    Oper ponsel atau laptop setiap giliran.
+                    Oper HP atau laptop tiap giliran.
                   </small>
                 </span>
                 <MaterialSymbol
@@ -143,8 +143,8 @@ export function HomeScreen() {
                 className={`${styles.actionButton} ${styles.secondaryAction}`}
                 aria-label={
                   pendingMode === 'own-device'
-                    ? 'Membuat ruangan…'
-                    : 'Buat sesi perangkat masing-masing'
+                    ? 'Lagi bikin room…'
+                    : 'Buat room untuk device masing-masing'
                 }
                 aria-describedby="own-device-description"
                 aria-busy={pendingMode === 'own-device'}
@@ -152,11 +152,11 @@ export function HomeScreen() {
                 <span className={styles.modeCopy}>
                   <strong>
                     {pendingMode === 'own-device'
-                      ? 'Membuat ruangan…'
-                      : 'Perangkat masing-masing'}
+                      ? 'Lagi bikin room…'
+                      : 'Device masing-masing'}
                   </strong>
                   <small id="own-device-description">
-                    Bagikan kode agar kartu tetap rahasia.
+                    Share kode biar kartu tetap rahasia.
                   </small>
                 </span>
                 <MaterialSymbol name="add" className={styles.modeIcon} />
@@ -164,7 +164,7 @@ export function HomeScreen() {
             </div>
 
             <div className={styles.divider}>
-              <span>Sudah punya kode?</span>
+              <span>Sudah punya room code?</span>
             </div>
 
             <form
@@ -174,7 +174,7 @@ export function HomeScreen() {
                 if (code.length === 6) router.push(`/join/${code}`);
               }}
             >
-              <label htmlFor="join-code">Kode sesi</label>
+              <label htmlFor="join-code">Room code</label>
               <div>
                 <Input
                   id="join-code"
@@ -195,7 +195,7 @@ export function HomeScreen() {
                 </GameButton>
               </div>
               <small id="join-code-hint">
-                Masukkan 6 karakter dari pembuat sesi.
+                Masukkan 6 karakter dari temanmu.
               </small>
             </form>
 

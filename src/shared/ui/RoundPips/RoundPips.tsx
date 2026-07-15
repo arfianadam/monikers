@@ -25,9 +25,9 @@ export function RoundPips({
     <div
       {...props}
       className={cn(styles.pips, className)}
-      aria-label={ariaLabel ?? `Babak ${round} dari 3`}
+      aria-label={ariaLabel ?? `Ronde ${round} dari 3`}
     >
-      {label && <span className={styles.label}>Babak</span>}
+      {label && <span className={styles.label}>Ronde</span>}
       {[1, 2, 3].map((step) => (
         <span
           key={step}

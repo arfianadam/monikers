@@ -3,10 +3,10 @@ import { describe, expect, it } from 'vitest';
 import { getNextRound, isFinalRound, ROUND_DETAILS } from './rounds';
 
 describe('rounds', () => {
-  it('defines the three rounds and their existing instructions', () => {
-    expect(ROUND_DETAILS[1].shortName).toBe('Bebas bicara');
-    expect(ROUND_DETAILS[2].shortName).toBe('Satu kata saja');
-    expect(ROUND_DETAILS[3].shortName).toBe('Peragakan');
+  it('defines the three rounds and their instructions', () => {
+    expect(ROUND_DETAILS[1].shortName).toBe('Bebas ngomong');
+    expect(ROUND_DETAILS[2].shortName).toBe('Cuma satu kata');
+    expect(ROUND_DETAILS[3].shortName).toBe('Pakai gaya');
   });
 
   it('advances until the final round', () => {

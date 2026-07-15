@@ -18,9 +18,9 @@ const materialSymbolsHref =
   '&display=block';
 
 export const metadata: Metadata = {
-  title: 'Monikers — Permainan Tebak Nama',
+  title: 'Monikers — Party Game Tebak Nama',
   description:
-    'Permainan pesta yang cepat dan seru tentang nama-nama terkenal, petunjuk satu kata, dan aksi kocak.',
+    'Party game cepat dan seru tentang nama terkenal, clue satu kata, dan aksi kocak.',
 };
 
 export default function RootLayout({

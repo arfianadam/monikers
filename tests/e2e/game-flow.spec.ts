@@ -15,9 +15,9 @@ import { expectVisualFontsLoaded } from './visual-helpers';
 const TOTAL_CARDS = 2;
 const SESSION_URL = /\/session\/[A-Za-z0-9_-]+$/;
 const RECOVERY_HEADINGS = [
-  'Sebentar, ya.',
-  'Kamu sedang luring.',
-  'Ruangan ini sudah hilang.',
+  'Bentar, ya.',
+  'Kamu lagi offline.',
+  'Room ini sudah nggak ada.',
 ];
 
 async function recordHeadingChanges(page: Page) {
@@ -85,7 +85,7 @@ async function captureStage(page: Page, name: string) {
 
 async function expectStaticConnectionInTopBar(
   page: Page,
-  expectedText = 'Tersambung'
+  expectedText = 'Online'
 ) {
   const header = page.getByRole('banner');
   const connectionStatuses = page.getByRole('status', {
@@ -156,16 +156,18 @@ async function createSingleDeviceSession(page: Page) {
     })
   ).toBeVisible();
   await expect(
-    page.getByRole('button', { name: 'Buat sesi perangkat masing-masing' })
+    page.getByRole('button', {
+      name: 'Buat room untuk device masing-masing',
+    })
   ).toBeVisible();
-  await expect(page.getByLabel('Kode sesi')).toBeVisible();
+  await expect(page.getByLabel('Room code')).toBeVisible();
 
-  await page.getByRole('button', { name: 'Main di satu perangkat' }).click();
+  await page.getByRole('button', { name: 'Main di satu device' }).click();
   await expect(page).toHaveURL(SESSION_URL);
   await expect(
     page.getByRole('heading', {
       level: 1,
-      name: 'Atur, lalu main bergantian.',
+      name: 'Setup dulu, lalu oper-operan.',
     })
   ).toBeVisible();
 
@@ -178,12 +180,12 @@ test('pembuatan sesi tidak menampilkan layar pemulihan sementara', async ({
   await widenInitialProjectionRace(page);
   const entryPaths = [
     {
-      button: 'Main di satu perangkat',
-      destinationHeading: /Atur, lalu main bergantian/,
+      button: 'Main di satu device',
+      destinationHeading: /Setup dulu, lalu oper-operan/,
     },
     {
-      button: 'Buat sesi perangkat masing-masing',
-      destinationHeading: /Mulai sebagai pemain pertama/,
+      button: 'Buat room untuk device masing-masing',
+      destinationHeading: /Kamu jadi player pertama/,
     },
   ];
 
@@ -209,12 +211,12 @@ test('pembuatan sesi tidak menampilkan layar pemulihan sementara', async ({
 test('sesi dapat diakhiri sebelum permainan dimulai', async ({ page }) => {
   const entryPaths = [
     {
-      button: 'Main di satu perangkat',
-      destinationHeading: /Atur, lalu main bergantian/,
+      button: 'Main di satu device',
+      destinationHeading: /Setup dulu, lalu oper-operan/,
     },
     {
-      button: 'Buat sesi perangkat masing-masing',
-      destinationHeading: /Mulai sebagai pemain pertama/,
+      button: 'Buat room untuk device masing-masing',
+      destinationHeading: /Kamu jadi player pertama/,
     },
   ];
 
@@ -229,12 +231,10 @@ test('sesi dapat diakhiri sebelum permainan dimulai', async ({ page }) => {
       })
     ).toBeVisible();
 
-    await page
-      .getByRole('button', { name: 'Akhiri sesi', exact: true })
-      .click();
+    await page.getByRole('button', { name: 'Tutup sesi', exact: true }).click();
     await page
       .getByRole('alertdialog')
-      .getByRole('button', { name: 'Akhiri sesi', exact: true })
+      .getByRole('button', { name: 'Ya, tutup sesi', exact: true })
       .click();
 
     await expect(page).toHaveURL('/');
@@ -253,17 +253,17 @@ test('perubahan pengaturan tidak menonaktifkan seluruh form', async ({
   await createSingleDeviceSession(page);
 
   const playersInput = page.getByRole('spinbutton', {
-    name: 'Pemain',
+    name: 'Player',
     exact: true,
   });
   const cardsInput = page.getByRole('spinbutton', {
-    name: 'Kartu per pemain',
+    name: 'Kartu per player',
     exact: true,
   });
-  const startButton = page.getByRole('button', { name: 'Mulai bermain' });
+  const startButton = page.getByRole('button', { name: 'Mulai game' });
 
   await playersInput.fill('5');
-  await expect(page.getByText('25 kartu dalam deck')).toBeVisible();
+  await expect(page.getByText('25 kartu di deck')).toBeVisible();
 
   expect(
     await Promise.all([
@@ -282,7 +282,7 @@ test('pemilihan kartu menjaga tampilan stabil dan menonaktifkan pilihan setelah 
   });
   await createSingleDeviceSession(page);
   await configureGame(page, 2, 2);
-  await page.getByRole('button', { name: 'Mulai bermain' }).click();
+  await page.getByRole('button', { name: 'Mulai game' }).click();
   await page.getByRole('button', { name: 'Buka kartuku' }).click();
 
   const offeredCards = page
@@ -298,7 +298,7 @@ test('pemilihan kartu menjaga tampilan stabil dan menonaktifkan pilihan setelah 
   const secondCard = cardFor(offeredWords[1]);
   const thirdCard = cardFor(offeredWords[2]);
   const nextButton = page.getByRole('button', {
-    name: 'Lanjut',
+    name: 'Next player',
   });
 
   if ((page.viewportSize()?.width ?? Number.POSITIVE_INFINITY) <= 700) {
@@ -393,7 +393,7 @@ test('status koneksi tetap statis saat memuat dan memulihkan sesi', async ({
   });
 
   await page.goto('/');
-  await page.getByRole('button', { name: 'Main di satu perangkat' }).click();
+  await page.getByRole('button', { name: 'Main di satu device' }).click();
   await expect(page.locator('[aria-busy="true"]')).toBeVisible();
   await expectStaticConnectionInTopBar(page);
 
@@ -401,9 +401,9 @@ test('status koneksi tetap statis saat memuat dan memulihkan sesi', async ({
   await (await sessionSocket).close();
 
   await expect(
-    page.getByRole('heading', { level: 1, name: 'Kamu sedang luring.' })
+    page.getByRole('heading', { level: 1, name: 'Kamu lagi offline.' })
   ).toBeVisible();
-  await expectStaticConnectionInTopBar(page, 'Koneksi terputus');
+  await expectStaticConnectionInTopBar(page, 'Offline');
 
   const status = page
     .getByRole('banner')
@@ -423,22 +423,20 @@ async function configureGame(
   cardsPerPlayer: number
 ) {
   const playersInput = page.getByRole('spinbutton', {
-    name: 'Pemain',
+    name: 'Player',
     exact: true,
   });
   const cardsInput = page.getByRole('spinbutton', {
-    name: 'Kartu per pemain',
+    name: 'Kartu per player',
     exact: true,
   });
 
   await playersInput.fill(String(players));
   await expect(cardsInput).toBeEnabled();
   await cardsInput.fill(String(cardsPerPlayer));
+  await expect(page.getByRole('button', { name: 'Mulai game' })).toBeEnabled();
   await expect(
-    page.getByRole('button', { name: 'Mulai bermain' })
-  ).toBeEnabled();
-  await expect(
-    page.getByText(`${players * cardsPerPlayer} kartu dalam deck`)
+    page.getByText(`${players * cardsPerPlayer} kartu di deck`)
   ).toBeVisible();
 }
 
@@ -463,7 +461,7 @@ async function completeSingleDeviceSelection(
     await chooseCards(page, cardsPerPlayer);
     await page
       .getByRole('button', {
-        name: player === 1 ? 'Lanjut' : 'Selesai',
+        name: player === 1 ? 'Next player' : 'Beres',
       })
       .click();
   }
@@ -486,17 +484,17 @@ async function completeActiveTurn(page: Page) {
 async function playRound(page: Page, round: number) {
   await expectResponsiveHeaderMeta(
     page,
-    page.getByLabel(`Babak ${round} dari 3`)
+    page.getByLabel(`Ronde ${round} dari 3`)
   );
   await expect(
     page.getByRole('heading', {
       level: 1,
-      name: new RegExp(`Tim 1,\\s*giliranmu\\.`),
+      name: new RegExp(`Tim 1,\\s*you’re up!`),
     })
   ).toBeVisible();
   await expectStaticConnectionInTopBar(page);
 
-  await page.getByRole('button', { name: 'Mulai giliran 60 detik' }).click();
+  await page.getByRole('button', { name: 'Gas 60 detik' }).click();
   await expect(page.getByLabel(/\d+ detik tersisa/)).toBeVisible();
   await expectStaticConnectionInTopBar(page);
   await completeActiveTurn(page);
@@ -513,20 +511,21 @@ test('dua pemain menyelesaikan tiga babak dan sesi pulih setelah refresh', async
   page.on('dialog', (dialog) => void dialog.accept());
   await page.reload();
   await expect(page).toHaveURL(new RegExp(`${sessionPath}$`));
+  await expectStaticConnectionInTopBar(page);
   await expect(
-    page.getByRole('spinbutton', { name: 'Pemain', exact: true })
+    page.getByRole('spinbutton', { name: 'Player', exact: true })
   ).toHaveValue('2');
   await expect(
-    page.getByRole('spinbutton', { name: 'Kartu per pemain', exact: true })
+    page.getByRole('spinbutton', { name: 'Kartu per player', exact: true })
   ).toHaveValue('1');
 
-  await page.getByRole('button', { name: 'Mulai bermain' }).click();
+  await page.getByRole('button', { name: 'Mulai game' }).click();
   await expect(
-    page.getByRole('heading', { level: 1, name: 'Serahkan perangkatnya' })
+    page.getByRole('heading', { level: 1, name: 'Oper device-nya' })
   ).toBeVisible();
   await expectResponsiveHeaderMeta(
     page,
-    page.getByLabel('Progres pemilihan kartu: pemain 1 dari 2')
+    page.getByLabel('Progres pilih kartu: player 1 dari 2')
   );
   await expectStaticConnectionInTopBar(page);
   await captureStage(page, '02-private-handoff');
@@ -540,25 +539,25 @@ test('dua pemain menyelesaikan tiga babak dan sesi pulih setelah refresh', async
   await captureStage(page, '03-card-picker');
 
   await chooseCards(page, 1);
-  await page.getByRole('button', { name: 'Lanjut' }).click();
+  await page.getByRole('button', { name: 'Next player' }).click();
   await expect(
-    page.getByText('Pemain 2, pilihanmu rahasia.', { exact: false })
+    page.getByText('Player 2, ini giliran rahasiamu.', { exact: false })
   ).toBeVisible();
   await page.getByRole('button', { name: 'Buka kartuku' }).click();
   await chooseCards(page, 1);
-  await page.getByRole('button', { name: 'Selesai' }).click();
+  await page.getByRole('button', { name: 'Beres' }).click();
 
   await expect(
     page.getByRole('heading', {
       level: 1,
-      name: /Tim 1,\s*giliranmu\./,
+      name: /Tim 1,\s*you’re up!/,
     })
   ).toBeVisible();
-  await expectResponsiveHeaderMeta(page, page.getByLabel('Babak 1 dari 3'));
+  await expectResponsiveHeaderMeta(page, page.getByLabel('Ronde 1 dari 3'));
   await expectStaticConnectionInTopBar(page);
   await captureStage(page, '04-turn-handoff');
 
-  await page.getByRole('button', { name: 'Mulai giliran 60 detik' }).click();
+  await page.getByRole('button', { name: 'Gas 60 detik' }).click();
   await expect(page.getByLabel(/\d+ detik tersisa/)).toBeVisible();
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
   await expectStaticConnectionInTopBar(page);
@@ -566,32 +565,32 @@ test('dua pemain menyelesaikan tiga babak dan sesi pulih setelah refresh', async
   await completeActiveTurn(page);
 
   await expect(
-    page.getByRole('heading', { level: 1, name: 'Babak 1 telah usai.' })
+    page.getByRole('heading', { level: 1, name: 'Ronde 1 kelar!' })
   ).toBeVisible();
   await expect(page.getByRole('region', { name: 'Skor tim' })).toBeVisible();
   await expect(page.getByText('1 / 3 selesai')).toBeVisible();
   await expectStaticConnectionInTopBar(page);
   await captureStage(page, '06-round-score');
 
-  await page.getByRole('button', { name: 'Mulai babak berikutnya' }).click();
+  await page.getByRole('button', { name: 'Lanjut ronde berikutnya' }).click();
   await playRound(page, 2);
   await expect(
-    page.getByRole('heading', { level: 1, name: 'Babak 2 telah usai.' })
+    page.getByRole('heading', { level: 1, name: 'Ronde 2 kelar!' })
   ).toBeVisible();
   await expect(page.getByText('2 / 3 selesai')).toBeVisible();
 
-  await page.getByRole('button', { name: 'Mulai babak berikutnya' }).click();
+  await page.getByRole('button', { name: 'Lanjut ronde berikutnya' }).click();
   await playRound(page, 3);
 
-  await expect(page.getByText('Skor akhir')).toBeVisible();
+  await expect(page.getByText('Final score')).toBeVisible();
   await expect(
     page.getByRole('heading', {
       level: 1,
-      name: 'Tim 1 merebut mahkota.',
+      name: 'Tim 1 juaranya!',
     })
   ).toBeVisible();
   await expect(page.getByText('3 / 3 selesai')).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Main lagi' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Rematch' })).toBeVisible();
   await expectStaticConnectionInTopBar(page);
   await captureStage(page, '07-final-score');
 });
@@ -611,26 +610,26 @@ test('deadline server memindahkan giliran dan suara hanya dipicu setelah diterim
 
   await createSingleDeviceSession(page);
   await configureGame(page, 2, 2);
-  await page.getByRole('button', { name: 'Mulai bermain' }).click();
+  await page.getByRole('button', { name: 'Mulai game' }).click();
   await completeSingleDeviceSelection(page, 2);
 
-  await page.getByRole('button', { name: 'Mulai giliran 60 detik' }).click();
-  const skipButton = page.getByRole('button', { name: 'Lewati' });
+  await page.getByRole('button', { name: 'Gas 60 detik' }).click();
+  const skipButton = page.getByRole('button', { name: 'Skip' });
   await skipButton.click();
   await expect(
-    page.getByRole('button', { name: 'Sudah digunakan' })
+    page.getByRole('button', { name: 'Skip terpakai' })
   ).toBeDisabled();
 
   await page.getByRole('button', { name: 'Benar!' }).click();
-  await expect(page.getByRole('button', { name: 'Lewati' })).toBeEnabled();
+  await expect(page.getByRole('button', { name: 'Skip' })).toBeEnabled();
 
   await expect(
-    page.getByRole('heading', { level: 1, name: /Tim 2,\s*giliranmu\./ })
+    page.getByRole('heading', { level: 1, name: /Tim 2,\s*you’re up!/ })
   ).toBeVisible({ timeout: 65_000 });
-  await page.getByRole('button', { name: 'Mulai giliran 60 detik' }).click();
-  await page.getByRole('button', { name: 'Akhiri giliran lebih awal' }).click();
+  await page.getByRole('button', { name: 'Gas 60 detik' }).click();
+  await page.getByRole('button', { name: 'Stop giliran' }).click();
   await expect(
-    page.getByRole('heading', { level: 1, name: /Tim 1,\s*giliranmu\./ })
+    page.getByRole('heading', { level: 1, name: /Tim 1,\s*you’re up!/ })
   ).toBeVisible();
 
   const playedSounds = await page.evaluate(

@@ -79,7 +79,7 @@ export function ConfirmDialog({
           onClick={onCancel}
           disabled={isSubmitting}
         >
-          Batal
+          Nggak jadi
         </GameButton>
         <GameButton type="button" onClick={onConfirm} disabled={isSubmitting}>
           {confirmLabel}

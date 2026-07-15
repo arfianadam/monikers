@@ -34,9 +34,7 @@ test('perangkat sempit dapat bergabung, bermain, dan menyambung kembali', async 
     await chooseOnePrivateCard(joinerPage);
     await lockBothSelections(creatorPage, joinerPage);
 
-    await creatorPage
-      .getByRole('button', { name: 'Mulai giliran 60 detik' })
-      .click();
+    await creatorPage.getByRole('button', { name: 'Gas 60 detik' }).click();
     const activeCard = creatorPage
       .getByRole('article')
       .getByRole('heading', { level: 1 });
@@ -58,7 +56,7 @@ test('perangkat sempit dapat bergabung, bermain, dan menyambung kembali', async 
         .getByRole('heading', { level: 1, name: secretWord })
     ).toBeVisible();
     await expect(
-      creatorPage.getByRole('status').filter({ hasText: 'Tersambung' })
+      creatorPage.getByRole('status').filter({ hasText: 'Online' })
     ).toBeVisible();
 
     const afterReload = Number(
@@ -69,13 +67,11 @@ test('perangkat sempit dapat bergabung, bermain, dan menyambung kembali', async 
     expect(afterReload).toBeLessThanOrEqual(beforeReload);
     await expectSecretAbsent(joinerPage, secretWord);
 
-    await creatorPage
-      .getByRole('button', { name: 'Akhiri giliran lebih awal' })
-      .click();
+    await creatorPage.getByRole('button', { name: 'Stop giliran' }).click();
     await expect(
       joinerPage.getByRole('heading', {
         level: 1,
-        name: new RegExp(`${joinerName},\\s*beri petunjuk\\.`),
+        name: new RegExp(`${joinerName},\\s*kasih clue\\.`),
       })
     ).toBeVisible();
   } finally {

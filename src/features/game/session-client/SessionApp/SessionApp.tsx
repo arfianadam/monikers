@@ -57,34 +57,34 @@ const confirmationCopy: Record<
   { title: string; description: string; label: string }
 > = {
   leave: {
-    title: 'Tinggalkan sesi?',
+    title: 'Mau keluar dari sesi?',
     description:
-      'Keanggotaan perangkat ini akan dicabut dan tidak dapat dipakai untuk masuk kembali ke sesi yang sama.',
-    label: 'Tinggalkan sesi',
+      'Device ini bakal keluar dan nggak bisa join lagi ke sesi yang sama.',
+    label: 'Ya, keluar',
   },
   end: {
-    title: 'Akhiri sesi untuk semua?',
+    title: 'Tutup sesi buat semua?',
     description:
-      'Permainan, kode, dan semua keanggotaan akan langsung dihapus. Tindakan ini tidak dapat dibatalkan.',
-    label: 'Akhiri sesi',
+      'Game, kode, dan semua player langsung dihapus. Ini nggak bisa di-undo.',
+    label: 'Ya, tutup sesi',
   },
   'return-lobby': {
-    title: 'Kembali ke ruang tunggu?',
+    title: 'Balik ke lobby?',
     description:
-      'Permainan yang sedang berjalan akan dibuang. Kode, pemain, tim, dan urutan tetap dipertahankan.',
-    label: 'Kembali ke ruang tunggu',
+      'Game yang lagi jalan bakal di-reset. Kode, player, tim, dan urutannya tetap aman.',
+    label: 'Balik ke lobby',
   },
   'cancel-selection': {
-    title: 'Batalkan pemilihan kartu?',
+    title: 'Batal pilih kartu?',
     description:
-      'Semua tawaran dan pilihan akan dibuang. Pemilihan berikutnya akan membagikan kartu baru.',
-    label: 'Batalkan pemilihan',
+      'Semua kartu dan pilihan bakal di-reset. Nanti tiap player dapat kartu baru.',
+    label: 'Ya, batalkan',
   },
   'remove-player': {
-    title: 'Keluarkan pemain?',
+    title: 'Keluarkan player?',
     description:
-      'Akses perangkat pemain ini akan dicabut dan kesiapan ruangan diatur ulang.',
-    label: 'Keluarkan pemain',
+      'Device player ini bakal dikeluarkan dan status ready semua orang di-reset.',
+    label: 'Keluarkan player',
   },
 };
 
@@ -108,7 +108,7 @@ function SessionLoadingScreen({
           <Brand compact />
         </TopBar>
         <main className={styles.loadingMain}>
-          <p role="status">Menyiapkan sesi…</p>
+          <p role="status">Lagi siapin sesi…</p>
         </main>
       </ScreenFrame>
     </GameShell>
@@ -162,22 +162,22 @@ function lobbyBlockers(projection: LobbyProjection) {
   const team1Size = projection.teamOrder.team1.length;
   const team2Size = projection.teamOrder.team2.length;
   if (projection.participants.length < 2)
-    blockers.push('Tunggu satu pemain lagi.');
+    blockers.push('Tunggu satu player lagi.');
   if (team1Size === 0 || team2Size === 0) {
-    blockers.push('Kedua tim harus memiliki pemain.');
+    blockers.push('Kedua tim harus punya player.');
   }
   if (Math.abs(team1Size - team2Size) > 1) {
-    blockers.push('Selisih jumlah pemain antartim maksimal satu.');
+    blockers.push('Selisih jumlah player antartim maksimal satu.');
   }
   if (
     projection.participants.some(
       (participant) => participant.presence !== 'connected'
     )
   ) {
-    blockers.push('Semua pemain harus tersambung.');
+    blockers.push('Semua player harus online.');
   }
   if (projection.participants.some((participant) => !participant.ready)) {
-    blockers.push('Semua pemain harus menandai siap.');
+    blockers.push('Semua player harus klik ready.');
   }
   return blockers;
 }
@@ -227,7 +227,7 @@ function SingleTurnView({
         reason="connecting"
         onRetry={() => window.location.reload()}
         onGoHome={() => window.location.assign('/')}
-        detailMessage="Kartu aktif sedang dipulihkan dari server."
+        detailMessage="Lagi balikin kartu aktif dari server."
       />
     );
   }

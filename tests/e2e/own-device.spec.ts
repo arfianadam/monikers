@@ -68,7 +68,7 @@ async function captureRegion(page: Page, region: Locator, name: string) {
       })
   );
   const visualScope = await page.addStyleTag({
-    content: '[aria-label="Tindakan sesi"] { visibility: hidden !important; }',
+    content: '[aria-label="Menu sesi"] { visibility: hidden !important; }',
   });
   try {
     await expect(region).toHaveScreenshot(name, { animations: 'allow' });
@@ -127,7 +127,7 @@ async function expectOwnConnectionInTopBar(page: Page) {
 
   await expect(connectionStatuses).toHaveCount(1);
   await expect(inlineStatus).toBeVisible();
-  await expect(inlineStatus).toContainText('Tersambung');
+  await expect(inlineStatus).toContainText('Online');
   await expect(inlineStatus).toHaveCSS('position', 'static');
   await expect(inlineStatus).toBeInViewport({ ratio: 1 });
   await expect
@@ -160,24 +160,23 @@ test('status koneksi layar aktivasi tetap di kanan tanpa bertumpuk', async ({
 
   await page.goto('/');
   await page
-    .getByRole('button', { name: 'Buat sesi perangkat masing-masing' })
+    .getByRole('button', { name: 'Buat room untuk device masing-masing' })
     .click();
   await expect(
     page.getByRole('heading', {
       level: 1,
-      name: /Mulai sebagai pemain pertama/,
+      name: /Kamu jadi player pertama/,
     })
   ).toBeVisible();
 
   const header = page.getByRole('banner');
   const brand = header.locator(':scope > *').first();
-  const note = page.getByText(
-    'Perangkat masing-masing · Satu ruangan bersama',
-    { exact: true }
-  );
+  const note = page.getByText('Device masing-masing · Satu room bareng', {
+    exact: true,
+  });
   const connectedStatus = page
     .getByRole('status')
-    .filter({ hasText: 'Tersambung' });
+    .filter({ hasText: 'Online' });
   await expect(note).toBeVisible();
   await expect(connectedStatus).toBeVisible();
 
@@ -206,7 +205,7 @@ test('status koneksi layar aktivasi tetap di kanan tanpa bertumpuk', async ({
   await (await sessionSocket).close();
   const disconnectedStatus = page
     .getByRole('status')
-    .filter({ hasText: 'Koneksi terputus' });
+    .filter({ hasText: 'Offline' });
   await expect(disconnectedStatus).toBeVisible();
   await expect(
     disconnectedStatus.getByRole('button', { name: 'Coba lagi' })
@@ -241,7 +240,7 @@ test('menu tindakan sesi tetap ringkas dan terjangkau di layar sempit', async ({
 
     await controllerPage.setViewportSize({ width: 360, height: 640 });
     const trigger = controllerPage.getByRole('button', {
-      name: 'Buka tindakan sesi',
+      name: 'Buka menu sesi',
     });
     const status = controllerPage.getByRole('status', {
       name: 'Status koneksi',
@@ -253,13 +252,13 @@ test('menu tindakan sesi tetap ringkas dan terjangkau di layar sempit', async ({
     await trigger.click();
 
     const panel = controllerPage.getByRole('region', {
-      name: 'Pilihan tindakan sesi',
+      name: 'Pilihan menu sesi',
     });
     const returnToLobby = panel.getByRole('button', {
-      name: /Kembali ke ruang tunggu/,
+      name: /Balik ke lobby/,
     });
-    const leave = panel.getByRole('button', { name: /Tinggalkan sesi/ });
-    const end = panel.getByRole('button', { name: /Akhiri sesi/ });
+    const leave = panel.getByRole('button', { name: /Keluar dari sesi/ });
+    const end = panel.getByRole('button', { name: /Tutup sesi/ });
 
     await expect(panel).toBeInViewport({ ratio: 1 });
     await expect(returnToLobby).toBeVisible();
@@ -288,8 +287,8 @@ test('menu tindakan sesi tetap ringkas dan terjangkau di layar sempit', async ({
     await trigger.click();
     await returnToLobby.click();
     const dialog = controllerPage.getByRole('alertdialog');
-    await expect(dialog).toContainText('Kembali ke ruang tunggu?');
-    await dialog.getByRole('button', { name: 'Batal' }).click();
+    await expect(dialog).toContainText('Balik ke lobby?');
+    await dialog.getByRole('button', { name: 'Nggak jadi' }).click();
     await expect(trigger).toBeFocused();
   } finally {
     await joinerContext.close();
@@ -322,10 +321,10 @@ test('pengendali kembali ke beranda tanpa melihat layar sesi berakhir', async ({
     recordHeading();
   });
 
-  await page.getByRole('button', { name: 'Akhiri sesi untuk semua' }).click();
+  await page.getByRole('button', { name: 'Tutup sesi buat semua' }).click();
   await page
     .getByRole('alertdialog')
-    .getByRole('button', { name: 'Akhiri sesi' })
+    .getByRole('button', { name: 'Ya, tutup sesi' })
     .click();
   await expect(
     page
@@ -341,7 +340,7 @@ test('pengendali kembali ke beranda tanpa melihat layar sesi berakhir', async ({
   const headingHistory = await page.evaluate(() =>
     JSON.parse(sessionStorage.getItem('end-session-heading-history') ?? '[]')
   );
-  expect(headingHistory).not.toContain('Permainan telah selesai.');
+  expect(headingHistory).not.toContain('Game sudah selesai.');
 });
 
 test('perubahan pengaturan lobi tidak menonaktifkan aksi lain', async ({
@@ -354,10 +353,10 @@ test('perubahan pengaturan lobi tidak menonaktifkan aksi lain', async ({
   await setCommandAcknowledgementDelay(page, true);
 
   const configuration = page.getByRole('region', {
-    name: 'Pengaturan permainan',
+    name: 'Game setup',
   });
   const cardsPerPlayerInput = configuration.getByRole('spinbutton', {
-    name: 'Kartu per pemain',
+    name: 'Kartu per player',
   });
   const renameButton = page
     .getByLabel('Namamu')
@@ -371,22 +370,22 @@ test('perubahan pengaturan lobi tidak menonaktifkan aksi lain', async ({
   expect(
     await Promise.all([
       configuration
-        .getByRole('button', { name: 'Tambah kartu per pemain' })
+        .getByRole('button', { name: 'Tambah kartu per player' })
         .isEnabled(),
       configuration
         .getByRole('checkbox', {
-          name: /Berlakukan batas waktu pemain terputus/,
+          name: /Pakai timeout kalau player offline/,
         })
         .isEnabled(),
       page.getByRole('button', { name: 'Ganti kode' }).isEnabled(),
-      page.getByRole('button', { name: 'Saya siap' }).isEnabled(),
+      page.getByRole('button', { name: 'Aku ready' }).isEnabled(),
       page
         .getByRole('button', {
           name: 'Pindahkan Pengendali E2E ke Tim 2',
         })
         .isEnabled(),
       renameButton.isEnabled(),
-      page.getByRole('button', { name: 'Tinggalkan sesi' }).isEnabled(),
+      page.getByRole('button', { name: 'Keluar dari sesi' }).isEnabled(),
     ])
   ).toEqual([true, true, true, true, true, true, true]);
   expect(await renameButton.innerText()).toBe('Simpan nama');
@@ -410,7 +409,7 @@ test('hanya pengendali yang dapat mengubah batas waktu pemain tidak aktif', asyn
       playerName: 'Pemain E2E',
     });
 
-    const checkboxName = /Berlakukan batas waktu pemain terputus/;
+    const checkboxName = /Pakai timeout kalau player offline/;
     const controllerCheckbox = controllerPage.getByRole('checkbox', {
       name: checkboxName,
     });
@@ -495,19 +494,17 @@ async function finishOwnDeviceRound(
   await expect(
     controllerPage.getByRole('heading', {
       level: 1,
-      name: new RegExp(`${options.controllerName},\\s*beri petunjuk\\.`),
+      name: new RegExp(`${options.controllerName},\\s*kasih clue\\.`),
     })
   ).toBeVisible();
   await expect(
     joinerPage.getByRole('heading', {
       level: 1,
-      name: `Menunggu ${options.controllerName}.`,
+      name: `Nunggu ${options.controllerName}.`,
     })
   ).toBeVisible();
 
-  await controllerPage
-    .getByRole('button', { name: 'Mulai giliran 60 detik' })
-    .click();
+  await controllerPage.getByRole('button', { name: 'Gas 60 detik' }).click();
   const controllerCard = controllerPage
     .getByRole('article')
     .getByRole('heading', { level: 1 });
@@ -530,7 +527,7 @@ async function finishOwnDeviceRound(
 
   await controllerPage.getByRole('button', { name: 'Benar!' }).click();
   const endTurn = controllerPage.getByRole('button', {
-    name: 'Akhiri giliran lebih awal',
+    name: 'Stop giliran',
   });
   await expect(endTurn).toBeEnabled();
   await endTurn.click();
@@ -538,12 +535,10 @@ async function finishOwnDeviceRound(
   await expect(
     joinerPage.getByRole('heading', {
       level: 1,
-      name: new RegExp(`${options.joinerName},\\s*beri petunjuk\\.`),
+      name: new RegExp(`${options.joinerName},\\s*kasih clue\\.`),
     })
   ).toBeVisible();
-  await joinerPage
-    .getByRole('button', { name: 'Mulai giliran 60 detik' })
-    .click();
+  await joinerPage.getByRole('button', { name: 'Gas 60 detik' }).click();
   const joinerCard = joinerPage
     .getByRole('article')
     .getByRole('heading', { level: 1 });
@@ -558,30 +553,32 @@ async function finishOwnDeviceRound(
     await expect(
       controllerPage.getByRole('heading', {
         level: 1,
-        name: `Babak ${options.round} telah usai.`,
+        name: `Ronde ${options.round} kelar!`,
       })
     ).toBeVisible();
     await expect(
       joinerPage.getByRole('heading', {
         level: 1,
-        name: `Babak ${options.round} telah usai.`,
+        name: `Ronde ${options.round} kelar!`,
       })
     ).toBeVisible();
   } else {
-    await expect(controllerPage.getByText('Skor akhir')).toBeVisible();
-    await expect(joinerPage.getByText('Skor akhir')).toBeVisible();
+    await expect(controllerPage.getByText('Final score')).toBeVisible();
+    await expect(joinerPage.getByText('Final score')).toBeVisible();
   }
   await expect(
-    joinerPage.getByRole('button', { name: 'Mulai babak berikutnya' })
+    joinerPage.getByRole('button', { name: 'Lanjut ronde berikutnya' })
   ).toHaveCount(0);
-  await expect(joinerPage.getByText(/Menunggu pengendali sesi/)).toBeVisible();
+  await expect(
+    joinerPage.getByText(/Nunggu host lanjutkan game/)
+  ).toBeVisible();
   await expectOwnConnectionInTopBar(controllerPage);
   await expectOwnConnectionInTopBar(joinerPage);
 
   if (options.round === 1) {
     const originalViewport = controllerPage.viewportSize();
     await controllerPage.setViewportSize({ width: 360, height: 800 });
-    await expect(controllerPage.getByLabel('Babak 1 dari 3')).toBeHidden();
+    await expect(controllerPage.getByLabel('Ronde 1 dari 3')).toBeHidden();
     await expectOwnConnectionInTopBar(controllerPage);
     if (originalViewport)
       await controllerPage.setViewportSize(originalViewport);
@@ -643,7 +640,7 @@ test('sesi perangkat masing-masing menyelesaikan seluruh siklus dan pemulihan', 
       '02-own-lobby.png',
       [
         controllerPage
-          .getByRole('region', { name: 'Kode sesi' })
+          .getByRole('region', { name: 'Room code' })
           .locator('output'),
       ],
       true
@@ -669,12 +666,12 @@ test('sesi perangkat masing-masing menyelesaikan seluruh siklus dan pemulihan', 
       .click();
     await controllerPage
       .getByRole('alertdialog')
-      .getByRole('button', { name: 'Keluarkan pemain' })
+      .getByRole('button', { name: 'Keluarkan player' })
       .click();
     await expect(
       thirdPage.getByRole('heading', {
         level: 1,
-        name: 'Kamu bukan anggota sesi ini lagi.',
+        name: 'Kamu sudah keluar dari sesi.',
       })
     ).toBeVisible();
 
@@ -707,14 +704,14 @@ test('sesi perangkat masing-masing menyelesaikan seluruh siklus dan pemulihan', 
       });
       if (round < 3) {
         await controllerPage
-          .getByRole('button', { name: 'Mulai babak berikutnya' })
+          .getByRole('button', { name: 'Lanjut ronde berikutnya' })
           .click();
       }
     }
 
-    await expect(controllerPage.getByText('Skor akhir')).toBeVisible();
+    await expect(controllerPage.getByText('Final score')).toBeVisible();
     await expect(
-      joinerPage.getByRole('button', { name: 'Main lagi' })
+      joinerPage.getByRole('button', { name: 'Rematch' })
     ).toHaveCount(0);
     expect(await playedSounds(controllerPage)).toEqual(
       expect.arrayContaining(['/sounds/bell.wav', '/sounds/ring.wav'])
@@ -723,7 +720,7 @@ test('sesi perangkat masing-masing menyelesaikan seluruh siklus dan pemulihan', 
       expect.arrayContaining(['/sounds/bell.wav', '/sounds/ring.wav'])
     );
 
-    await controllerPage.getByRole('button', { name: 'Main lagi' }).click();
+    await controllerPage.getByRole('button', { name: 'Rematch' }).click();
     await expect(
       controllerPage.getByRole('heading', { name: 'Lobby' })
     ).toBeVisible();
@@ -731,7 +728,7 @@ test('sesi perangkat masing-masing menyelesaikan seluruh siklus dan pemulihan', 
       joinerPage.getByRole('heading', { name: 'Lobby' })
     ).toBeVisible();
     await expect(
-      controllerPage.getByRole('button', { name: 'Saya siap' })
+      controllerPage.getByRole('button', { name: 'Aku ready' })
     ).toBeVisible();
 
     const replacedControllerPage = controllerPage;
@@ -742,7 +739,7 @@ test('sesi perangkat masing-masing menyelesaikan seluruh siklus dan pemulihan', 
     ).toBeVisible();
     await expect(
       replacedControllerPage.getByRole('heading', {
-        name: 'Tab ini sudah digantikan.',
+        name: 'Pakai tab yang baru, ya.',
       })
     ).toBeVisible();
     await capture(replacedControllerPage, '07-own-duplicate-recovery.png');
@@ -767,11 +764,11 @@ test('sesi perangkat masing-masing menyelesaikan seluruh siklus dan pemulihan', 
     ).toHaveCount(0);
 
     await returnedControllerPage
-      .getByRole('button', { name: 'Tinggalkan sesi' })
+      .getByRole('button', { name: 'Keluar dari sesi' })
       .click();
     await returnedControllerPage
       .getByRole('alertdialog')
-      .getByRole('button', { name: 'Tinggalkan sesi' })
+      .getByRole('button', { name: 'Ya, keluar' })
       .click();
     await expect(
       returnedControllerPage.getByRole('heading', {
@@ -783,11 +780,11 @@ test('sesi perangkat masing-masing menyelesaikan seluruh siklus dan pemulihan', 
     ).toHaveCount(0);
 
     await joinerPage
-      .getByRole('button', { name: 'Akhiri sesi untuk semua' })
+      .getByRole('button', { name: 'Tutup sesi buat semua' })
       .click();
     await joinerPage
       .getByRole('alertdialog')
-      .getByRole('button', { name: 'Akhiri sesi' })
+      .getByRole('button', { name: 'Ya, tutup sesi' })
       .click();
     await expect(
       joinerPage.getByRole('heading', {
@@ -827,7 +824,7 @@ test('ruang tunggu tetap dapat digunakan dengan 20 pemain', async ({
     }
 
     await expect(
-      controllerPage.getByText('Ruang tunggu · 20 dari 20 pemain', {
+      controllerPage.getByText('Lobby · 20 dari 20 player', {
         exact: true,
       })
     ).toBeVisible();
@@ -847,7 +844,7 @@ test('ruang tunggu tetap dapat digunakan dengan 20 pemain', async ({
       '08-own-dense-lobby.png',
       [
         controllerPage
-          .getByRole('region', { name: 'Kode sesi' })
+          .getByRole('region', { name: 'Room code' })
           .locator('output'),
       ],
       true
@@ -883,9 +880,9 @@ test('peserta tetap dapat siap tanpa crypto.randomUUID', async ({
       playerName: participantName,
     });
 
-    await participantPage.getByRole('button', { name: 'Saya siap' }).click();
+    await participantPage.getByRole('button', { name: 'Aku ready' }).click();
     await expect(
-      participantPage.getByRole('button', { name: 'Batalkan siap' })
+      participantPage.getByRole('button', { name: 'Belum ready' })
     ).toBeVisible();
   } finally {
     await participantContext.close();

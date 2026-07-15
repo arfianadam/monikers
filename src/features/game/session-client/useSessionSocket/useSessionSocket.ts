@@ -87,13 +87,13 @@ export function useSessionSocket({
         try {
           parsedJson = JSON.parse(message.data) as unknown;
         } catch {
-          setLastError('Server mengirim pesan yang tidak dapat dibaca.');
+          setLastError('Oops, pesan dari server nggak bisa dibaca.');
           return;
         }
 
         const parsed = serverMessageSchema.safeParse(parsedJson);
         if (!parsed.success) {
-          setLastError('Server mengirim pesan yang tidak dikenali.');
+          setLastError('Oops, ada pesan server yang nggak dikenali.');
           return;
         }
 
@@ -132,7 +132,7 @@ export function useSessionSocket({
         }
 
         setStatus('disconnected');
-        setLastError('Koneksi terputus. Kami akan mencoba menyambung kembali.');
+        setLastError('Koneksi putus. Lagi coba reconnect…');
         const delay =
           RETRY_DELAYS_MS[Math.min(retryAttempt, RETRY_DELAYS_MS.length - 1)];
         retryAttempt += 1;
@@ -141,7 +141,7 @@ export function useSessionSocket({
 
       socket.addEventListener('error', () => {
         if (socketRef.current === socket) {
-          setLastError('Koneksi langsung ke sesi gagal.');
+          setLastError('Belum bisa tersambung ke sesi.');
         }
       });
     };
@@ -161,7 +161,7 @@ export function useSessionSocket({
   const sendCommand = useCallback((input: SessionCommandInput) => {
     const socket = socketRef.current;
     if (!socket || socket.readyState !== WebSocket.OPEN) {
-      setLastError('Tunggu sampai koneksi tersambung kembali.');
+      setLastError('Tunggu sampai koneksinya balik, ya.');
       return null;
     }
 
