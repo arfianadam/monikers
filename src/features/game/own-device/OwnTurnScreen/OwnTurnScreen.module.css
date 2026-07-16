@@ -468,6 +468,10 @@
   background: var(--coral);
 }
 
+.activeCard[data-level='5']::before {
+  background: var(--violet);
+}
+
 .cardTopline,
 .cardFooter {
   align-items: center;

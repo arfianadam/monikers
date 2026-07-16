@@ -1,0 +1,602 @@
+[
+  {
+    "level": 5,
+    "word": "Memble",
+    "description": "Slang lama untuk keadaan lesu, tidak bersemangat, atau penampilan yang dianggap kurang keren."
+  },
+  {
+    "level": 5,
+    "word": "Cincai",
+    "description": "Ungkapan serapan Hokkien untuk sikap santai, mudah diatur, atau menganggap suatu urusan dapat dibereskan."
+  },
+  {
+    "level": 5,
+    "word": "Kamsud",
+    "description": "Bahasa prokem lama yang membalik suku kata dari kata maksud."
+  },
+  {
+    "level": 5,
+    "word": "Sambatan",
+    "description": "Tradisi warga Jawa saling membantu pekerjaan besar, seperti mendirikan atau memperbaiki rumah."
+  },
+  {
+    "level": 5,
+    "word": "Mangulosi",
+    "description": "Prosesi Batak menyampirkan kain ulos kepada seseorang sebagai doa dan penghormatan."
+  },
+  {
+    "level": 5,
+    "word": "Pukul sapu",
+    "description": "Tradisi Maluku ketika dua kelompok saling memukul tubuh dengan lidi sapu secara bergantian."
+  },
+  {
+    "level": 5,
+    "word": "Tiwah",
+    "description": "Upacara Dayak Ngaju untuk mengantarkan tulang leluhur ke tempat peristirahatan akhir."
+  },
+  {
+    "level": 5,
+    "word": "Tumbuk lada",
+    "description": "Senjata tikam pendek Melayu dengan gagang menyerupai alat penumbuk rempah."
+  },
+  {
+    "level": 5,
+    "word": "Peristiwa Lapangan Ikada",
+    "description": "Rapat akbar September 1945 ketika rakyat menunjukkan dukungan kepada pemerintahan Indonesia yang baru merdeka."
+  },
+  {
+    "level": 5,
+    "word": "Ateng",
+    "description": "Pelawak bertubuh kecil yang menjadi ikon film komedi Indonesia dan kerap tampil bersama Iskak."
+  },
+  {
+    "level": 5,
+    "word": "Andhap asor",
+    "description": "Sikap rendah hati dalam budaya Jawa, ditunjukkan dengan tidak meninggikan diri di hadapan orang lain."
+  },
+  {
+    "level": 5,
+    "word": "Alon-alon waton kelakon",
+    "description": "Pepatah Jawa yang menganjurkan bergerak perlahan dan berhati-hati asalkan tujuan tercapai."
+  },
+  {
+    "level": 5,
+    "word": "Sungkeman",
+    "description": "Tindakan berlutut dan memohon restu atau maaf kepada orang yang lebih tua."
+  },
+  {
+    "level": 5,
+    "word": "Ilmu padi",
+    "description": "Kiasan bahwa semakin banyak pengetahuan seseorang, semakin rendah hati perilakunya."
+  },
+  {
+    "level": 5,
+    "word": "Budaya komando",
+    "description": "Pola organisasi yang mengutamakan perintah satu arah dari atasan dan kepatuhan bawahan."
+  },
+  {
+    "level": 5,
+    "word": "Bapakisme",
+    "description": "Pola kekuasaan yang menempatkan pemimpin seperti bapak yang harus selalu diikuti bawahannya."
+  },
+  {
+    "level": 5,
+    "word": "Kendi maling",
+    "description": "Kendi tradisional yang diisi dari lubang di bagian bawah tetapi tidak bocor saat ditegakkan."
+  },
+  {
+    "level": 5,
+    "word": "Cething",
+    "description": "Bakul kecil dari anyaman bambu yang lazim dipakai untuk menaruh nasi di Jawa."
+  },
+  {
+    "level": 5,
+    "word": "Petisi 50",
+    "description": "Pernyataan kritik yang ditandatangani lima puluh tokoh terhadap pemerintahan Orde Baru pada 1980."
+  },
+  {
+    "level": 5,
+    "word": "Bing Slamet",
+    "description": "Penghibur serbabisa generasi awal Indonesia yang dikenal sebagai pelawak, penyanyi, dan aktor."
+  },
+  {
+    "level": 5,
+    "word": "Nyongkolan",
+    "description": "Arak-arakan pengantin Sasak menuju rumah keluarga mempelai dengan musik dan pakaian adat."
+  },
+  {
+    "level": 5,
+    "word": "Mappacci",
+    "description": "Ritual Bugis menjelang pernikahan dengan daun pacar sebagai lambang penyucian diri."
+  },
+  {
+    "level": 5,
+    "word": "Megibung",
+    "description": "Tradisi makan bersama di Bali dengan beberapa orang mengelilingi satu sajian besar."
+  },
+  {
+    "level": 5,
+    "word": "Menyulam karawo",
+    "description": "Kegiatan membuat sulaman khas Gorontalo dengan mencabut dan mengikat serat kain membentuk pola."
+  },
+  {
+    "level": 5,
+    "word": "Mansorandak",
+    "description": "Tradisi Biak menyambut kerabat yang kembali dari perantauan melalui doa dan prosesi adat."
+  },
+  {
+    "level": 5,
+    "word": "Kewang adat",
+    "description": "Petugas adat Maluku yang menjaga hutan, laut, dan kepatuhan warga terhadap aturan negeri."
+  },
+  {
+    "level": 5,
+    "word": "Mop Papua",
+    "description": "Cerita humor lisan khas Papua yang dibawakan singkat dengan kejutan lucu di bagian akhir."
+  },
+  {
+    "level": 5,
+    "word": "Koba-koba",
+    "description": "Pelindung tubuh tradisional dari anyaman atau pelepah yang dipakai menghadapi hujan di Maluku Utara."
+  },
+  {
+    "level": 5,
+    "word": "Peristiwa Mandor",
+    "description": "Tragedi pendudukan Jepang di Kalimantan Barat ketika banyak tokoh dan warga dibunuh di Mandor."
+  },
+  {
+    "level": 5,
+    "word": "Si Buta dari Gua Hantu",
+    "description": "Pendekar tunanetra bertongkat dari komik silat Indonesia yang berkelana bersama seekor monyet."
+  },
+  {
+    "level": 5,
+    "word": "Bahasa prokem",
+    "description": "Ragam slang yang membentuk kata dengan pola khusus dan populer di kalangan anak muda era 1970-an."
+  },
+  {
+    "level": 5,
+    "word": "Gretong",
+    "description": "Slang lama untuk sesuatu yang didapat tanpa membayar, berasal dari permainan bunyi kata gratis."
+  },
+  {
+    "level": 5,
+    "word": "Doku",
+    "description": "Slang generasi lama untuk uang, sering muncul dalam percakapan santai dan karya populer."
+  },
+  {
+    "level": 5,
+    "word": "Sepokat",
+    "description": "Istilah prokem lama untuk sepatu, dibentuk dengan permainan bunyi dan sisipan suku kata."
+  },
+  {
+    "level": 5,
+    "word": "Sokap",
+    "description": "Istilah prokem lama untuk menanyakan siapa, lazim dalam slang perkotaan beberapa dekade lalu."
+  },
+  {
+    "level": 5,
+    "word": "Ngeceng",
+    "description": "Slang lama untuk berjalan-jalan sambil bergaya, mencari perhatian, atau melihat orang yang menarik."
+  },
+  {
+    "level": 5,
+    "word": "Radio transistor",
+    "description": "Radio portabel bertenaga baterai yang dahulu dibawa untuk mendengar berita, musik, dan sandiwara."
+  },
+  {
+    "level": 5,
+    "word": "Telepon engkol",
+    "description": "Pesawat telepon lama yang dioperasikan dengan memutar gagang untuk memanggil operator."
+  },
+  {
+    "level": 5,
+    "word": "Album Minggu Kita",
+    "description": "Acara musik TVRI era 1980-an yang menampilkan klip dan penampilan penyanyi populer."
+  },
+  {
+    "level": 5,
+    "word": "Doyok",
+    "description": "Pelawak Indonesia yang terkenal lewat pasangan komedi Kadir dan Doyok serta penampilan khasnya."
+  },
+  {
+    "level": 5,
+    "word": "Drama gong",
+    "description": "Teater Bali yang memadukan dialog drama dengan iringan gamelan gong kebyar dan kisah keseharian."
+  },
+  {
+    "level": 5,
+    "word": "Tonil",
+    "description": "Sebutan lama untuk pertunjukan teater atau sandiwara panggung pada masa kolonial."
+  },
+  {
+    "level": 5,
+    "word": "Bioskop keliling",
+    "description": "Pemutaran film yang berpindah dari kampung ke kampung membawa proyektor dan layar sendiri."
+  },
+  {
+    "level": 5,
+    "word": "Ketoprak tobong",
+    "description": "Kelompok teater tradisional Jawa yang berpentas dan tinggal berpindah-pindah dalam bangunan sementara."
+  },
+  {
+    "level": 5,
+    "word": "Wayang beber",
+    "description": "Pertunjukan wayang dengan kisah yang dilukis pada gulungan lalu dibuka lembar demi lembar."
+  },
+  {
+    "level": 5,
+    "word": "Lenong denes",
+    "description": "Jenis lenong Betawi yang membawakan kisah bangsawan dengan bahasa dan busana lebih resmi."
+  },
+  {
+    "level": 5,
+    "word": "Mamanda",
+    "description": "Teater tradisional Banjar dengan tokoh kerajaan, dialog improvisasi, musik, dan humor."
+  },
+  {
+    "level": 5,
+    "word": "Keprak",
+    "description": "Alat bunyi yang dipukul dalang dengan kaki untuk memberi tanda gerak dan suasana dalam wayang."
+  },
+  {
+    "level": 5,
+    "word": "Kuis Siapa Dia?",
+    "description": "Kuis televisi lama tempat panelis menebak profesi atau identitas tamu melalui pertanyaan terbatas."
+  },
+  {
+    "level": 5,
+    "word": "S. Bagio",
+    "description": "Pelawak senior Indonesia yang terkenal lewat lawakan panggung, radio, film, dan kelompok Bagio CS."
+  },
+  {
+    "level": 5,
+    "word": "Stensilan",
+    "description": "Bacaan murah hasil cetak stensil yang dahulu beredar luas, sering berupa cerita populer sensasional."
+  },
+  {
+    "level": 5,
+    "word": "Cerita silat",
+    "description": "Kisah petualangan para pendekar yang dipenuhi perguruan, jurus, pengembaraan, dan pertarungan."
+  },
+  {
+    "level": 5,
+    "word": "Roman picisan",
+    "description": "Sebutan bernada meremehkan untuk cerita cinta populer yang dianggap ringan dan mudah ditebak."
+  },
+  {
+    "level": 5,
+    "word": "Sandiwara keliling",
+    "description": "Rombongan teater yang berpindah tempat membawa pemain, kostum, panggung, dan perlengkapannya."
+  },
+  {
+    "level": 5,
+    "word": "Siaran pedesaan",
+    "description": "Program radio lama yang menyampaikan informasi pertanian, kesehatan, dan pembangunan kepada warga desa."
+  },
+  {
+    "level": 5,
+    "word": "Kelompencapir",
+    "description": "Kelompok pendengar, pembaca, dan pemirsa yang populer melalui kuis pengetahuan pembangunan desa."
+  },
+  {
+    "level": 5,
+    "word": "Mesin stensil",
+    "description": "Alat pengganda dokumen lama yang memutar lembar cetak dari pola tinta pada master berlubang."
+  },
+  {
+    "level": 5,
+    "word": "Piringan hitam",
+    "description": "Cakram beralur yang diputar dengan jarum untuk mendengarkan rekaman suara atau musik."
+  },
+  {
+    "level": 5,
+    "word": "Bintang Radio dan Televisi",
+    "description": "Ajang pencarian bakat penyanyi yang dahulu diselenggarakan melalui jaringan radio dan televisi pemerintah."
+  },
+  {
+    "level": 5,
+    "word": "Waldjinah",
+    "description": "Penyanyi keroncong dan langgam Jawa yang terkenal dengan suara tinggi serta lagu tentang Kota Solo."
+  },
+  {
+    "level": 5,
+    "word": "Lumbung desa",
+    "description": "Tempat bersama untuk menyimpan cadangan gabah yang dapat digunakan warga saat paceklik."
+  },
+  {
+    "level": 5,
+    "word": "Pelayaran hongi",
+    "description": "Patroli bersenjata VOC di Maluku untuk mengawasi dan memaksakan monopoli rempah."
+  },
+  {
+    "level": 5,
+    "word": "Ekstirpasi",
+    "description": "Kebijakan kolonial menebangi tanaman rempah agar produksi terbatas dan harga tetap tinggi."
+  },
+  {
+    "level": 5,
+    "word": "Pajak kepala",
+    "description": "Pungutan masa kolonial yang dikenakan berdasarkan jumlah orang, bukan tanah atau hasil panen."
+  },
+  {
+    "level": 5,
+    "word": "Gudang rempah",
+    "description": "Bangunan penyimpanan lada, pala, dan cengkih sebelum diperdagangkan atau dikirim lewat pelabuhan."
+  },
+  {
+    "level": 5,
+    "word": "Benteng stelsel",
+    "description": "Strategi kolonial membangun jaringan benteng kecil untuk mempersempit gerak pasukan lawan."
+  },
+  {
+    "level": 5,
+    "word": "Politik pintu terbuka",
+    "description": "Kebijakan kolonial yang membuka Hindia Belanda bagi modal dan perkebunan swasta asing."
+  },
+  {
+    "level": 5,
+    "word": "Koin gobog",
+    "description": "Uang logam tradisional berlubang yang kemudian juga dipakai sebagai benda upacara atau jimat."
+  },
+  {
+    "level": 5,
+    "word": "Perundingan Roem-Royen",
+    "description": "Perundingan Indonesia-Belanda pada 1949 yang membuka jalan bagi kembalinya pemerintah ke Yogyakarta."
+  },
+  {
+    "level": 5,
+    "word": "Raden Saleh",
+    "description": "Pelukis abad ke-19 yang terkenal dengan adegan dramatis, binatang liar, dan penangkapan Diponegoro."
+  },
+  {
+    "level": 5,
+    "word": "Opas",
+    "description": "Petugas rendahan pada masa kolonial yang mengantar surat, menjaga kantor, atau membantu pejabat."
+  },
+  {
+    "level": 5,
+    "word": "Volksraad",
+    "description": "Dewan rakyat bentukan pemerintah kolonial yang memiliki kewenangan politik sangat terbatas."
+  },
+  {
+    "level": 5,
+    "word": "Landrente",
+    "description": "Sistem pajak tanah kolonial yang menganggap hasil sawah sebagai dasar pungutan kepada petani."
+  },
+  {
+    "level": 5,
+    "word": "Poenale sanctie",
+    "description": "Aturan kolonial yang memungkinkan buruh kontrak perkebunan dihukum karena melanggar perjanjian kerja."
+  },
+  {
+    "level": 5,
+    "word": "Tanah partikelir",
+    "description": "Wilayah luas pada masa kolonial yang dikuasai tuan tanah swasta beserta hak memungut dari penduduk."
+  },
+  {
+    "level": 5,
+    "word": "Sekolah bumiputra",
+    "description": "Sekolah masa kolonial yang diperuntukkan bagi anak penduduk pribumi dengan akses pendidikan terbatas."
+  },
+  {
+    "level": 5,
+    "word": "Blangkon mondolan",
+    "description": "Penutup kepala gaya Yogyakarta dengan tonjolan bulat yang jelas terlihat di bagian belakang."
+  },
+  {
+    "level": 5,
+    "word": "Klewang",
+    "description": "Pedang pendek bermata satu yang dipakai di berbagai daerah Nusantara dan pernah menjadi senjata pasukan."
+  },
+  {
+    "level": 5,
+    "word": "Deklarasi Djuanda",
+    "description": "Pernyataan 1957 yang menegaskan laut di antara pulau-pulau sebagai bagian wilayah Indonesia."
+  },
+  {
+    "level": 5,
+    "word": "Pramoedya",
+    "description": "Sastrawan Indonesia yang menulis rangkaian novel berlatar kebangkitan nasional dari tempat penahanan."
+  },
+  {
+    "level": 5,
+    "word": "Fusi partai",
+    "description": "Penyederhanaan paksa partai politik pada masa Orde Baru menjadi dua partai dan satu golongan karya."
+  },
+  {
+    "level": 5,
+    "word": "Massa mengambang",
+    "description": "Kebijakan Orde Baru yang membatasi kegiatan politik rakyat, terutama hingga tingkat desa."
+  },
+  {
+    "level": 5,
+    "word": "Normalisasi kehidupan kampus",
+    "description": "Kebijakan yang membatasi aktivitas politik mahasiswa dan mengarahkan kampus kembali ke urusan akademik."
+  },
+  {
+    "level": 5,
+    "word": "Penataran P4",
+    "description": "Pelatihan wajib era Orde Baru mengenai pedoman penghayatan dan pengamalan Pancasila."
+  },
+  {
+    "level": 5,
+    "word": "Repelita",
+    "description": "Rencana pembangunan lima tahun yang menjadi kerangka program pemerintah pada masa Orde Baru."
+  },
+  {
+    "level": 5,
+    "word": "Swasembada beras",
+    "description": "Keadaan ketika kebutuhan beras nasional dapat dipenuhi dari produksi dalam negeri sendiri."
+  },
+  {
+    "level": 5,
+    "word": "Cekal",
+    "description": "Singkatan populer untuk pencegahan atau penangkalan seseorang bepergian masuk atau keluar negeri."
+  },
+  {
+    "level": 5,
+    "word": "Televisi hitam-putih",
+    "description": "Pesawat televisi lama yang menampilkan gambar tanpa warna dan sering memakai antena bercabang."
+  },
+  {
+    "level": 5,
+    "word": "Konferensi Inter-Indonesia",
+    "description": "Pertemuan 1949 antara Republik Indonesia dan negara-negara federal menjelang penyerahan kedaulatan."
+  },
+  {
+    "level": 5,
+    "word": "S.K. Trimurti",
+    "description": "Pejuang, wartawan, dan tokoh buruh perempuan yang menjadi menteri tenaga kerja pertama Indonesia."
+  },
+  {
+    "level": 5,
+    "word": "Mimbar bebas",
+    "description": "Forum terbuka tempat peserta bergantian menyampaikan pidato, kritik, atau tuntutan di depan umum."
+  },
+  {
+    "level": 5,
+    "word": "Mosi tidak percaya",
+    "description": "Pernyataan resmi bahwa parlemen tidak lagi mendukung pemerintah atau pejabat tertentu."
+  },
+  {
+    "level": 5,
+    "word": "Hak budget",
+    "description": "Wewenang parlemen untuk membahas, mengubah, dan menyetujui anggaran pendapatan serta belanja negara."
+  },
+  {
+    "level": 5,
+    "word": "Hak menyatakan pendapat",
+    "description": "Wewenang parlemen menyampaikan penilaian resmi atas kebijakan pemerintah atau kejadian luar biasa."
+  },
+  {
+    "level": 5,
+    "word": "Politik mercusuar",
+    "description": "Kebijakan membangun proyek besar dan ajang internasional untuk menunjukkan kebesaran negara."
+  },
+  {
+    "level": 5,
+    "word": "Ekonomi terpimpin",
+    "description": "Sistem ekonomi masa Demokrasi Terpimpin dengan kendali pemerintah yang sangat kuat."
+  },
+  {
+    "level": 5,
+    "word": "Paku coblos",
+    "description": "Alat runcing di bilik pemilu yang digunakan untuk melubangi pilihan pada surat suara."
+  },
+  {
+    "level": 5,
+    "word": "Stempel pos",
+    "description": "Cap tinta pada surat yang menunjukkan kantor serta tanggal pengiriman dan membatalkan perangko."
+  },
+  {
+    "level": 5,
+    "word": "Peristiwa Tiga Daerah",
+    "description": "Pergolakan sosial pascakemerdekaan di Brebes, Tegal, dan Pemalang yang menumbangkan elite setempat."
+  },
+  {
+    "level": 5,
+    "word": "Cornel Simanjuntak",
+    "description": "Komponis pejuang yang menciptakan lagu-lagu bersemangat kemerdekaan pada masa revolusi."
+  },
+  {
+    "level": 5,
+    "word": "Ma'nene",
+    "description": "Tradisi Toraja membersihkan, mengganti pakaian, dan menghormati kembali jasad leluhur."
+  },
+  {
+    "level": 5,
+    "word": "Pasola",
+    "description": "Tradisi Sumba berupa dua kelompok penunggang kuda yang saling melempar lembing kayu."
+  },
+  {
+    "level": 5,
+    "word": "Caci",
+    "description": "Pertarungan tari Manggarai dengan cambuk dan perisai yang diiringi musik serta nyanyian."
+  },
+  {
+    "level": 5,
+    "word": "Mekare-kare",
+    "description": "Tradisi Bali Aga berupa duel menggunakan ikatan daun pandan berduri dan perisai rotan."
+  },
+  {
+    "level": 5,
+    "word": "Hombo batu",
+    "description": "Tradisi pemuda Nias melompati susunan batu tinggi sebagai lambang ketangkasan dan kedewasaan."
+  },
+  {
+    "level": 5,
+    "word": "Baayun anak",
+    "description": "Tradisi Banjar mengayun anak dalam ayunan berhias sambil melantunkan doa dan syair."
+  },
+  {
+    "level": 5,
+    "word": "Balimau",
+    "description": "Tradisi Minangkabau membersihkan diri dengan air bercampur jeruk menjelang Ramadan."
+  },
+  {
+    "level": 5,
+    "word": "Gendang beleq",
+    "description": "Gendang besar Sasak yang digantung di badan dan dimainkan sambil berjalan dalam kelompok."
+  },
+  {
+    "level": 5,
+    "word": "Festival Teluk Jailolo",
+    "description": "Perhelatan budaya Maluku Utara yang menampilkan laut, kuliner, tarian, dan tradisi masyarakat Jailolo."
+  },
+  {
+    "level": 5,
+    "word": "Rohana Kudus",
+    "description": "Pelopor pers perempuan dari Sumatra Barat yang mendirikan sekolah dan surat kabar untuk perempuan."
+  },
+  {
+    "level": 5,
+    "word": "Manugal",
+    "description": "Cara menanam padi ladang dengan membuat lubang memakai tongkat lalu memasukkan benih bersama-sama."
+  },
+  {
+    "level": 5,
+    "word": "Maccera tasi",
+    "description": "Ritual masyarakat pesisir Sulawesi sebagai ungkapan syukur dan doa keselamatan di laut."
+  },
+  {
+    "level": 5,
+    "word": "Aruh baharin",
+    "description": "Upacara syukur panen masyarakat Dayak Meratus yang diisi doa, musik, dan tarian."
+  },
+  {
+    "level": 5,
+    "word": "Wor Biak",
+    "description": "Rangkaian upacara adat Biak yang memadukan nyanyian, tarian, dan perayaan daur hidup."
+  },
+  {
+    "level": 5,
+    "word": "Merti desa",
+    "description": "Tradisi bersih desa di Jawa sebagai ungkapan syukur melalui kerja bersama dan kenduri."
+  },
+  {
+    "level": 5,
+    "word": "Ngarot",
+    "description": "Tradisi agraris Indramayu yang melibatkan pemuda-pemudi berhias bunga menjelang musim tanam."
+  },
+  {
+    "level": 5,
+    "word": "Foy doa",
+    "description": "Alat musik tiup ganda dari Flores yang dimainkan dengan meniup dua batang seruling sekaligus."
+  },
+  {
+    "level": 5,
+    "word": "Tahuri",
+    "description": "Alat musik tiup Maluku yang dibuat dari cangkang kerang besar."
+  },
+  {
+    "level": 5,
+    "word": "Pesta Olahraga Asia 1962",
+    "description": "Ajang olahraga Asia di Jakarta yang dikenang melalui pembangunan kompleks olahraga besar."
+  },
+  {
+    "level": 5,
+    "word": "Sam Ratulangi",
+    "description": "Tokoh pendidikan dan pejuang dari Minahasa yang dikenal dengan semboyan hidup untuk menghidupkan orang lain."
+  }
+]

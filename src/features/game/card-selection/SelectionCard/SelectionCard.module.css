@@ -52,6 +52,10 @@
   background: var(--coral);
 }
 
+.selectionCard[data-level='5']::before {
+  background: var(--violet);
+}
+
 .selectionCard:hover:not(:disabled) {
   box-shadow: 9px 9px 0 var(--ink);
   transform: translate(-2px, -5px) rotate(0);

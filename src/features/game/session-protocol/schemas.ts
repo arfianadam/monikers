@@ -31,7 +31,13 @@ export const participantPresenceSchema = z.enum([
 ]);
 
 export const cardSchema = z.object({
-  level: z.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)]),
+  level: z.union([
+    z.literal(1),
+    z.literal(2),
+    z.literal(3),
+    z.literal(4),
+    z.literal(5),
+  ]),
   word: z.string().min(1),
   description: z.string(),
 });
