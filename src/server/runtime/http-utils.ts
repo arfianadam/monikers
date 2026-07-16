@@ -109,9 +109,12 @@ export function clearedSessionCookie(
 
 export function requestIsSecure(request: IncomingMessage): boolean {
   const forwardedProtocol = request.headers['x-forwarded-proto'];
+
   if (typeof forwardedProtocol === 'string') {
-    return forwardedProtocol.split(',')[0].trim() === 'https';
+    const protocol = forwardedProtocol.split(',')[0].trim();
+    return protocol === 'https' || protocol === 'wss';
   }
+
   return Boolean(
     (request.socket as IncomingMessage['socket'] & { encrypted?: boolean })
       .encrypted
