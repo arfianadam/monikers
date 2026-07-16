@@ -55,6 +55,7 @@
   font-size: clamp(2rem, 4vw, 3rem);
   letter-spacing: -0.055em;
   margin: 8px 0 0;
+  line-height: 1;
 }
 
 .deckSummary {
