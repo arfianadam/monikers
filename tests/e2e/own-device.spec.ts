@@ -481,14 +481,14 @@ test('hanya pengendali yang dapat mengubah batas waktu pemain tidak aktif', asyn
       name: checkboxName,
     });
 
-    await expect(controllerCheckbox).toBeChecked();
+    await expect(controllerCheckbox).not.toBeChecked();
     await expect(controllerCheckbox).toBeEnabled();
-    await expect(joinerCheckbox).toBeChecked();
+    await expect(joinerCheckbox).not.toBeChecked();
     await expect(joinerCheckbox).toBeDisabled();
 
     await controllerCheckbox.click();
-    await expect(controllerCheckbox).not.toBeChecked();
-    await expect(joinerCheckbox).not.toBeChecked();
+    await expect(controllerCheckbox).toBeChecked();
+    await expect(joinerCheckbox).toBeChecked();
   } finally {
     await joinerContext.close();
   }
@@ -673,6 +673,11 @@ test('sesi perangkat masing-masing menyelesaikan seluruh siklus dan pemulihan', 
       controllerPage,
       controllerName
     );
+    const inactivityTimeout = controllerPage.getByRole('checkbox', {
+      name: /Pakai timeout kalau player offline/,
+    });
+    await inactivityTimeout.click();
+    await expect(inactivityTimeout).toBeChecked();
 
     await joinOwnDeviceSession(joinerPage, {
       ...session,

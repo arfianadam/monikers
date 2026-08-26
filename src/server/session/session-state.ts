@@ -161,7 +161,7 @@ export function createPendingSession({
     createdAt: now,
     controllerId,
     configuration: { players: 4, cardsPerPlayer: 5 },
-    inactivityTimeoutEnabled: true,
+    inactivityTimeoutEnabled: false,
     game: createInitialGameState(),
   };
 

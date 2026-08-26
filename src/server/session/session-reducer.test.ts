@@ -222,6 +222,12 @@ describe('session reducer lifecycle', () => {
   it('assigns balanced teams, resets readiness, and transfers control after grace', () => {
     let state = createLobby();
     state = own(
+      apply(state, 'creator', 19, {
+        type: 'set-inactivity-timeout',
+        enabled: true,
+      })
+    );
+    state = own(
       apply(state, 'creator', 20, { type: 'set-ready', ready: true })
     );
     state = own(apply(state, 'guest', 21, { type: 'set-ready', ready: true }));
@@ -273,7 +279,7 @@ describe('session reducer lifecycle', () => {
         command: {
           id: 'guest-timeout-setting',
           type: 'set-inactivity-timeout',
-          enabled: false,
+          enabled: true,
         },
       },
       dependencies
@@ -282,15 +288,15 @@ describe('session reducer lifecycle', () => {
       ok: false,
       error: { code: 'NOT_AUTHORIZED' },
     });
-    expect(own(unauthorized.state).inactivityTimeoutEnabled).toBe(true);
+    expect(own(unauthorized.state).inactivityTimeoutEnabled).toBe(false);
 
     state = own(
       apply(state, 'creator', 23, {
         type: 'set-inactivity-timeout',
-        enabled: false,
+        enabled: true,
       })
     );
-    expect(state.inactivityTimeoutEnabled).toBe(false);
+    expect(state.inactivityTimeoutEnabled).toBe(true);
     expect(
       Object.values(state.participants).every(
         (participant) => !participant.ready
@@ -557,6 +563,12 @@ describe('session reducer lifecycle', () => {
       'sixth',
     ]);
     expect(state.teamOrder.team1).toEqual(['creator', 'third', 'sixth']);
+    state = own(
+      apply(state, 'creator', 90, {
+        type: 'set-inactivity-timeout',
+        enabled: true,
+      })
+    );
     state = own(disconnectParticipant(state, 'creator', 100).state);
     state = own(disconnectParticipant(state, 'third', 10_000).state);
     state = {

@@ -168,7 +168,7 @@ describe('recipient-specific session projections', () => {
     expect(watcher.phase).toBe('turn');
     if (active.phase !== 'turn' || watcher.phase !== 'turn') return;
     expect(active.card?.word).toBe('Rahasia 1');
-    expect(active.inactivityTimeoutEnabled).toBe(true);
+    expect(active.inactivityTimeoutEnabled).toBe(false);
     expect(active.clueGiverConnected).toBe(true);
     expect(active.controls).toMatchObject({
       canMarkCorrect: true,
