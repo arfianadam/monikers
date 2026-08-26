@@ -121,6 +121,14 @@ export class SessionHttpController {
       return true;
     }
 
+    const resumeMatch = pathname.match(
+      /^\/session\/([A-Za-z0-9_-]+)\/actions\/resume$/
+    );
+    if (request.method === 'GET' && resumeMatch) {
+      this.resumeSession(request, response, resumeMatch[1]);
+      return true;
+    }
+
     const leaveMatch = pathname.match(
       /^\/session\/([A-Za-z0-9_-]+)\/actions\/leave$/
     );
@@ -157,6 +165,26 @@ export class SessionHttpController {
     if (isSameOriginRequest(request)) return true;
     sendError(response, 403, 'ORIGIN_REJECTED', 'Permintaan tidak diizinkan.');
     return false;
+  }
+
+  private resumeSession(
+    request: IncomingMessage,
+    response: ServerResponse,
+    sessionId: string
+  ) {
+    const token = getSessionCredential(request);
+    const authenticated = this.repository.authenticate(sessionId, token);
+    if (!authenticated || authenticated.record.state.mode !== 'own-device') {
+      sendError(
+        response,
+        401,
+        'CREDENTIAL_REVOKED',
+        'Akses sesi tidak berlaku.'
+      );
+      return;
+    }
+
+    sendJson(response, 200, { route: `/session/${sessionId}` });
   }
 
   private async createSession(
@@ -315,17 +343,20 @@ export class SessionHttpController {
 
     const state = record.state;
     if (state.phase !== 'lobby') {
-      sendError(
-        response,
-        409,
-        'ROOM_STARTED',
-        'Permainan di sesi ini sudah dimulai.'
-      );
+      sendJson(response, 409, {
+        code: 'ROOM_STARTED',
+        error: 'Permainan di sesi ini sudah dimulai.',
+        route: `/session/${state.sessionId}`,
+      });
       return;
     }
     const players = activeParticipants(state);
     if (players.length >= 20) {
-      sendError(response, 409, 'ROOM_FULL', 'Sesi ini sudah penuh.');
+      sendJson(response, 409, {
+        code: 'ROOM_FULL',
+        error: 'Sesi ini sudah penuh.',
+        route: `/session/${state.sessionId}`,
+      });
       return;
     }
 
@@ -333,6 +364,7 @@ export class SessionHttpController {
       code: state.joinCode,
       controllerName: controllerName(state),
       playerCount: players.length,
+      route: `/session/${state.sessionId}`,
     });
   }
 

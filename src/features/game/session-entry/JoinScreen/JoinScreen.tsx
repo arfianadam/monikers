@@ -21,6 +21,7 @@ interface JoinPreview {
   code: string;
   controllerName: string;
   playerCount: number;
+  route: string;
 }
 
 interface JoinResponse {
@@ -34,6 +35,7 @@ type PreviewStatus = 'loading' | 'ready' | 'invalid' | 'full' | 'started';
 interface PreviewErrorBody {
   code?: string;
   error?: string;
+  route?: string;
 }
 
 const previewErrorCopy: Record<
@@ -84,10 +86,28 @@ export function JoinScreen({ initialCode }: { initialCode: string }) {
     })
       .then(async (response) => {
         const body = (await response.json()) as JoinPreview | PreviewErrorBody;
+        if (body.route) {
+          try {
+            const resumeResponse = await fetch(`${body.route}/actions/resume`, {
+              signal: controller.signal,
+            });
+            if (resumeResponse.ok) {
+              router.replace(body.route);
+              return null;
+            }
+          } catch (caughtError) {
+            if (
+              caughtError instanceof DOMException &&
+              caughtError.name === 'AbortError'
+            ) {
+              throw caughtError;
+            }
+          }
+        }
         if (!response.ok) {
-          const code = 'code' in body ? body.code : undefined;
-          if (code === 'ROOM_FULL') setStatus('full');
-          else if (code === 'ROOM_STARTED') setStatus('started');
+          const errorCode = 'code' in body ? body.code : undefined;
+          if (errorCode === 'ROOM_FULL') setStatus('full');
+          else if (errorCode === 'ROOM_STARTED') setStatus('started');
           else setStatus('invalid');
           return null;
         }
@@ -109,7 +129,7 @@ export function JoinScreen({ initialCode }: { initialCode: string }) {
       });
 
     return () => controller.abort();
-  }, [code]);
+  }, [code, router]);
 
   const join = async () => {
     setSubmitting(true);

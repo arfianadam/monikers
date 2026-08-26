@@ -500,6 +500,7 @@ describe('session HTTP and WebSocket server', () => {
       code: string;
       controllerName: string;
       playerCount: number;
+      route: string;
     }>(`/api/join/${formattedCode}`);
     expect(preview).toMatchObject({
       status: 200,
@@ -507,6 +508,7 @@ describe('session HTTP and WebSocket server', () => {
         code: activated.body.joinCode,
         controllerName: 'Ayu Sari',
         playerCount: 1,
+        route: created.body.route,
       },
     });
 
@@ -530,6 +532,21 @@ describe('session HTTP and WebSocket server', () => {
       `Path=/session/${created.body.sessionId}`
     );
     expect(joinerCredential.cookie).not.toBe(creatorCredential.cookie);
+
+    const resumed = await harness.request<{ route: string }>(
+      `${joined.body.route}/actions/resume`,
+      { cookie: joinerCredential.cookie }
+    );
+    expect(resumed).toMatchObject({
+      status: 200,
+      body: { route: joined.body.route },
+    });
+    await expect(
+      harness.request(`${joined.body.route}/actions/resume`)
+    ).resolves.toMatchObject({
+      status: 401,
+      body: { code: 'CREDENTIAL_REVOKED' },
+    });
 
     const creator = await harness.openWebSocket(
       created.body.sessionId,
@@ -840,6 +857,24 @@ describe('session HTTP and WebSocket server', () => {
       })
     ).resolves.toMatchObject({ ok: true });
     await projection(creator, (value) => value.phase === 'selection');
+
+    await expect(
+      harness.request(`/api/join/${session.joinCode}`)
+    ).resolves.toMatchObject({
+      status: 409,
+      body: {
+        code: 'ROOM_STARTED',
+        route: session.route,
+      },
+    });
+    await expect(
+      harness.request(`${session.route}/actions/resume`, {
+        cookie: joinerCredential.cookie,
+      })
+    ).resolves.toMatchObject({
+      status: 200,
+      body: { route: session.route },
+    });
 
     const lateJoin = await harness.request<{ code: string; error: string }>(
       `/api/join/${session.joinCode}`,

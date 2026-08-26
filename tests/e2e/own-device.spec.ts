@@ -361,6 +361,52 @@ test('link lobby memakai origin deployment dan room code', async ({
     .toBe(`http://127.0.0.1:3000/join/${session.code}/`);
 });
 
+test('player kembali ke sesi lewat join link setelah tab tertutup', async ({
+  browser,
+  page: controllerPage,
+}, testInfo) => {
+  const playerContext = await createMatchingContext(browser, testInfo);
+  const playerPage = await playerContext.newPage();
+
+  try {
+    const session = await createOwnDeviceSession(
+      controllerPage,
+      'Pengendali E2E'
+    );
+    await joinOwnDeviceSession(playerPage, {
+      ...session,
+      creatorName: 'Pengendali E2E',
+      playerName: 'Pemain E2E',
+    });
+    await readyPlayersAndStartSelection(controllerPage, playerPage);
+
+    await playerPage.close();
+    await expect
+      .poll(async () => playerContext.cookies())
+      .toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            name: 'monikers_session',
+            path: session.sessionPath,
+          }),
+        ])
+      );
+
+    const resumedPage = await playerContext.newPage();
+    await resumedPage.goto(`/join/${session.code}`);
+
+    await expect(resumedPage).toHaveURL(new RegExp(`${session.sessionPath}$`));
+    await expect(
+      resumedPage.getByRole('heading', {
+        level: 1,
+        name: 'Pilih favoritmu.',
+      })
+    ).toBeVisible();
+  } finally {
+    await playerContext.close();
+  }
+});
+
 test('perubahan pengaturan lobi tidak menonaktifkan aksi lain', async ({
   page,
 }) => {
