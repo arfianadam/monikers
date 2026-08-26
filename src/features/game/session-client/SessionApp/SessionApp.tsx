@@ -20,7 +20,7 @@ import { useGameSounds } from '@/features/game/turn/useGameSounds';
 import { useLeaveGuard } from '@/features/game/turn/useLeaveGuard';
 import {
   LobbyScreen,
-  type LobbyCodeCopyState,
+  type LobbyLinkCopyState,
   type LobbyPlayerView,
 } from '@/features/game/own-device/LobbyScreen/LobbyScreen';
 import { CreatorActivationScreen } from '@/features/game/own-device/CreatorActivationScreen/CreatorActivationScreen';
@@ -382,7 +382,8 @@ export function SessionApp({ sessionId }: { sessionId: string }) {
   const [activationName, setActivationName] = useState('');
   const [activationError, setActivationError] = useState('');
   const [activating, setActivating] = useState(false);
-  const [copyState, setCopyState] = useState<LobbyCodeCopyState>('idle');
+  const [linkCopyState, setLinkCopyState] =
+    useState<LobbyLinkCopyState>('idle');
   const [renameDraft, setRenameDraft] = useState<string | null>(null);
   const [confirmation, setConfirmation] = useState<ConfirmationAction | null>(
     null
@@ -627,7 +628,7 @@ export function SessionApp({ sessionId }: { sessionId: string }) {
         }}
         connectionState={connection.status}
         onRetry={connection.retry}
-        codeCopyState={copyState}
+        linkCopyState={linkCopyState}
         startBlockers={lobbyBlockers(projection)}
         rename={
           currentParticipant
@@ -649,10 +650,11 @@ export function SessionApp({ sessionId }: { sessionId: string }) {
         onSetReady={(ready) =>
           connection.sendCommand({ type: 'set-ready', ready })
         }
-        onCopyCode={() => {
-          void copyText(projection.joinCode)
-            .then(() => setCopyState('copied'))
-            .catch(() => setCopyState('failed'));
+        onCopyLink={() => {
+          const joinLink = `${window.location.origin}/join/${projection.joinCode}/`;
+          void copyText(joinLink)
+            .then(() => setLinkCopyState('copied'))
+            .catch(() => setLinkCopyState('failed'));
         }}
         onStart={() => connection.sendCommand({ type: 'start-selection' })}
         onLeave={() => setConfirmation({ type: 'leave' })}

@@ -22,7 +22,7 @@ import { TopBar } from '@/shared/ui/TopBar/TopBar';
 import styles from './LobbyScreen.module.css';
 
 export type LobbyPlayerPresence = 'connected' | 'disconnected';
-export type LobbyCodeCopyState = 'idle' | 'copied' | 'failed';
+export type LobbyLinkCopyState = 'idle' | 'copied' | 'failed';
 export type LobbyReorderDirection = 'up' | 'down';
 
 export interface LobbyPlayerView {
@@ -60,7 +60,7 @@ export interface LobbyScreenProps {
   canStart: boolean;
   isController: boolean;
   onSetReady: (ready: boolean) => void;
-  onCopyCode: () => void;
+  onCopyLink: () => void;
   onStart: () => void;
   onLeave: () => void;
   onCardsPerPlayerChange?: (cardsPerPlayer: number) => void;
@@ -77,7 +77,7 @@ export interface LobbyScreenProps {
   onRetry?: () => void;
   controlsDisabled?: boolean;
   pendingActions?: LobbyPendingActionsView;
-  codeCopyState?: LobbyCodeCopyState;
+  linkCopyState?: LobbyLinkCopyState;
   startBlockers?: readonly string[];
   rename?: LobbyRenameView;
   containerRef?: Ref<HTMLDivElement>;
@@ -93,10 +93,10 @@ const otherTeam: Record<TeamId, TeamId> = {
   team2: 'team1',
 };
 
-const copyMessages: Record<LobbyCodeCopyState, string> = {
+const copyMessages: Record<LobbyLinkCopyState, string> = {
   idle: '',
-  copied: 'Kode sudah di-copy!',
-  failed: 'Oops, kode belum bisa di-copy.',
+  copied: 'Link sudah di-copy!',
+  failed: 'Oops, link belum bisa di-copy.',
 };
 
 function findCurrentPlayer(teams: LobbyTeamsView) {
@@ -113,7 +113,7 @@ export function LobbyScreen({
   canStart,
   isController,
   onSetReady,
-  onCopyCode,
+  onCopyLink,
   onStart,
   onLeave,
   onCardsPerPlayerChange,
@@ -127,7 +127,7 @@ export function LobbyScreen({
   onRetry,
   controlsDisabled = false,
   pendingActions = {},
-  codeCopyState = 'idle',
+  linkCopyState = 'idle',
   startBlockers = [],
   rename,
   containerRef,
@@ -172,9 +172,9 @@ export function LobbyScreen({
               <span>Room code</span>
               <output aria-label={`Room code ${joinCode}`}>{joinCode}</output>
               <div className={styles.codeActions}>
-                <button type="button" onClick={onCopyCode}>
+                <button type="button" onClick={onCopyLink}>
                   <MaterialSymbol name="content_copy" />
-                  Copy kode
+                  Copy link
                 </button>
                 {isController && onRotateCode && (
                   <button
@@ -188,7 +188,7 @@ export function LobbyScreen({
                 )}
               </div>
               <p className={styles.copyStatus} role="status" aria-live="polite">
-                {copyMessages[codeCopyState]}
+                {copyMessages[linkCopyState]}
               </p>
             </Panel>
           </section>

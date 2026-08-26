@@ -343,6 +343,24 @@ test('pengendali kembali ke beranda tanpa melihat layar sesi berakhir', async ({
   expect(headingHistory).not.toContain('Game sudah selesai.');
 });
 
+test('link lobby memakai origin deployment dan room code', async ({
+  context,
+  page,
+}) => {
+  const session = await createOwnDeviceSession(page, 'Pengendali E2E');
+  await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+
+  const codeRegion = page.getByRole('region', { name: 'Room code' });
+  await codeRegion.getByRole('button', { name: 'Copy link' }).click();
+
+  await expect(
+    codeRegion.getByText('Link sudah di-copy!', { exact: true })
+  ).toBeVisible();
+  await expect
+    .poll(() => page.evaluate(() => navigator.clipboard.readText()))
+    .toBe(`http://127.0.0.1:3000/join/${session.code}/`);
+});
+
 test('perubahan pengaturan lobi tidak menonaktifkan aksi lain', async ({
   page,
 }) => {
