@@ -545,6 +545,51 @@ test('memilih kartu tidak menonaktifkan pilihan lain saat sinkronisasi', async (
   }
 });
 
+test('skor diperbarui saat tebakan benar sebelum giliran berakhir', async ({
+  browser,
+  page: controllerPage,
+}, testInfo) => {
+  const joinerContext = await createMatchingContext(browser, testInfo);
+  const joinerPage = await joinerContext.newPage();
+
+  try {
+    const controllerName = 'Pengendali E2E';
+    const session = await createOwnDeviceSession(
+      controllerPage,
+      controllerName
+    );
+    await joinOwnDeviceSession(joinerPage, {
+      ...session,
+      creatorName: controllerName,
+      playerName: 'Pemain E2E',
+    });
+    await setCardsPerPlayerToOne(controllerPage, joinerPage);
+    await readyPlayersAndStartSelection(controllerPage, joinerPage);
+    await chooseOnePrivateCard(controllerPage);
+    await chooseOnePrivateCard(joinerPage);
+    await lockBothSelections(controllerPage, joinerPage);
+
+    await controllerPage.getByRole('button', { name: 'Gas 60 detik' }).click();
+    const activeCard = controllerPage.getByRole('article');
+    const cardPoints = Number(
+      (await activeCard.textContent())?.match(/Level ([1-4])/)?.[1]
+    );
+    expect(cardPoints).toBeGreaterThan(0);
+    await expect(joinerPage.getByText('0 – 0', { exact: true })).toBeVisible();
+
+    await controllerPage.getByRole('button', { name: 'Benar!' }).click();
+
+    await expect(
+      joinerPage.getByText(`${cardPoints} – 0`, { exact: true })
+    ).toBeVisible();
+    await expect(
+      controllerPage.getByRole('button', { name: 'Stop giliran' })
+    ).toBeVisible();
+  } finally {
+    await joinerContext.close();
+  }
+});
+
 async function finishOwnDeviceRound(
   controllerPage: Page,
   joinerPage: Page,

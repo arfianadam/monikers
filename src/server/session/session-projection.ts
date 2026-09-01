@@ -49,12 +49,25 @@ function orderedParticipants(
 
 function scorePoints(state: SessionState): ScorePointsProjection {
   function teamPoints(team: TeamId) {
+    const livePoints =
+      state.mode === 'own-device' &&
+      state.phase === 'turn' &&
+      state.game.turn?.currentTeam === team
+        ? getCardPoints(state.game.turn.guessedCards)
+        : 0;
     const rounds: Partial<Record<RoundNumber, number>> = {};
     for (const round of [1, 2, 3] as const) {
       const cards = state.game.scores[team][round];
-      if (cards) rounds[round] = getCardPoints(cards);
+      if (cards || (round === state.game.round && livePoints > 0)) {
+        rounds[round] =
+          getCardPoints(cards ?? []) +
+          (round === state.game.round ? livePoints : 0);
+      }
     }
-    return { total: getTeamTotal(state.game.scores, team), rounds };
+    return {
+      total: getTeamTotal(state.game.scores, team) + livePoints,
+      rounds,
+    };
   }
 
   return { team1: teamPoints('team1'), team2: teamPoints('team2') };

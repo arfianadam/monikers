@@ -180,4 +180,63 @@ describe('recipient-specific session projections', () => {
     expect(sessionProjectionSchema.safeParse(active).success).toBe(true);
     expect(sessionProjectionSchema.safeParse(watcher).success).toBe(true);
   });
+
+  it('includes correct guesses in the live own-device score', () => {
+    let state = createSelection();
+    const selectionId = state.selection!.id;
+    for (const [actorId, cardWord] of [
+      ['one', 'Rahasia 1'],
+      ['two', 'Rahasia 4'],
+    ] as const) {
+      state = own(
+        command(state, actorId, 11, {
+          id: `toggle-${actorId}`,
+          type: 'toggle-card',
+          selectionId,
+          cardWord,
+        })
+      );
+      state = own(
+        command(state, actorId, 12, {
+          id: `confirm-${actorId}`,
+          type: 'confirm-selection',
+          selectionId,
+        })
+      );
+    }
+    const turnId = state.game.turn!.id;
+    state = own(
+      command(state, 'one', 20, {
+        id: 'start-turn',
+        type: 'start-turn',
+        turnId,
+      })
+    );
+    state = own(
+      command(state, 'one', 21, {
+        id: 'correct',
+        type: 'correct',
+        turnId,
+        cardWord: state.game.remainingCards[0]!.word,
+      })
+    );
+    expect(state.game.turn?.guessedCards).toHaveLength(1);
+
+    const clueGiver = projectSession(state, {
+      participantId: 'one',
+      serverTime: 21,
+    });
+    const watcher = projectSession(state, {
+      participantId: 'two',
+      serverTime: 21,
+    });
+
+    expect(clueGiver.phase).toBe('turn');
+    expect(watcher.phase).toBe('turn');
+    if (clueGiver.phase !== 'turn' || watcher.phase !== 'turn') return;
+    expect(clueGiver.scores.team1.total).toBe(1);
+    expect(clueGiver.scores.team1.rounds[1]).toBe(1);
+    expect(watcher.scores.team1.total).toBe(1);
+    expect(watcher.scores.team1.rounds[1]).toBe(1);
+  });
 });
