@@ -73,6 +73,7 @@ export type OwnTurnWatchingStatus =
 export interface OwnTurnWatchingProps extends OwnTurnBaseProps {
   view: 'watching';
   status: OwnTurnWatchingStatus;
+  lastGuessedCard?: Card;
   secondsRemaining?: number;
   reconnectSecondsRemaining?: number;
 }
@@ -273,6 +274,8 @@ export function OwnTurnScreen(props: OwnTurnScreenProps) {
 
   if (props.view === 'watching') {
     const copy = getWatchingCopy(props);
+    const lastGuessedCard =
+      props.status === 'active' ? props.lastGuessedCard : undefined;
     const showTimer =
       props.status === 'active' && props.secondsRemaining !== undefined;
 
@@ -298,7 +301,13 @@ export function OwnTurnScreen(props: OwnTurnScreenProps) {
               scores={scores}
             />
 
-            <section className={styles.watchingCopy} aria-live="polite">
+            <section
+              className={cn(
+                styles.watchingCopy,
+                lastGuessedCard && styles.watchingCopyWithGuess
+              )}
+              aria-live="polite"
+            >
               {showTimer ? (
                 <div
                   className={cn(
@@ -322,13 +331,31 @@ export function OwnTurnScreen(props: OwnTurnScreenProps) {
                 />
               )}
               <Eyebrow onDark>{copy.eyebrow}</Eyebrow>
-              <h1>{copy.title}</h1>
-              <p>{copy.body}</p>
+              {lastGuessedCard ? (
+                <Panel
+                  as="article"
+                  className={styles.lastGuessedCard}
+                  aria-label="Kartu terakhir ditebak benar"
+                >
+                  <span>
+                    Terakhir ditebak benar · {lastGuessedCard.level} poin
+                  </span>
+                  <h1>{lastGuessedCard.word}</h1>
+                  <p>{lastGuessedCard.description}</p>
+                </Panel>
+              ) : (
+                <>
+                  <h1>{copy.title}</h1>
+                  <p>{copy.body}</p>
+                </>
+              )}
             </section>
 
             <p className={styles.privacyNote}>
               <MaterialSymbol name="visibility_off" />
-              Kartu disembunyikan di device penonton.
+              {lastGuessedCard
+                ? 'Kartu yang sedang ditebak tetap rahasia.'
+                : 'Kartu disembunyikan di device penonton.'}
             </p>
           </main>
         </ScreenFrame>

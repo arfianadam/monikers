@@ -370,6 +370,7 @@ function OwnTurnView({
       {...common}
       view="watching"
       status={watchingStatus}
+      lastGuessedCard={projection.lastGuessedCard}
       secondsRemaining={seconds}
       reconnectSecondsRemaining={graceSeconds}
     />

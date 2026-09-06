@@ -545,7 +545,7 @@ test('memilih kartu tidak menonaktifkan pilihan lain saat sinkronisasi', async (
   }
 });
 
-test('skor diperbarui saat tebakan benar sebelum giliran berakhir', async ({
+test('skor dan kartu terakhir diperbarui saat tebakan benar', async ({
   browser,
   page: controllerPage,
 }, testInfo) => {
@@ -571,6 +571,12 @@ test('skor diperbarui saat tebakan benar sebelum giliran berakhir', async ({
 
     await controllerPage.getByRole('button', { name: 'Gas 60 detik' }).click();
     const activeCard = controllerPage.getByRole('article');
+    const guessedWord = await activeCard.getByRole('heading').innerText();
+    const lastGuessedCard = joinerPage.getByRole('article', {
+      name: 'Kartu terakhir ditebak benar',
+    });
+    await expect(lastGuessedCard).toHaveCount(0);
+    await expectSecretAbsent(joinerPage, guessedWord);
     const cardPoints = Number(
       (await activeCard.textContent())?.match(/Level ([1-4])/)?.[1]
     );
@@ -584,6 +590,44 @@ test('skor diperbarui saat tebakan benar sebelum giliran berakhir', async ({
     ).toBeVisible();
     await expect(
       controllerPage.getByRole('button', { name: 'Stop giliran' })
+    ).toBeVisible();
+    await expect(lastGuessedCard.getByRole('heading')).toHaveText(guessedWord);
+    await expect(activeCard.getByRole('heading')).not.toHaveText(guessedWord);
+    const nextWord = await activeCard.getByRole('heading').innerText();
+    await expectSecretAbsent(joinerPage, nextWord);
+    await joinerPage.reload();
+    await expect(lastGuessedCard.getByRole('heading')).toHaveText(guessedWord);
+    await expectSecretAbsent(joinerPage, nextWord);
+    await captureRegion(
+      joinerPage,
+      lastGuessedCard,
+      '10-own-last-guessed-card.png'
+    );
+
+    for (const viewport of [
+      { width: 390, height: 844 },
+      { width: 390, height: 680 },
+      { width: 540, height: 360 },
+    ]) {
+      await joinerPage.setViewportSize(viewport);
+      await lastGuessedCard.scrollIntoViewIfNeeded();
+      await expect(lastGuessedCard).toBeInViewport({ ratio: 1 });
+      expect(
+        await joinerPage.evaluate(
+          () => document.documentElement.scrollWidth > window.innerWidth
+        )
+      ).toBe(false);
+      await joinerPage.screenshot({
+        path: testInfo.outputPath(
+          `last-guessed-${viewport.width}x${viewport.height}.png`
+        ),
+        fullPage: true,
+      });
+    }
+    await controllerPage.getByRole('button', { name: 'Stop giliran' }).click();
+    await expect(lastGuessedCard).toHaveCount(0);
+    await expect(
+      joinerPage.getByRole('button', { name: 'Gas 60 detik' })
     ).toBeVisible();
   } finally {
     await joinerContext.close();

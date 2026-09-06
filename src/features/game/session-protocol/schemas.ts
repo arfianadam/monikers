@@ -254,6 +254,7 @@ const turnProjectionSchema = z.object({
   guessedCardCount: z.number().int().nonnegative(),
   scores: scorePointsSchema,
   card: cardSchema.optional(),
+  lastGuessedCard: cardSchema.optional(),
   controls: z
     .object({
       canStart: z.boolean(),

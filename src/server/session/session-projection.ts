@@ -242,6 +242,10 @@ export function projectSession(
       scores: scorePoints(state),
       card:
         isClueGiver && turn.active ? state.game.remainingCards[0] : undefined,
+      lastGuessedCard:
+        state.mode === 'own-device' && !isClueGiver && turn.active
+          ? turn.guessedCards.at(-1)
+          : undefined,
       controls:
         isClueGiver && participantConnected
           ? {

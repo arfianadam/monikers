@@ -315,6 +315,7 @@ export interface TurnProjection extends ProjectionBase {
   guessedCardCount: number;
   scores: ScorePointsProjection;
   card?: Card;
+  lastGuessedCard?: Card;
   controls?: {
     canStart: boolean;
     canMarkCorrect: boolean;

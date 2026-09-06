@@ -40,7 +40,7 @@ function command(
   return transition.state;
 }
 
-function createSelection(): OwnDeviceSessionState {
+function createSelection(cardsPerPlayer = 1): OwnDeviceSessionState {
   let state = own(
     createPendingSession({
       sessionId: 'private-session',
@@ -70,7 +70,7 @@ function createSelection(): OwnDeviceSessionState {
     command(state, 'one', 5, {
       id: 'configuration',
       type: 'update-setup',
-      cardsPerPlayer: 1,
+      cardsPerPlayer,
     })
   );
   state = own(
@@ -175,6 +175,7 @@ describe('recipient-specific session projections', () => {
       canEnd: true,
     });
     expect(watcher.card).toBeUndefined();
+    expect(watcher).not.toHaveProperty('lastGuessedCard', expect.anything());
     expect(watcher.controls).toBeUndefined();
     expect(JSON.stringify(watcher)).not.toContain('Rahasia 1');
     expect(sessionProjectionSchema.safeParse(active).success).toBe(true);
@@ -238,5 +239,85 @@ describe('recipient-specific session projections', () => {
     expect(clueGiver.scores.team1.rounds[1]).toBe(1);
     expect(watcher.scores.team1.total).toBe(1);
     expect(watcher.scores.team1.rounds[1]).toBe(1);
+  });
+
+  it('shares only the latest correct card, preserves it on skip, and clears it at handoff', () => {
+    let state = createSelection(2);
+    const selectionId = state.selection!.id;
+    for (const actorId of ['one', 'two']) {
+      for (const card of state.selection!.offers[actorId].slice(0, 2)) {
+        state = own(
+          command(state, actorId, 11, {
+            id: `toggle-${card.word}`,
+            type: 'toggle-card',
+            selectionId,
+            cardWord: card.word,
+          })
+        );
+      }
+      state = own(
+        command(state, actorId, 12, {
+          id: `confirm-${actorId}`,
+          type: 'confirm-selection',
+          selectionId,
+        })
+      );
+    }
+    const turnId = state.game.turn!.id;
+    state = own(
+      command(state, 'one', 20, {
+        id: 'start-turn',
+        type: 'start-turn',
+        turnId,
+      })
+    );
+    for (const now of [21, 1021]) {
+      const guessedCard = state.game.remainingCards[0];
+      state = own(
+        command(state, 'one', now, {
+          id: `correct-${now}`,
+          type: 'correct',
+          turnId,
+          cardWord: guessedCard.word,
+        })
+      );
+      const watcher = sessionProjectionSchema.parse(
+        projectSession(state, {
+          participantId: 'two',
+          serverTime: now,
+        })
+      );
+      expect(watcher).toMatchObject({ lastGuessedCard: guessedCard });
+      for (const remaining of state.game.remainingCards) {
+        expect(JSON.stringify(watcher)).not.toContain(remaining.word);
+      }
+      expect(
+        projectSession(state, { participantId: 'one', serverTime: now })
+      ).not.toHaveProperty('lastGuessedCard', expect.anything());
+    }
+    const latest = state.game.turn!.guessedCards.at(-1);
+    state = own(
+      command(state, 'one', 1022, {
+        id: 'skip',
+        type: 'skip',
+        turnId,
+        cardWord: state.game.remainingCards[0].word,
+      })
+    );
+    expect(
+      projectSession(state, { participantId: 'two', serverTime: 1022 })
+    ).toMatchObject({ lastGuessedCard: latest });
+    state = own(
+      command(state, 'one', 1023, {
+        id: 'end',
+        type: 'end-turn',
+        turnId,
+      })
+    );
+    for (const participantId of ['one', 'two']) {
+      expect(
+        projectSession(state, { participantId, serverTime: 1023 })
+      ).not.toHaveProperty('lastGuessedCard', expect.anything());
+    }
   });
 });

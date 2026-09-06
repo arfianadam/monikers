@@ -242,6 +242,38 @@
   max-width: 590px;
 }
 
+.watchingCopyWithGuess {
+  padding: 24px 0;
+  width: 100%;
+}
+
+.lastGuessedCard {
+  border-top: 8px solid var(--lime);
+  margin-top: 20px;
+  max-width: 740px;
+  padding: clamp(20px, 4vw, 38px);
+  width: 100%;
+}
+
+.lastGuessedCard > span {
+  color: var(--ink-soft);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.65rem;
+}
+
+.watchingCopy .lastGuessedCard h1 {
+  font-size: clamp(2rem, 7vw, 4rem);
+  margin: 18px 0;
+  overflow-wrap: anywhere;
+}
+
+.lastGuessedCard p {
+  color: var(--ink-soft);
+  line-height: 1.5;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
 .waitingIcon {
   align-items: center;
   background: var(--team-current);
